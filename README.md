@@ -1,5 +1,5 @@
 # hubeau
-Hub'Eau, la plateforme pour manipuler facilement les données ouvertes sur l'eau
+Hub'Eau, la plateforme pour manipuler facilement les données ouvertes sur l'eau en France
 
 Hub’Eau est la solution pour accéder aux  données sur l’eau sans être confronté aux problèmes d’hétérogénéité, de sources multiples, …. 
 Hub’Eau offre plusieurs interfaces (API) facilitant la réutilisation de données grâce au potentiel de jeux de données immédiatement intelligibles et exploitables.
