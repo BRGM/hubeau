@@ -13,7 +13,7 @@ Hub’Eau offre plusieurs interfaces (API) facilitant la réutilisation de donn�
 * [Piézométrie (niveau des nappes)](http://hubeau.eaufrance.fr/page/api-piezometrie) ;
 * [Qualité physico-chimique des cours d'eau](http://hubeau.eaufrance.fr/page/api-qualite-cours-deau) ;
 * [Qualité physico-chimique des nappes d'eau souterraine](http://hubeau.eaufrance.fr/page/api-qualite-nappes-deau-souterraines) ;
-* [Température des cours d'eau (version bêta)](http://hubeau.eaufrance.fr/page/api-temperature-en-continu).
+* [Température des cours d'eau (version bêta)](http://hubeau.eaufrance.fr/page/api-temperature-en-continu-version-beta).
 
 
 Cette page Github est dédiée à l'utilisation des API Hub'Eau.
