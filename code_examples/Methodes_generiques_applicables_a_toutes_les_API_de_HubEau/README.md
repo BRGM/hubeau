@@ -3,7 +3,7 @@
 Ce répertoire présente des parties de code et des examples de récupération de données via les API de Hub'Eau.
 Ces examples sont appliqués à des API précises mais sont transposables aux autres API de Hub'Eau.
 
-N'hésitez pas à ajouter vos propres examples ou partager vos trucs et astuces
+N'hésitez pas à ajouter vos propres examples ou partager vos trucs et astuces  
 
 ## Récupération de données de qualité des nappes avec Hubeau.ipynb
 Code Python et examples montrant la récupération de données  
