@@ -10,5 +10,5 @@ Code Python et examples montrant la récupération de données
 Code appliqué à l'API Qualité des nappes d'eau souterraine, transposable aux autres API de Hub'Eau en changeant l'URL appelée  
 
 ## Tracé d'une chronique piézométrique avec R.ipynb
-Code Python et example de tracé d'une chronique  
+Code R et example de tracé d'une chronique  
 Code appliqué à l'opération chroniques de l'API Piézométrie, transposable à toutes les opérations des autres API renvoyant des chroniques temporelles (séries de données date, valeur)  
