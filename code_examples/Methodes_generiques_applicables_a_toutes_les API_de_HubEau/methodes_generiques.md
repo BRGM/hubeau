@@ -1,1 +1,0 @@
-Méthodes génériques
