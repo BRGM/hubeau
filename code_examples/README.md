@@ -10,3 +10,7 @@ Code appliqué à l'API Qualité des nappes d'eau souterraine, transposable aux 
 ## Tracé d'une chronique piézométrique avec R.ipynb
 Code R et example de tracé d'une chronique.  
 Code appliqué à l'opération chroniques de l'API Piézométrie, transposable à toutes les opérations des autres API renvoyant des chroniques temporelles (séries de données date, valeur).  
+
+## gen_cache_hydroTR_cursor.php
+Code php pour la récupération des observations hydrométriques en temps réel.  
+Code spécifique à la méthode observations_tr de l'API hydrométrie montrant comment utiliser la pagination de type 'cursor' pour récupérer l'ensemble des données.  
