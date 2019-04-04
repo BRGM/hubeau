@@ -45,6 +45,7 @@
 <?php 
 /* Ce script récupère les débits aux n stations du tableau tabStations via Hub'Eau (profondeur 1 mois), les met en cache et trace le graphique d'évolution.
 En appelant ce script au moins une fois par mois, il est possible de constituer un historique des débits aux stations concernées.
+Le script appelle Hub'Eau sur l'ensemble de la période disponible (1 mois) même si les données sont déjà en cache car elles ont pu être corrigées / modifiées.
 Les données historiques sont conservées dans un fichier [code_station].csv
 Exemple de mise en oeuvre : http://nalguise.net/hydro/comp5.php
 maj T. VILMUS 2019-04-04 */
