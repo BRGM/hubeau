@@ -14,3 +14,7 @@ Code appliqué à l'opération chroniques de l'API Piézométrie, transposable �
 ## gen_cache_hydroTR_cursor.php
 Code php pour la récupération des observations hydrométriques en temps réel.  
 Code spécifique à la méthode observations_tr de l'API hydrométrie montrant comment utiliser la pagination de type 'cursor' pour récupérer l'ensemble des données.  
+
+## debits_a_plusieurs_stations_avec_historique.php
+Code php montrant comment conserver un historique des observations hydrométriques en temps réel sur quelques stations pour une période supérieure à 1 mois. Le script montre également comment tracer un graphique de l'évolution des débits.  
+Code spécifique à la méthode observations_tr de l'API hydrométrie.  
