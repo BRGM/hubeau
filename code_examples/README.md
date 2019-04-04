@@ -20,3 +20,4 @@ Code php montrant comment conserver un historique des observations hydrométriqu
 Les données historiques sont conservées dans un fichier [code_station].csv  
 Exemple de mise en oeuvre : http://nalguise.net/hydro/comp5.php  archivant les données de 5 stations depuis février 2019.  
 Code spécifique à la méthode observations_tr de l'API hydrométrie.  
+![screenshot](https://github.com/BRGM/hubeau/blob/master/code_examples/images/comp_debits_plusieurs_mois.png)
