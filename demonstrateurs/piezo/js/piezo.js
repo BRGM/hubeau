@@ -193,7 +193,7 @@ function supprPiezo(ipt) {
 	console.log("suppression pt n° "+ipt+" - reste "+npt+" pts");
 	var dt = document.getElementById('tableau'); 
 	dt.innerHTML='<TABLE id="tableau" COLS="8" BORDER="1" CELLPADDING="3" CELLSPACING="0">' + 
-	  '<tr><th>Code BSS</th><th>Commune</th><th align="right">Nb Mesures</th><th>Début</th><th>Fin</th><th align="right">Niveau mini</th><th align="right">Niveau maxi</th><th>Code entité hydrogéol.</th><th>Action</th></tr></TABLE>';
+	  '<tr><th>Code BSS</th><th>Commune</th><th align="right">Nb Mesures</th><th>Début</th><th>Fin</th><th align="right">Niveau mini</th><th align="right">Niveau maxi</th><th>Entité hydrogéol.</th><th>Action</th></tr></TABLE>';
 	for (var i = 0; i < npt; i++) {
 		ligne_tableau(i);
 	}		
