@@ -17,10 +17,10 @@
 function remplitDpt() {
 	// remplit la liste déroulante code_dpt avec les codes et noms des départements. Pb de tri sur les codes
 	var s = '';
-	ksort(dpt);
-	for(var key in dpt)
+	for(var obj of dpt)
 	{
-		var value = dpt[key];
+		var value = obj['nom'];
+		var key = obj['code'];
 		s = s + '<option ';
 		if (code_dpt == key){ s = s +' selected="selected"'; }  
 		s = s + ' value="' + key + '">' + key + ' - ' + value + '</option>';
