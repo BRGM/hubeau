@@ -1,102 +1,103 @@
-dpt= new Array();
-	dpt['01'] = 'Ain';
-	dpt['02'] = 'Aisne';
-	dpt['03'] = 'Allier';
-	dpt['04'] = 'Alpes-de-Haute-Provence';
-	dpt['05'] = 'Hautes-Alpes';
-	dpt['06'] = 'Alpes-Maritimes';
-	dpt['07'] = 'Ardèche';
-	dpt['08'] = 'Ardennes';
-	dpt['09'] = 'Ariège';
-	dpt['10'] = 'Aube';
-	dpt['11'] = 'Aude';
-	dpt['12'] = 'Aveyron';
-	dpt['13'] = 'Bouches-du-Rhône';
-	dpt['14'] = 'Calvados';
-	dpt['15'] = 'Cantal';
-	dpt['16'] = 'Charente';
-	dpt['17'] = 'Charente-Maritime';
-	dpt['18'] = 'Cher';
-	dpt['19'] = 'Corrèze';
-	dpt['2A'] = 'Corse-du-Sud';
-	dpt['2B'] = 'Haute-Corse';
-	dpt['21'] = 'Côte-d\'Or';
-	dpt['22'] = 'Côtes-d\'Armor';
-	dpt['23'] = 'Creuse';
-	dpt['24'] = 'Dordogne';
-	dpt['25'] = 'Doubs';
-	dpt['26'] = 'Drôme';
-	dpt['27'] = 'Eure';
-	dpt['28'] = 'Eure-et-Loir';
-	dpt['29'] = 'Finistère';
-	dpt['30'] = 'Gard';
-	dpt['31'] = 'Haute-Garonne';
-	dpt['32'] = 'Gers';
-	dpt['33'] = 'Gironde';
-	dpt['34'] = 'Hérault';
-	dpt['35'] = 'Ille-et-Vilaine';
-	dpt['36'] = 'Indre';
-	dpt['37'] = 'Indre-et-Loire';
-	dpt['38'] = 'Isère';
-	dpt['39'] = 'Jura';
-	dpt['40'] = 'Landes';
-	dpt['41'] = 'Loir-et-Cher';
-	dpt['42'] = 'Loire';
-	dpt['43'] = 'Haute-Loire';
-	dpt['44'] = 'Loire-Atlantique';
-	dpt['45'] = 'Loiret';
-	dpt['46'] = 'Lot';
-	dpt['47'] = 'Lot-et-Garonne';
-	dpt['48'] = 'Lozère';
-	dpt['49'] = 'Maine-et-Loire';
-	dpt['50'] = 'Manche';
-	dpt['51'] = 'Marne';
-	dpt['52'] = 'Haute-Marne';
-	dpt['53'] = 'Mayenne';
-	dpt['54'] = 'Meurthe-et-Moselle';
-	dpt['55'] = 'Meuse';
-	dpt['56'] = 'Morbihan';
-	dpt['57'] = 'Moselle';
-	dpt['58'] = 'Nièvre';
-	dpt['59'] = 'Nord';
-	dpt['60'] = 'Oise';
-	dpt['61'] = 'Orne';
-	dpt['62'] = 'Pas-de-Calais';
-	dpt['63'] = 'Puy-de-Dôme';
-	dpt['64'] = 'Pyrénées-Atlantiques';
-	dpt['65'] = 'Hautes-Pyrénées';
-	dpt['66'] = 'Pyrénées-Orientales';
-	dpt['67'] = 'Bas-Rhin';
-	dpt['68'] = 'Haut-Rhin';
-	dpt['69'] = 'Rhône';
-	dpt['70'] = 'Haute-Saône';
-	dpt['71'] = 'Saône-et-Loire';
-	dpt['72'] = 'Sarthe';
-	dpt['73'] = 'Savoie';
-	dpt['74'] = 'Haute-Savoie';
-	dpt['75'] = 'Paris';
-	dpt['76'] = 'Seine-Maritime';
-	dpt['77'] = 'Seine-et-Marne';
-	dpt['78'] = 'Yvelines';
-	dpt['79'] = 'Deux-Sèvres';
-	dpt['80'] = 'Somme';
-	dpt['81'] = 'Tarn';
-	dpt['82'] = 'Tarn-et-Garonne';
-	dpt['83'] = 'Var';
-	dpt['84'] = 'Vaucluse';
-	dpt['85'] = 'Vendée';
-	dpt['86'] = 'Vienne';
-	dpt['87'] = 'Haute-Vienne';
-	dpt['88'] = 'Vosges';
-	dpt['89'] = 'Yonne';
-	dpt['90'] = 'Territoire de Belfort';
-	dpt['91'] = 'Essonne';
-	dpt['92'] = 'Hauts-de-Seine';
-	dpt['93'] = 'Seine-Saint-Denis';
-	dpt['94'] = 'Val-de-Marne';
-	dpt['95'] = 'Val-d\'Oise';
-	dpt['971'] = 'Guadeloupe';
-	dpt['972'] = 'Martinique';
-	dpt['973'] = 'Guyane';
-	dpt['974'] = 'La Réunion';
-	dpt['976'] = 'Mayotte';
+dpt= [
+	{ id:  1, code: '01', nom: 'Ain' },
+	{ id:  2, code: '02', nom: 'Aisne' },
+	{ id:  3, code: '03', nom: 'Allier' },
+	{ id:  4, code: '04', nom: 'Alpes-de-Haute-Provence' },
+	{ id:  5, code: '05', nom: 'Hautes-Alpes' },
+	{ id:  6, code: '06', nom: 'Alpes-Maritimes' },
+	{ id:  7, code: '07', nom: 'Ardèche' },
+	{ id:  8, code: '08', nom: 'Ardennes' },
+	{ id:  9, code: '09', nom: 'Ariège' },
+	{ id: 10, code: '10', nom: 'Aube' },
+	{ id: 11, code: '11', nom: 'Aude' },
+	{ id: 12, code: '12', nom: 'Aveyron' },
+	{ id: 13, code: '13', nom: 'Bouches-du-Rhône' },
+	{ id: 14, code: '14', nom: 'Calvados' },
+	{ id: 15, code: '15', nom: 'Cantal' },
+	{ id: 16, code: '16', nom: 'Charente' },
+	{ id: 17, code: '17', nom: 'Charente-Maritime' },
+	{ id: 18, code: '18', nom: 'Cher' },
+	{ id: 19, code: '19', nom: 'Corrèze' },
+	{ id: 20, code: '2A', nom: 'Corse-du-Sud' },
+	{ id: 21, code: '2B', nom: 'Haute-Corse' },
+	{ id: 22, code: '21', nom: 'Côte-d\'Or' },
+	{ id: 23, code: '22', nom: 'Côtes-d\'Armor' },
+	{ id: 24, code: '23', nom: 'Creuse' },
+	{ id: 25, code: '24', nom: 'Dordogne' },
+	{ id: 26, code: '25', nom: 'Doubs' },
+	{ id: 27, code: '26', nom: 'Drôme' },
+	{ id: 28, code: '27', nom: 'Eure' },
+	{ id: 39, code: '28', nom: 'Eure-et-Loir' },
+	{ id: 30, code: '29', nom: 'Finistère' },
+	{ id: 31, code: '30', nom: 'Gard' }, 
+	{ id: 32, code: '31', nom: 'Haute-Garonne' },
+	{ id: 33, code: '32', nom: 'Gers' },
+	{ id: 34, code: '33', nom: 'Gironde' },
+	{ id: 35, code: '34', nom: 'Hérault' },
+	{ id: 36, code: '35', nom: 'Ille-et-Vilaine' },
+	{ id: 37, code: '36', nom: 'Indre' },
+	{ id: 38, code: '37', nom: 'Indre-et-Loire' },
+	{ id: 39, code: '38', nom: 'Isère' },
+	{ id: 40, code: '39', nom: 'Jura' },
+	{ id: 41, code: '40', nom: 'Landes' },
+	{ id: 42, code: '41', nom: 'Loir-et-Cher' },
+	{ id: 43, code: '42', nom: 'Loire' },
+	{ id: 44, code: '43', nom: 'Haute-Loire' },
+	{ id: 45, code: '44', nom: 'Loire-Atlantique' },
+	{ id: 46, code: '45', nom: 'Loiret' }, 
+	{ id: 47, code: '46', nom: 'Lot' },
+	{ id: 48, code: '47', nom: 'Lot-et-Garonne' },
+	{ id: 49, code: '48', nom: 'Lozère' },
+	{ id: 50, code: '49', nom: 'Maine-et-Loire' },
+	{ id: 51, code: '50', nom: 'Manche' },
+	{ id: 52, code: '51', nom: 'Marne' },
+	{ id: 53, code: '52', nom: 'Haute-Marne' },
+	{ id: 54, code: '53', nom: 'Mayenne' },
+	{ id: 55, code: '54', nom: 'Meurthe-et-Moselle' },
+	{ id: 56, code: '55', nom: 'Meuse' },
+	{ id: 57, code: '56', nom: 'Morbihan' },
+	{ id: 58, code: '57', nom: 'Moselle' },
+	{ id: 59, code: '58', nom: 'Nièvre' },
+	{ id: 60, code: '59', nom: 'Nord' },
+	{ id: 61, code: '60', nom: 'Oise' },
+	{ id: 62, code: '61', nom: 'Orne' },
+	{ id: 63, code: '62', nom: 'Pas-de-Calais' },
+	{ id: 64, code: '63', nom: 'Puy-de-Dôme' },
+	{ id: 65, code: '64', nom: 'Pyrénées-Atlantiques' },
+	{ id: 66, code: '65', nom: 'Hautes-Pyrénées' },
+	{ id: 67, code: '66', nom: 'Pyrénées-Orientales' },
+	{ id: 68, code: '67', nom: 'Bas-Rhin' },
+	{ id: 69, code: '68', nom: 'Haut-Rhin' },
+	{ id: 70, code: '69', nom: 'Rhône' },
+	{ id: 71, code: '70', nom: 'Haute-Saône' },
+	{ id: 72, code: '71', nom: 'Saône-et-Loire' },
+	{ id: 73, code: '72', nom: 'Sarthe' },
+	{ id: 74, code: '73', nom: 'Savoie' },
+	{ id: 75, code: '74', nom: 'Haute-Savoie' },
+	{ id: 76, code: '75', nom: 'Paris' },
+	{ id: 77, code: '76', nom: 'Seine-Maritime' },
+	{ id: 78, code: '77', nom: 'Seine-et-Marne' },
+	{ id: 79, code: '78', nom: 'Yvelines' },
+	{ id: 80, code: '79', nom: 'Deux-Sèvres' },
+	{ id: 81, code: '80', nom: 'Somme' },
+	{ id: 82, code: '81', nom: 'Tarn' },
+	{ id: 83, code: '82', nom: 'Tarn-et-Garonne' },
+	{ id: 84, code: '83', nom: 'Var' },
+	{ id: 85, code: '84', nom: 'Vaucluse' },
+	{ id: 86, code: '85', nom: 'Vendée' },
+	{ id: 87, code: '86', nom: 'Vienne' },
+	{ id: 88, code: '87', nom: 'Haute-Vienne' },
+	{ id: 89, code: '88', nom: 'Vosges' },
+	{ id: 90, code: '89', nom: 'Yonne' }, 
+	{ id: 91, code: '90', nom: 'Territoire de Belfort' },
+	{ id: 92, code: '91', nom: 'Essonne' },
+	{ id: 93, code: '92', nom: 'Hauts-de-Seine' },
+	{ id: 94, code: '93', nom: 'Seine-Saint-Denis' },
+	{ id: 95, code: '94', nom: 'Val-de-Marne' },
+	{ id: 96, code: '95', nom: 'Val-d\'Oise' },
+	{ id: 97, code: '971', nom: 'Guadeloupe' },
+	{ id: 98, code: '972', nom: 'Martinique' },
+	{ id: 99, code: '973', nom: 'Guyane' },
+	{ id:100, code: '974', nom: 'La Réunion' },
+	{ id:101, code: '976', nom: 'Mayotte' }
+];	 
