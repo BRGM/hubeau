@@ -139,8 +139,7 @@ function donnees_piezo(ipt) {
 function urlPage() {
 			var base = window.location.href.split('?');
 			var u = document.getElementById('urlget'); 
-			su = '<p>Les mesures piézométriques sont récupérées via <a href="https://hubeau.eaufrance.fr/page/api-piezometrie" target="_blank">l\'API "Piézométrie"</a> de <a href="http://hubeau.eaufrance.fr/" target="_blank">Hub\'Eau</a>.';
-			su += '<br>URL pour générer directement ce graphique : ';
+			su = '<p>URL pour générer directement ce graphique : ';
 			var url = base[0] +'?code_bss=';
 			for (var i = 0; i < npt; i++) {
 				url += code_bss[i];
