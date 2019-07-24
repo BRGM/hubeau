@@ -16,7 +16,7 @@
 
 function remplitDpt() {
 	// remplit la liste déroulante code_dpt avec les codes et noms des départements. Pb de tri sur les codes
-	var s = '';
+	var s = '<option value="-1" hidden>Sélectionnez un département</option>';
 	for(var obj of dpt)
 	{
 		var value = obj['nom'];
@@ -76,7 +76,7 @@ function remplitPiezo() {
 			//console.table(nom_comm);
 
 			ksort(code_dept); // classe le tableau selon les codes bss
-			var s = '';
+			var s = '<option value="-1" hidden>Sélectionnez un piézomètre</option>';
 			for(var key in code_dept) {
 				s = s +'<option '; 
 				if (code_bss == key) { s = s + ' selected="selected"'; }  
@@ -99,8 +99,8 @@ function ligne_tableau(ipt) {
 		st = st + '</td><td align="right">' + Intl.NumberFormat("en-IN", {maximumFractionDigits: 2, minimumFractionDigits: 2}).format(niv_max[ipt]);
 		st = st + '</td><td align="right"><a href="https://bdlisa.eaufrance.fr/hydrogeounit/' + nappes[code_bss[ipt]] + '" target="_blank">' + nappes[code_bss[ipt]] + '</a></td><td>'; // que 1ere nappe pour l'instant
 		st = st + lien_suppr + '</td></tr>'; 
-		var dt = document.getElementById('tableau'); 
-		dt.insertAdjacentHTML('beforeend', st);
+		//var dt = document.getElementById('tableau'); 
+		dtable.insertAdjacentHTML('beforeend', st);
 }	
 	
 function donnees_piezo(ipt) {
@@ -155,15 +155,18 @@ function ajoutePiezo() {
 		var selectForm = document.getElementById("form2");
 		selectForm.submit();
 	}
-	npt++;
-	console.log("npt="+npt);
-	code_bss[npt-1] = document.getElementById('code_bss').value;
-	ecritLog('Ajout piézo : ' + code_bss[npt-1], function (reponse) {	});
-	donnees_piezo(npt-1);
-	urlPage();
-	addPiezoToMap(npt-1); 
-	tailleCarte();
-	zoomToPiezos();
+	var newpiezo = document.getElementById('code_bss').value;
+	if (newpiezo != "-1") {
+		npt++;
+		console.log("npt="+npt);
+		code_bss[npt-1] = newpiezo;
+		ecritLog('Ajout piézo : ' + code_bss[npt-1], function (reponse) {	});
+		donnees_piezo(npt-1);
+		urlPage();
+		addPiezoToMap(npt-1); 
+		tailleCarte();
+		zoomToPiezos();
+	}	
 }	
 
 function supprPiezo(ipt) {
@@ -190,8 +193,8 @@ function supprPiezo(ipt) {
 	zoomToPiezos();
 	updateStyle();
 	console.log("suppression pt n° "+ipt+" - reste "+npt+" pts");
-	var dt = document.getElementById('tableau'); 
-	dt.innerHTML='<TABLE id="tableau" COLS="8" BORDER="1" CELLPADDING="3" CELLSPACING="0">' + 
+	//var dt = document.getElementById('tableau'); 
+	dtable.innerHTML='<TABLE id="tableau" COLS="8" BORDER="1" CELLPADDING="3" CELLSPACING="0">' + 
 	  '<tr><th>Code BSS</th><th>Commune</th><th align="right">Nb Mesures</th><th>Début</th><th>Fin</th><th align="right">Niveau mini</th><th align="right">Niveau maxi</th><th>Entité hydrogéol.</th><th>Action</th></tr></TABLE>';
 	for (var i = 0; i < npt; i++) {
 		ligne_tableau(i);
@@ -401,7 +404,7 @@ function carte() {
 	});	
 	view = new ol.View({
 		center: ol.proj.fromLonLat([2.571723, 46.4975481]),
-		zoom: 6
+		zoom: 4
 	});
   
 	scaleLineControl = new ol.control.ScaleLine();
