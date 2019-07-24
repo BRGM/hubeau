@@ -35,9 +35,11 @@
   ga('send', 'pageview');
 </script>
 </head>
+<!--
 <header>
     <h1>Niveau des nappes d'eau souterraine</h1>
 </header>
+-->
 <body>
 <script language="JavaScript" type="text/javascript">
 // 2019-07-18 version javascript pur
@@ -67,6 +69,10 @@ if (typeof(f['code_bss']) !== 'undefined') {
 	console.log("npt = " + npt);
 }	
 </script>
+
+<h1>Démonstrateur de <a href="https://hubeau.eaufrance.fr/page/api-piezometrie" target="_blank">l'API Piézométrie</a> de <a href="https://hubeau.eaufrance.fr" target="_blank"><img src="images/logohubeau.svg" height="50"></a></h1>
+<div id="brgm"><img src="images/logo_brgm.png" height="45"></div>
+<div id="afb"><img src="images/logo_afb.png" height="45"></div>
 
 <p><TABLE COLS="2" CELLPADDING="6" CELLSPACING="0">
 <tr><td>Département :</td><td>Piézomètre :</td></tr>
@@ -126,8 +132,7 @@ ecritLog('fin', function (reponse) {	});
 </ul>
 </p>
 <div id="urlget">
-<p>Les mesures piézométriques sont récupérées via <a href="https://hubeau.eaufrance.fr/page/api-piezometrie" target="_blank">l'API "Piézométrie"</a> de <a href="http://hubeau.eaufrance.fr/" target="_blank">Hub'Eau</a>.
-<br>URL pour générer directement ce graphique :</p>
+<p>URL pour générer directement ce graphique :</p>
 </div>
 <script>
 	urlPage();
