@@ -10,32 +10,12 @@
 </head>
 <body>
 
-
-<!-- Piwik -->
- <script type="text/javascript">
- var _paq = _paq || [];
- _paq.push(['trackPageView']);
- _paq.push(['enableLinkTracking']);
- (function() {
- var u="//wwwstats.brgm.fr/";
- _paq.push(['setTrackerUrl', u+'piwik.php']);
- _paq.push(['setSiteId', 121]);
- var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
- g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
- })();
- </script>
- <noscript><p><img src="//wwwstats.brgm.fr/piwik.php?idsite=121" style="border:0;" alt="" /></p></noscript>
-<!-- End Piwik Code -->
-
 <script type="text/javascript">
     var req = new XMLHttpRequest();
     var url = window.location.href;
-	req.open("GET", "http://www.nalguise.net/log/log.php?siteid=121&url=" + url + "?titre=" + document.title );
+    req.open("GET", "http://www.nalguise.net/log/log.php?siteid=121&url=" + url + "?titre=" + document.title );
     req.send(null);
 </script>
-
-
-
 
 </body>
 </html>
