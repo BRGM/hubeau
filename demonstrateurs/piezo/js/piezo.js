@@ -1,14 +1,7 @@
 // *** piezo.js v1.0.0 2019-07-23 *** Fonctions js utilisées par piezo.htm ***
 
 	function changeDpt() {
-	/*
-		s = 'piezo.htm?code_dpt=' + document.getElementById('code_dpt').value;
-		if (npt > 0) {
-			s += '&code_bss=' + code_bss;
-		}
-		self.location = s;
-	*/
-	// On ne recharge plus la page
+	// On ne recharge pas la page à chaque changement
 	code_dpt = document.getElementById('code_dpt').value;
 	remplitDpt();
 	remplitPiezo();
@@ -69,11 +62,9 @@ function remplitPiezo() {
 						periode[codebss] = data[i]['date_debut_mesure'].substring(0,4) + ' - ' + data[i]['date_fin_mesure'].substring(0,4);
 						code_comm[codebss] = code_commune;
 						code_dept[codebss] = code_departement;
-						//console.log(nom_comm[codebss]);
 					}
 				}	
 			}
-			//console.table(nom_comm);
 
 			ksort(code_dept); // classe le tableau selon les codes bss
 			var s = '<option value="-1" hidden>Sélectionnez un piézomètre</option>';
@@ -99,7 +90,6 @@ function ligne_tableau(ipt) {
 		st = st + '</td><td align="right">' + Intl.NumberFormat("en-IN", {maximumFractionDigits: 2, minimumFractionDigits: 2}).format(niv_max[ipt]);
 		st = st + '</td><td align="right"><a href="https://bdlisa.eaufrance.fr/hydrogeounit/' + nappes[code_bss[ipt]] + '" target="_blank">' + nappes[code_bss[ipt]] + '</a></td><td>'; // que 1ere nappe pour l'instant
 		st = st + lien_suppr + '</td></tr>'; 
-		//var dt = document.getElementById('tableau'); 
 		dtable.insertAdjacentHTML('beforeend', st);
 }	
 	
@@ -131,9 +121,7 @@ function donnees_piezo(ipt) {
 			data: processed_json
 		});
 
-		//console.table(processed_json); 
 		ligne_tableau(ipt);
-		ecritLog('Piézo : ' + code_bss[ipt], function (reponse) {		});
 }	
 
 function urlPage() {
@@ -146,7 +134,6 @@ function urlPage() {
 				if (i < npt-1) { url += ','; }
 			}		
 			su += '<a href="' + url + '">' + url + '</a></p>'; 
-			//console.log(su);
 			u.innerHTML = su;
 }
 	
@@ -160,7 +147,6 @@ function ajoutePiezo() {
 		npt++;
 		console.log("npt="+npt);
 		code_bss[npt-1] = newpiezo;
-		ecritLog('Ajout piézo : ' + code_bss[npt-1], function (reponse) {	});
 		donnees_piezo(npt-1);
 		urlPage();
 		addPiezoToMap(npt-1); 
@@ -170,12 +156,9 @@ function ajoutePiezo() {
 }	
 
 function supprPiezo(ipt) {
-	ecritLog('Suppression piézo : ' + code_bss[ipt], function (reponse) {	});
 	myChart.series[ipt].remove(true, true); // il faut recharger le graphique sinon périodes de temps incohérentes
 	// enlever élement ipt du tableau code_bss, puis décaler les éléments suivants
-	console.table("avant: " + code_bss);
 	var dummy = code_bss.splice(ipt, 1);
-	console.table("après: " + code_bss);
 	var ligne = document.getElementById('tr' + ipt);
 	ligne.innerHTML=''; // Ok mais les lignes id tr du tableau sont décalées pour les suppressions suivantes -> il faut rafraîchir le tableau entier
 	var dummy = date_min.splice(ipt, 1);
@@ -192,8 +175,6 @@ function supprPiezo(ipt) {
 	tailleCarte();
 	zoomToPiezos();
 	updateStyle();
-	console.log("suppression pt n° "+ipt+" - reste "+npt+" pts");
-	//var dt = document.getElementById('tableau'); 
 	dtable.innerHTML='<TABLE id="tableau" COLS="8" BORDER="1" CELLPADDING="3" CELLSPACING="0">' + 
 	  '<tr><th>Code BSS</th><th>Commune</th><th align="right">Nb Mesures</th><th>Début</th><th>Fin</th><th align="right">Niveau mini</th><th align="right">Niveau maxi</th><th>Entité hydrogéol.</th><th>Action</th></tr></TABLE>';
 	for (var i = 0; i < npt; i++) {
