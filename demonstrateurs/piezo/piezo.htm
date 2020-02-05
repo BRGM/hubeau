@@ -24,44 +24,19 @@
 <script src="../commun/js/dept.js"></script>
 <!-- Scripts Javascript propres à piezo.htm -->
 <script src="js/piezo.js"></script>
-
-<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-
-  ga('create', 'UA-103689621-1', 'auto');
-  ga('send', 'pageview');
-</script>
 </head>
-<!--
-<header>
-    <h1>Niveau des nappes d'eau souterraine</h1>
-</header>
--->
+
 <body>
 <script language="JavaScript" type="text/javascript">
 // 2019-07-18 version javascript pur
 // Dans Hub'Eau, on ne peut pas interroger les piézomètres par département -> on récupère toutes les stations et on trie après
 // on change de stratégie par rapport à la version php+js : l'URL contiendra le code bss de la station et non pas son index (qui change en fct du temps et qui empêche de bookmarker une station)
 // possibilités supplémentaires : 1. on peut afficher plusieurs courbes ; 2. pas de rechargement de page après chgmt dpt ou piezo ; 3. carte de localisation
-urllog = "https://www.nalguise.net/piezo/log.php";
-ecritLog('deb', function (reponse) {		});
 
-//code_dpt = '01';
 var f = extractUrlParams();
 if (typeof(f['code_dpt']) !== 'undefined') { 
 	// il y a un paramètre code_dpt
 	code_dpt = f['code_dpt'];
-	//console.table(Object.entries(dpt));
-	console.log("code_dpt="+code_dpt);
-	/* plus de test car pas moyen de savoir simplement si le code_dpt est dans la property code de l'objet dpt
-	if (!(code_dpt in Object.values(dpt))) {
-		console.log("code_dpt non reconnu");
-		ecritLog('Code Département non reconnu : ' + code_dpt + ', transformé en 01', function (reponse) {		});
-		code_dpt = '01';
-	}*/
 }
 npt = 0;
 if (typeof(f['code_bss']) !== 'undefined') { 
@@ -89,7 +64,6 @@ if (typeof(f['code_bss']) !== 'undefined') {
 <form name="form2" id="form2">
 	<td><select name="code_bss" id="code_bss" onchange="ajoutePiezo();">
 		</select>	</td>	</tr>
-	<!-- <tr><td><INPUT TYPE=SUBMIT value=Valider></td></tr> !-->
 </form>
 </p></TABLE>
 
@@ -126,13 +100,12 @@ if (typeof(f['code_bss']) !== 'undefined') {
 			dbMap.value = '<<';
 		}
 	};		
-ecritLog('fin', function (reponse) {	});
 </script>
 
 <p><i>Quelques chroniques remarquables :
 <ul>
 <li>Chronique la plus ancienne : <a href="piezo.htm?code_dpt=59&code_bss=00147D0218%2FP1">piézomètre 00147D0218/P1 à Lille</a></li>
-<li>Chronique comportant le plus de mesures : <a href="piezo/piezo.htm?code_dpt=06&code_bss=09994X0521/P4B">piézomètre 09994X0521/P4B à Nice</a></li>
+<li>Chronique comportant le plus de mesures : <a href="piezo.htm?code_dpt=06&code_bss=09994X0521/P4B">piézomètre 09994X0521/P4B à Nice</a></li>
 <li>Exemple d'une longue série régulière de 1980 à 2019 : <a href="piezo.htm?code_dpt=54&code_bss=01937X0054%2FF">piézomètre 01937X0054/F à Villers-en-Haye</a></li> 
 <li>Exemple d'une longue série avec un trou dans les données : <a href="piezo.htm?code_dpt=71&code_bss=05765X0013%2FSONDAG">piézomètre 05765X0013/SONDAG à Vitry-sur-Loire</a></li>
 <li>Exemple de comparaison de niveaux : <a href="piezo.htm?code_dpt=45&code_bss=03635X0545/PZ1,03636X1060/PZ2,03636X1061/PZ3,03636X1062/PZ4,03982X1045/F">Comparaison de 5 piézomètres à Orléans</a></li>
@@ -144,22 +117,6 @@ ecritLog('fin', function (reponse) {	});
 <script>
 	urlPage();
 </script>
-
-<!-- Piwik -->
- <script type="text/javascript">
- var _paq = _paq || [];
- _paq.push(['trackPageView']);
- _paq.push(['enableLinkTracking']);
- (function() {
- var u="//wwwstats.brgm.fr/";
- _paq.push(['setTrackerUrl', u+'piwik.php']);
- _paq.push(['setSiteId', 121]);
- var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
- g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
- })();
- </script>
- <noscript><p><img src="//wwwstats.brgm.fr/piwik.php?idsite=121" style="border:0;" alt="" /></p></noscript>
-<!-- End Piwik Code -->
 
 </body>
 </html>
