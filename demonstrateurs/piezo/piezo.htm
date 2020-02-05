@@ -43,9 +43,7 @@ if (typeof(f['code_bss']) !== 'undefined') {
 	// il y a un paramètre code_bss
 	//code_bss = decodeURI(f['code_bss']); ne fonctionne pas
 	code_bss = replaceAll("%2F", "/", f['code_bss']).split(','); 
-	console.table(code_bss);
 	npt = code_bss.length;
-	console.log("npt = " + npt);
 }	
 </script>
 
