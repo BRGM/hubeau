@@ -1,10 +1,4 @@
 # Hub'Eau
-
-__\********** BREAKING NEWS **********  
-Jusqu'au 29 septembre 2020, l’équipe projet invite les usagers à exprimer leurs souhaits de nouvelles APIs. En retour, dans la mesure du possible, elle s’engage à prendre en compte les réponses dans sa future programmation.  
-Développeurs, scientifiques de la donnée, analystes, … Vous souhaitez réutiliser les données publiques sur l’eau : n’hésitez pas, exprimez-vous ! Cliquez sur [ce lien pour accèder au formulaire d'enquête](https://framaforms.org/enquete-sur-les-besoins-des-utilisateurs-de-hubeaueaufrancefr-1596704978)  
-\***********************************__
-
 Hub'Eau, la plateforme pour faciliter l'utilisation des données ouvertes sur l'eau en France
 
 Hub'Eau est la solution - sous forme d'API web - pour accéder aux données françaises sur l’eau, de façon centralisée et homogène. Autrement dit, Hub'eau permet le téléchargement immédiat de données sur l’eau depuis les principales banques de données nationales, par simple copie d’une requête (adresse internet) dans la barre d’adresse d’un navigateur :)
