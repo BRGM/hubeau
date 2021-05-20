@@ -1,3 +1,4 @@
+# Ré-utilisations des APIs Hub'Eau, disponibles sur GitHub ou le blog LinkedIn  
 ## [hubeau.py, script Python permettant d'interroger l'API hydrométrie de Hub'Eau, par Pierre-Alain Dorange](https://github.com/padorange/hubeau)  
 Permet de suivre les mesures de hauteur des cours d'eau diffusée par l'API HubEau :  
 	- Télécharge les dernières mesures (API HubEau via le format json)  
