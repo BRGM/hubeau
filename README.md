@@ -22,7 +22,10 @@ Hub’Eau offre plusieurs interfaces (API) facilitant la réutilisation de donn�
 Ce projet Github est dédiée à l'utilisation des API Hub'Eau.
 
 Osez l’expérience Hub’Eau et venez partager votre expérience et vos sources de réutilisation des données françaises sur l'eau à travers les API Hub'Eau ! 
-
-
+  
+N'hésitez pas à poster vos remontées de bug, vos demandes d'amélioration ou toute demande d'aide à l'utilisation sur [la page Issues](https://github.com/BRGM/hubeau/issues)  
+Consultez et ré-utilisez [le code des démonstrateurs](https://github.com/BRGM/hubeau/tree/master/demonstrateurs)  
+Consultez [les exemples de codes mis à disposition par le BRGM](https://github.com/BRGM/hubeau/tree/master/code_examples)  
+Explorez [les ré-utilisations mises à disposition sur GitHub ou LinkedIn par d'autres utilisateurs](https://github.com/BRGM/hubeau/tree/master/re-utilisations)
  
 
