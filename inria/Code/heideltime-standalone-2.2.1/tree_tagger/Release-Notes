@@ -1,0 +1,16 @@
+
+new in version 3.2.4:
+
+The lemma of unknown words is guessed with a simple heuristic:
+If the unknown word is "Computerbildschirms" and "Bildschirms"
+is contained in the lexicon with the same tag, then the lemma
+is guessed by concatenating "Computer" and the lemma of "Bildschirms".
+
+new in version 3.2.3:
+
+Cardinal numbers may now contain the characters + and '.
+
+new in version 3.2.2:
+
+There is no longer an option "-cap-heuristics" because this option has
+been modified and turned into the default behaviour of the tagger.

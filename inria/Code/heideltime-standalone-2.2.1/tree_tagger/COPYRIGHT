@@ -1,0 +1,67 @@
+Helmut Schmid
+
+Institut fuer maschinelle Sprachverarbeitung (IMS) 
+Universitaet Stuttgart               Phone:(+49)(711) 121-1385
+Azenbergstr. 12                      Fax:                -1366
+D-70174 Stuttgart, Germany           email:Helmut.Schmid@ims.uni-stuttgart.de
+
+
+                  ***********************
+                  ** License Agreement **
+                  ***********************
+
+concerning the use and distribution of the program system 'TreeTagger'
+subsequently jointly called ``the system'', between
+
+		<your name>
+
+subsequently called ``the licensee'', and the Institut fuer
+maschinelle Sprachverarbeitung, Universitaet Stuttgart, subsequently
+called ``the licenser''.
+
+1. The licenser grants the licensee rights to use the system for his/her
+   employees, customers, or students on arbitrary computers for evaluation, 
+   research and teaching purposes. The licensee has no right to use the 
+   system for commercial purposes.
+
+2. The licensee has no right to give or sell the system to third
+   parties without written permission from the licenser.
+
+3. The licenser has no obligation to maintain the system.
+   Nevertheless the licensee is encouraged to report to the licenser
+   any problems with or suggestions for improvement of the system.
+
+4. The licenser has no obligation to make new releases available to the
+   licensee, but were such updates are supplied they shall be governed by
+   the terms of this agreement.
+
+5. If results and experiences of the work with the system are published by
+   the licensee, he/she will send copies of these papers to the licenser
+   (c/o Helmut Schmid).
+
+			   NO WARRANTY
+
+6. BECAUSE THE SYSTEM IS LICENSED FREE OF CHARGE, WE PROVIDE
+ABSOLUTELY NO WARRANTY, TO THE EXTENT PERMITTED BY APPLICABLE STATE
+LAW. EXCEPT WHEN OTHERWISE STATED IN WRITING THE LICENSER PROVIDES THE
+SYSTEM "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE ENTIRE RISK
+AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH THE LICENSEE.
+SHOULD THE SYSTEM PROVE DEFECTIVE, THE LICENSEE ASSUMES THE COST OF
+ALL NECESSARY SERVICING, REPAIR OR CORRECTION.
+
+7. IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW WILL THE LICENSER BE
+LIABLE TO THE LICENSEE FOR DAMAGES, INCLUDING ANY LOST PROFITS, LOST
+MONIES, OR OTHER SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING
+OUT OF THE USE OR INABILITY TO USE (INCLUDING BUT NOT LIMITED TO LOSS
+OF DATA OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY THIRD
+PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER PROGRAM)
+THE PROGRAM, EVEN IF THE LICENSEE HAS BEEN ADVISED OF THE POSSIBILITY
+OF SUCH DAMAGES, OR FOR ANY CLAIM BY ANY OTHER PARTY.
+
+
+The wording of this license agreement has been adapted from the
+license of the ALF system by Michael Hanus, Max-Planck-Institut
+Saarbruecken and the GnuEmacs General Public License (c) 1991 Free
+Software Foundation. 

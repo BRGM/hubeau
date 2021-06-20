@@ -1,0 +1,21 @@
+#!/bin/sh
+
+# Set these paths appropriately
+
+BIN="/home/maya/Downloads/heideltime-standalone-2.2.1/tree_tagger/bin"
+CMD="/home/maya/Downloads/heideltime-standalone-2.2.1/tree_tagger/cmd"
+LIB="/home/maya/Downloads/heideltime-standalone-2.2.1/tree_tagger/lib"
+
+OPTIONS="-token -lemma -sgml"
+
+TOKENIZER=${CMD}/utf8-tokenize.perl
+MWL=${CMD}/greek-mwls.pl
+TAGGER=${BIN}/tree-tagger
+ABBR_LIST=${LIB}/greek-abbreviations
+PARFILE=${LIB}/greek.par
+
+$TOKENIZER -a $ABBR_LIST $* |
+$MWL |
+# tagging
+$TAGGER $OPTIONS $PARFILE
+

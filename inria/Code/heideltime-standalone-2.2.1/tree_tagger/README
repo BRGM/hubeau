@@ -1,0 +1,164 @@
+
+/*****************************************************************************/
+/* How to use the TreeTagger                                                 */
+/*****************************************************************************/
+
+
+The TreeTagger consists of two programs: train-tree-tagger is used to 
+create a parameter file from a lexicon and a handtagged corpus. 
+tree-tagger expects a parameter file and a text file as arguments and
+annotates the text with part-of-speech tags. The file formats are
+described below. By default, the programs are located in the ./bin
+sub-directory.
+
+If either of the programs is called without arguments, it will print
+information about its usage.
+
+
+Tagging
+-------
+
+Tagging is done with the tree-tagger program. It requires at least one
+command line argument, the parameter file. If no input file is specified,
+input will be read from stdin. If neither an input file nor an output file
+is specified, the tagger will print to stdout.
+
+tree-tagger <parameter file> <input file> <output file> {-eps <epsilon>}
+       {-base} {-proto} {-sgml} {-token} {-lemma} {-beam <threshold>}
+
+Description of the command line arguments:
+
+* <parameter file>: Name of a parameter file which was created with the 
+  train-tree-tagger program.
+* <input file>: Name of the file which is to be tagged. Each token in this 
+  file must be on a separate line. Tokens may contain blanks. It is possible
+  to override the lexical information contained in the parameter file of the
+  tagger by specifying a list of possible tags after a token. This list has
+  to be preceded by a tab character. The tags are optionally followed by a
+  floating point value to specify the probability of the tag. Adding such
+  tag information in the tagger's input is sometimes useful to ensure that
+  certain text-specific expressions are tagged properly.
+  Punctuation marks must be on separate lines as well. Clitics (like "'s",
+  "'re", and "'d" in English or "-la" and "-t-elle" in French) should be
+  separated if they were separated in the training data. (The French and
+  English parameter files available by ftp, expect separation of clitics).
+  Sample input file:
+    He
+    moved
+    to
+    New York City	NP 1.0
+    .
+* <output file>: Name of the file to which the tagger should write its output.
+
+Further optional command line arguments:
+
+* -token: tells the tagger to print the words also.
+* -lemma: tells the tagger to print the lemmas of the words also.
+* -sgml: tells the tagger to ignore tokens starting with '<' and ending
+  with '>' (SGML tags).
+* -threshold p: tells the tagger to print all tags of a word with a probability higher than p times the largest tag probability. (The tagger will use the Forward-Backward algorithm instead of the Viterbi algorithm to annotate the data if this option is used.)
+* -lex file: tells the tagger to read additional lexicon entries form "file". The lexicon format is the same as that of the lexicon file used for training.
+
+The options below are for advanced users. Read the papers on the TreeTagger
+to fully understand their meaning.
+
+* -proto: If this option is specified, the tagger creates a file named
+  "lexicon-protocol.txt", which contains information about the degree of
+  ambiguity and about the other possible tags of a word form. The part of
+  the lexicon in which the word form has been found is also indicated. 'f'
+  means fullform lexicon and 's' means affix lexicon. 'h' means that the
+  word contains a hyphen and that the part of the word following the
+  hyphen has been found in the fullform lexicon.
+* -eps <epsilon>: Value which is used to replace zero lexical frequencies.
+  This is the case if a word/tag pair is contained in the lexicon but not
+  in the training corpus. The default is 0.1. The choice of this parameter
+  has some minor influence on tagging accuracy.
+* -beam <threshold>: If the tagger is slow, this option can be used to speed it up.
+  Good values for <threshold> are in the range 0.001-0.00001.
+* -base: If this option is specified, only lexical information is used
+  for tagging but no contextual information about the preceding tags.
+  This option is only useful in order to obtain a baseline result
+  to which to compare the actual tagger output.
+
+There is another tagger program called "tree-tagger-flush" which
+flushes the output after reading an empty line. It expects a parameter
+file as argument and reads from stdin and writes to stdout. No command
+line options are supported. This program might be useful for
+implementing wrappers.
+
+
+
+
+Training
+--------
+
+Training is done with the *train-tree-tagger* program. It expects at least
+four command line arguments which are described below.
+
+train-tree-tagger <lexicon> <open class file> <input file> <output file> 
+            {-cl <context length>} {-dtg <min. decision tree gain>}
+            {-ecw <eq. class weight>} {-atg <affix tree gain>} {-st <sent. tag>}
+
+Description of the command line arguments:
+
+* <lexicon>: name of a file which contains the fullform lexicon. Each line 
+  of the lexicon corresponds to one word form and contains the word form 
+  itself followed by a Tab character and a sequence of tag-lemma pairs.
+  The tags and lemmata are separated by whitespace.
+  Example:
+
+aback	RB aback
+abacuses	NNS abacus
+abandon	VB abandon VBP abandon
+abandoned	JJ abandoned VBD abandon VBN abandon
+abandoning	VBG abandon
+
+  Remark: The tagger doesn't need the lemmata actually. If you do not have
+  the lemma information or if you do not plan to annotate corpora with
+  lemmas, you can replace the lemma with a dummy value, e.g. "-".
+
+* <open class file>: name of a file which contains a list of open class
+  tags i.e. possible tags of unknown word forms separated by whitespace.
+  The tagger will use this information when it encounters unknown words,
+  i.e. words which are not contained in the lexicon.
+  Example: (for Penn Treebank tagset)
+
+FW JJ JJR JJS NN NNS NP NPS RB RBR RBS VB VBD VBG VBN VBP VBZ
+
+* <input file>: name of a file which contains tagged training data. The data
+  must be in one-word-per-line format. This means that each line contains 
+  one token and one tag in that order separated by a tabulator. 
+  Punctuation marks are considered as tokens and must have been tagged as well.
+  Example:
+
+Pierre  NP
+Vinken  NP
+,       ,
+61      CD
+years   NNS
+
+* <output file>: name of the file in which the resulting tagger parameters 
+  are stored.
+
+The following parameters are optional. Read the papers on the TreeTagger to 
+fully understand their meaning.
+
+* -st <sent. tag>: the end-of-sentence part-of-speech tag, i.e. the tag which
+  is assigned to sentence punctuation like ".", "!", "?". 
+  Default is "SENT". It is important to set this option properly, if your
+  tag for sentence punctuation is not "SENT".
+* -cl <context length>: number of preceding words forming the statistical
+  context. The default is 2 which corresponds to a trigram context. For
+  small training corpora and/or large tagsets, it could be useful to reduce
+  this parameter to 1.
+* -dtg <min. decision tree gain>: Threshold - If the information gain at a 
+  leaf node of the decision tree is below this threshold, the node is deleted.
+  The default value is 0.7.
+* -ecw <eq. class weight>: weight of the equivalence class based probability
+  estimates. The default is 0.15.
+* -atg <affix tree gain> Threshold - If the information gain at a leaf of an
+  affix tree is below this threshold, it is deleted. The default is 1.2.
+
+The accuracy of the TreeTagger is usually slightly improved, if different
+settings of the above parameters are tested and the best combination is
+chosen.

@@ -1,0 +1,26 @@
+#!/bin/sh
+
+# Set these paths appropriately
+
+BIN="/home/maya/Downloads/heideltime-standalone-2.2.1/tree_tagger/bin"
+CMD="/home/maya/Downloads/heideltime-standalone-2.2.1/tree_tagger/cmd"
+LIB="/home/maya/Downloads/heideltime-standalone-2.2.1/tree_tagger/lib"
+
+TOKENIZER=${BIN}/separate-punctuation
+SPLITTER=${CMD}/portuguese-splitter.perl
+TAGGER=${BIN}/tree-tagger
+ABBR_LIST=${LIB}/portuguese-abbreviations
+POST_TAGGING=${CMD}/portuguese-post-tagging
+PARFILE=${LIB}/portuguese-finegrained.par
+
+# splitting 
+$SPLITTER $* |
+# pre-tokenization
+sed "s/\([\)\"\'\?\!]\)\([\.\,\;\:]\)/ \1 \2/g" |
+# tokenizing
+$TOKENIZER +1 +s +l $ABBR_LIST |
+# remove empty lines
+grep -v '^$' |
+# tagging
+$TAGGER $PARFILE -token -lemma -sgml | 
+$POST_TAGGING -yes

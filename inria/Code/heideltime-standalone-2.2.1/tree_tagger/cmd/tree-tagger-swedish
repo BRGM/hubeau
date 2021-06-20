@@ -1,0 +1,17 @@
+#!/bin/sh
+
+# Set these paths appropriately
+
+BIN="/home/maya/Downloads/heideltime-standalone-2.2.1/tree_tagger/bin"
+CMD="/home/maya/Downloads/heideltime-standalone-2.2.1/tree_tagger/cmd"
+LIB="/home/maya/Downloads/heideltime-standalone-2.2.1/tree_tagger/lib"
+
+OPTIONS="-token -lemma -sgml"
+
+TOKENIZER=${CMD}/utf8-tokenize.perl
+TAGGER=${BIN}/tree-tagger
+ABBR_LIST=${LIB}/swedish-abbreviations
+PARFILE=${LIB}/swedish.par
+
+$TOKENIZER -i -a $ABBR_LIST $* |
+$TAGGER $OPTIONS $PARFILE
