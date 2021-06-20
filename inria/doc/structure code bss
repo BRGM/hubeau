@@ -1,0 +1,35 @@
+Le code BSS est structuré ainsi :
+
+AAAABCDDDD/designation
+
+ 
+
+La partie avant / contient toujours 10 caractères :
+
+AAAA ce sont 4 chiffres indiquant le numéro de la carte géologique dans laquelle est contenu le point d’eau
+
+B : c’est un chiffre qui correspond au « huitième » de la carte géologique en question
+
+C : c’est une lettre, le plus souvent « X » mais il y a des exceptions quand une carte contient de très nombreux points
+
+DDDD : nombre sur 4 chiffres correspondant au n° d’ordre du point d’eau dans le huitième de la carte géol concernée.
+
+En résumé, 5 chiffres, 1 lettre, 4 chiffres.
+
+ 
+
+Désignation : texte libre (en général court), qui correspond au libellé court du point d’eau. Il ne contient pas toujours PZ (piézomètre) mais parfois F (forage) ou source ou P (puits). Bref, c’est un texte libre.
+
+ 
+
+On parle ici de l’ancien code BSS, qui est appelé par le paramètre code_bss dans Hub’Eau.
+
+ 
+
+Pour votre information, il existe un nouveau code BSS, codé sur 9 caractères, commençant par « BSS » puis un identifiant sur 7 caractères. Ce code est appelé par le paramètre bss_id dans Hub’Eau.
+
+Certaines opérations de Hub’Eau permettent l’interrogation avec l’ancien et le nouveau code mais l’opération « chroniques » par exemple ne peut utiliser que l’ancien code. L’ancien code reste utilisé par la plupart des gens car il « parle » aux utilisateurs qui d’une part sont habitués à son usage, et d’autres part ont une idée de la localisation du point d’eau grâce au code. Le nouveau code répond aux bonnes pratiques (identifiant non signifiant) mais ne s’est pas (encore) imposé.
+
+ 
+
+La requête https://hubeau.eaufrance.fr/api/v1/niveaux_nappes/stations?code_bss=&fields=code_bss%2Cbss_id&format=json&size=20 permet de visualiser anciens et nouveaux codes. Pour le travail actuel, il faut nous concentrer sur les anciens codes, qui peuvent être utilisés dans l’ensemble des opérations.
