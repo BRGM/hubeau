@@ -192,20 +192,19 @@ def get_mesure_piezo(station, start_date=None, end_date=None):
 #     return adjs
 
 
-def POS_adj(text):
+def POS(text, tag):
     """
     Returns words that are tagged ADJ in query
     uses stanfordNLP POS with the python wrapper stanza
     """
-
     nlp = stanza.Pipeline(lang='fr',  logging_level="FATAL", processors='tokenize, pos')
-    adjs = []
+    tags = []
     result = nlp(text)
     for sentence in result.sentences:
         for word in sentence.words:
-            if word.pos == "ADJ":
-                adjs.append(word.text)
-    return adjs
+            if word.upos == tag:
+                tags.append(word.text)
+    return tags
 
 
 def stem(word):
@@ -254,6 +253,22 @@ def get_geolocation_ipinfo(ip_address):
     city = details.city
     return city
 
+def get_locations_flair(query, MODEL_PATH):
+    batch_size = 8
+    tag_type = "label"
+    model = SequenceTagger.load(MODEL_PATH)
+
+    snippets = [[1, query]]
+    result = predict_flair.get_entities(snippets, model, tag_type, batch_size)["snippets"][0][1]
+    locations = [entity["text"] for entity in result["entities"] if "LOC" in str(entity["labels"][0])]
+    return locations
+
+def get_locations_static(query, location_names):
+
+    nouns = POS(query, "NOUN")
+    print("nouns", nouns)
+    locations = [noun.lower() for noun in nouns if noun in location_names]
+    return locations
 
 def get_locations(query, communes, MODEL_PATH, ip_address=None):
     """
@@ -262,25 +277,26 @@ def get_locations(query, communes, MODEL_PATH, ip_address=None):
     if none found, return geolocation
     """
 
-    batch_size = 8
-    tag_type = "label"
-    model = SequenceTagger.load(MODEL_PATH)
-
-    snippets = [[1, query]]
-    result = predict_flair.get_entities(snippets, model, tag_type, batch_size)["snippets"][0][1]
-    locations = [entity["text"] for entity in result["entities"] if "LOC" in str(entity["labels"][0])]
+    locations = get_locations_flair(query, MODEL_PATH)
     if len(locations) > 0:
+        print("flair")
         return locations
-
     else:
-        adjs = POS_adj(query)
-        locs = [get_location_from_adj(adj, communes) for adj in adjs]  # get_location_from_adj will be modified
-        # to work with the dictionnary, for now it
-        # uses string similarity
-        if len(locs) > 0:
-            return locs
+        locations = get_locations_static(query, communes)
+        if len(locations) > 0:
+            print("static")
+            return locations
         else:
-            return [get_geolocation(ip_address)]
+            adjs = POS(query, "ADJ")
+            locs = [get_location_from_adj(adj, communes) for adj in adjs]  # get_location_from_adj will be modified
+            # to work with the dictionnary, for now it
+            # uses string similarity
+            if len(locs) > 0:
+                print("demonym")
+                return locs
+            else:
+                print("geolocation")
+                return [get_geolocation(ip_address)]
 
 
 def get_locations_truecase(query, communes, MODEL_PATH, ip_address=None):
@@ -353,30 +369,30 @@ def get_coordinates(bss):
         return -1  # bss codes do not correspond to any station
 
 
+# def get_closest_stations(bss, N=4):
+#     info = get_coordinates(bss)
+#     if info != -1:
+#         dep, long, lat = info["code_departement"], info["long"], info["lat"]
+#         dep_stations = insee_to_bss(dep, "departement")
+#         dist = {}
+#
+#         for station in dep_stations:
+#             _ = get_coordinates(station)
+#             long_, lat_, date = _["long"], _["lat"], _["date_fin_mesure"]
+#             if date is not None:
+#                 date = date.split("-")
+#                 last_mesure_date = datetime(int(date[0]), int(date[1]), int(date[2]))
+#
+#                 if last_mesure_date >= datetime(2005, 1, 1):  # the last mesure date must be later than 01-01-2005
+#                     dist[station] = distance(long, lat, long_, lat_)
+#
+#         sortd = dict(sorted(dist.items(), key=lambda item: item[1]))
+#         return list(sortd.keys())[: min(N, len(sortd.keys()))]
+#
+#     return -1
+
+
 def get_closest_stations(bss, N=4):
-    info = get_coordinates(bss)
-    if info != -1:
-        dep, long, lat = info["code_departement"], info["long"], info["lat"]
-        dep_stations = insee_to_bss(dep, "departement")
-        dist = {}
-
-        for station in dep_stations:
-            _ = get_coordinates(station)
-            long_, lat_, date = _["long"], _["lat"], _["date_fin_mesure"]
-            if date is not None:
-                date = date.split("-")
-                last_mesure_date = datetime(int(date[0]), int(date[1]), int(date[2]))
-
-                if last_mesure_date >= datetime(2005, 1, 1):  # the last mesure date must be later than 01-01-2005
-                    dist[station] = distance(long, lat, long_, lat_)
-
-        sortd = dict(sorted(dist.items(), key=lambda item: item[1]))
-        return list(sortd.keys())[: min(N, len(sortd.keys()))]
-
-    return -1
-
-
-def get_closest_stations2(bss, N=4):
     info = get_coordinates(bss)
     if info != -1:
         dep, long, lat = info[0]["code_departement"], info[0]["long"], info[0]["lat"]
