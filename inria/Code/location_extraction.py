@@ -12,15 +12,10 @@ from datetime import datetime
 from math import cos, asin, sqrt, pi
 import stanza
 import itertools
+from termcolor import colored
+
+
 from stanza.server import CoreNLPClient
-import sys, os, logging
-
-
-# stop logging, prints, and warning from appearing on console
-# sys.stdout = open(os.devnull, 'w')
-# logger = logging.getLogger('flair')
-# logger.propagate = False
-# logger.disabled = True
 
 
 def get_bss(query):
@@ -30,9 +25,7 @@ def get_bss(query):
     # AAAABCDDDD/designation
     regex = "[0-9]{5}[a-zA-Z][0-9]{4}/[a-zA-Z0-9]+"
     match = re.findall(regex, query)
-    if match:
-        return re.group(0)
-    return -1
+    return match
 
 
 def equal(x, y):
@@ -42,75 +35,83 @@ def equal(x, y):
 
 def get_insee(location):
     """
-
-    returns the insee codes of the location + type of location (commune, departement or region)
-    if type region : return insee code of all departements of the region
-    returns -1 if location does not exist
-
+    Returns the insee codes of the location, whether the name corresponds to  a region, a departements or a commune or multiple at once.
+    Returns similar locations
     """
+    similar, exact_match = {}, {}
     location_ = location.lower()
     url = 'https://geo.api.gouv.fr/communes?nom={c}&fields=nom,code,' \
           'codeDepartement,codeRegion&format=json&geometry=centre' \
         .format(c=location_)
-    exists = len(json.loads(requests.get(url).text))
-    similar_communes = []
-    if exists > 0:
-        codes = json.loads(requests.get(url).text)
-        result = {code["code"]: {"nom": code["nom"], "codeDepartement": code["codeDepartement"],
-                                 "codeRegion": code["codeRegion"]} for code in codes
-                  if equal(code["nom"], location_)}
+    response = json.loads(requests.get(url).text)
 
-        if len(result) > 0:
-            return {"type": "commune", "codes": result}
-        else:
-            similar_communes = {code["code"]: {"nom": code["nom"], "codeDepartement": code["codeDepartement"],
-                                               "codeRegion": code["codeRegion"]} for code in codes}
+    exact_match["communes"] = {code["code"]: {"nom": code["nom"], "codeDepartement": code["codeDepartement"],
+                                              "codeRegion": code["codeRegion"]} for code in response
+                               if equal(code["nom"], location_)}
+
+    similar["communes"] = {code["code"]: {"nom": code["nom"], "codeDepartement": code["codeDepartement"],
+                                          "codeRegion": code["codeRegion"]} for code in response}
 
     url = 'https://geo.api.gouv.fr/departements?nom={c}&fields=nom,code,codeRegion' \
           '&format=json&geometry=centre' \
         .format(c=location_)
-    exists = len(json.loads(requests.get(url).text))
-    similar_departements = []
-    if exists > 0:
-        codes = json.loads(requests.get(url).text)
-        result = {code["code"]: {"nom": code["nom"], "codeRegion": code["codeRegion"]} for code in codes \
-                  if equal(code["nom"], location_)}
-        if len(result) > 0:
-            return {"type": "departement", "codes": result}
-        elif len(similar_communes) == 0:
-            similar_departements = {code["code"]: {"nom": code["nom"], "codeRegion": code["codeRegion"]} for code in
-                                    codes}
+    response = json.loads(requests.get(url).text)
+
+    exact_match["departements"] = {code["code"]: {"nom": code["nom"], "codeRegion": code["codeRegion"]} for code in
+                                   response if equal(code["nom"], location_)}
+    similar["departements"] = {code["code"]: {"nom": code["nom"], "codeRegion": code["codeRegion"]} for code in
+                               response}
 
     url = 'https://geo.api.gouv.fr/regions?nom={c}&fields=nom,code' \
           '&format=json&geometry=centre' \
         .format(c=location_)
-    exists = len(json.loads(requests.get(url).text))
-    similar_regions = []
-    if exists > 0:
-        codes = json.loads(requests.get(url).text)
-        result = {code["code"]: {"nom": code["nom"]} for code in codes if equal(code["nom"], location_)}
+    response = json.loads(requests.get(url).text)
 
-        if len(result) > 0:
-            url = "https://geo.api.gouv.fr/regions/{c}/departements".format(c=list(result.keys())[0])
-            codes_ = json.loads(requests.get(url).text)
-            result[list(result.keys())[0]]["codesDepartements"] = [code["code"] for code in codes_]
-            return {"type": "region", "codes": result}
+    exact_match["regions"] = {code["code"]: {"nom": code["nom"]} for code in response if equal(code["nom"], location_)}
+    for region in exact_match["regions"]:
+        url = "https://geo.api.gouv.fr/regions/{c}/departements".format(c=region)
+        deps = json.loads(requests.get(url).text)
+        exact_match["regions"][region]["codesDepartements"] = [code["code"] for code in deps]
 
-        elif len(similar_communes) == 0 and len(similar_departements) == 0:
-            similar_regions = {code["code"]: {"nom": code["nom"]} for code in codes}
-            for similar_region in similar_regions:
-                url = "https://geo.api.gouv.fr/regions/{c}/departements".format(c=similar_region)
-                codes_ = json.loads(requests.get(url).text)
-                similar_regions[similar_region]["codesDepartements"] = [code["code"] for code in codes_]
+    similar["regions"] = {code["code"]: {"nom": code["nom"]} for code in response}
+    for similar_region in similar["regions"]:
+        url = "https://geo.api.gouv.fr/regions/{c}/departements".format(c=similar_region)
+        codes_ = json.loads(requests.get(url).text)
+        similar["regions"][similar_region]["codesDepartements"] = [code["code"] for code in codes_]
 
-    if len(similar_communes) > 0:
-        return {"type": "commune", "codes": similar_communes}
-    elif len(similar_departements) > 0:
-        return {"type": "departement", "codes": similar_departements}
-    elif len(similar_regions) > 0:
-        return {"type": "region", "codes": similar_regions}
-    else:
-        return -1
+    exact_match["count"] = sum([len(v) for k, v in exact_match.items()])
+    similar["count"] = sum([len(v) for k, v in similar.items()])
+    return exact_match, similar
+
+
+def classify(locations):
+    """
+    For a list of locations, get the insee codes and classify the locations into commune, departement or region by following a set of rules
+    """
+    all, communes, regions, departements = {"communes": {}, "departements": {}, "regions": {}}, {}, {}, {}
+    for loc in locations:
+        exact_match, similar = get_insee(loc)
+        if exact_match["count"] > 0:  # Locations match exactly
+            all["communes"][loc] = exact_match["communes"]
+            all["departements"][loc] = exact_match["departements"]
+            all["regions"][loc] = exact_match["regions"]
+            if len(exact_match["regions"]) == 0 and len(exact_match["departements"]) == 0:  # The location is a commune
+                communes[loc] = exact_match["communes"]
+            elif len(exact_match["regions"]) == 0 and len(
+                    exact_match["communes"]) == 0:  # The location is a departement
+                departements[loc] = exact_match["departements"]
+            elif len(exact_match["departements"]) == 0 and len(
+                    exact_match["communes"]) == 0:  # The location is a region
+                regions[loc] = exact_match["regions"]
+            else:  #len(exact_match["departements"]) > 0 and len(exact_match["communes"]) > 0 and len(exact_match["regions"]):
+                communes[loc] = exact_match["communes"]
+        elif similar["count"] > 0:
+            communes[loc] = similar["communes"]
+            departements[loc] = similar["departements"]
+            regions[loc] = similar["regions"]
+
+
+    return all, communes, departements, regions, len(communes)+len(regions)+len(departements)
 
 
 def insee_to_bss(code_location, type_location):
@@ -150,54 +151,12 @@ def get_mesure_piezo(station, start_date=None, end_date=None):
         return json.loads(requests.get(url).text)
 
 
-# def POS_adj(text):
-#     """
-#     Returns words that are tagged ADJ in query
-#     uses stanfordNLP POS server on port 9000
-#     """
-#     nlp = StanfordCoreNLP('http://localhost:9000')
-#     splitted = text.split()
-#     adjs = []
-#
-#     for word in splitted:
-#         result = nlp.annotate(word,
-#                               properties={# def POS_adj(text):
-#     """
-#     Returns words that are tagged ADJ in query
-#     uses stanfordNLP POS server on port 9000
-#     """
-#     nlp = StanfordCoreNLP('http://localhost:9000')
-#     splitted = text.split()
-#     adjs = []
-#
-#     for word in splitted:
-#         result = nlp.annotate(word,
-#                               properties={
-#                                   'annotators': 'pos',
-#                                   'outputFormat': 'json',
-#                                   'timeout': 1000,
-#                               })
-#         if result["sentences"][0]["tokens"][0]["pos"] == "ADJ":
-#             adjs.append(result["sentences"][0]["tokens"][0]["word"])
-#
-#     return adjs
-
-#                                   'annotators': 'pos',
-#                                   'outputFormat': 'json',
-#                                   'timeout': 1000,
-#                               })
-#         if result["sentences"][0]["tokens"][0]["pos"] == "ADJ":
-#             adjs.append(result["sentences"][0]["tokens"][0]["word"])
-#
-#     return adjs
-
-
 def POS(text, tag):
     """
     Returns words that are tagged ADJ in query
     uses stanfordNLP POS with the python wrapper stanza
     """
-    nlp = stanza.Pipeline(lang='fr',  logging_level="FATAL", processors='tokenize, pos')
+    nlp = stanza.Pipeline(lang='fr', logging_level="FATAL", processors='tokenize, pos')
     tags = []
     result = nlp(text)
     for sentence in result.sentences:
@@ -213,9 +172,9 @@ def stem(word):
     return word[:-4] + re.sub(r'iens|ains|ards|ain|ien|ard|ois|oi|ens|en|ais|ai|ins|in|s$', '', word_, count=1)
 
 
-def get_location_from_adj(c, communes):
+def get_most_similar(c, communes):
     """
-    Returns the most similar commune to the adjective c from the list of communes
+     Returns the most similar commune to the adjective c from the list of communes
     """
     c_ = stem(c)
     dist = []
@@ -229,10 +188,17 @@ def get_location_from_adj(c, communes):
 
     dist = np.array(dist)
     avg = 0.5 * dist[:, 0] + 0.5 * dist[:, 1]
-    sorted_ = np.argsort(avg)
+    min_ = np.argmin(avg)
 
-    commune_ = communes[sorted_[0]]
+    commune_ = communes[min_]
     return commune_
+
+
+def get_location_from_adj(query, communes):
+    adjs = POS(query, "ADJ")
+    print(adjs)
+    locations = [get_most_similar(adj, communes) for adj in adjs]
+    return locations
 
 
 def get_geolocation(ip_address):
@@ -253,6 +219,15 @@ def get_geolocation_ipinfo(ip_address):
     city = details.city
     return city
 
+
+def get_locations_stanford(query):
+    nlp = stanza.Pipeline(lang='fr', logging_level="FATAL", processors='tokenize, ner')
+    result = nlp(query)
+    tags = [ent.text for sentence in result.sentences for ent in sentence.ents if ent.type == "LOC"]
+    print(tags)
+    return tags
+
+
 def get_locations_flair(query, MODEL_PATH):
     batch_size = 8
     tag_type = "label"
@@ -263,90 +238,64 @@ def get_locations_flair(query, MODEL_PATH):
     locations = [entity["text"] for entity in result["entities"] if "LOC" in str(entity["labels"][0])]
     return locations
 
-def get_locations_static(query, location_names):
 
-    nouns = POS(query, "NOUN")
-    print("nouns", nouns)
+def get_locations_static(query, location_names):
+    nouns = POS(query.lower(), "NOUN")
+    print(nouns)
     locations = [noun.lower() for noun in nouns if noun in location_names]
     return locations
 
-def get_locations(query, communes, MODEL_PATH, ip_address=None):
+
+def get_locations_api(query, exact_match=True):
+    nouns = POS(query.lower(), "NOUN")
+    locations = []
+    for noun in nouns:
+        url = 'https://geo.api.gouv.fr/communes?nom={c}&fields=nom&format=json&geometry=centre' \
+            .format(c=noun)
+        result = json.loads(requests.get(url).text)
+        locations_ = []
+        if len(result) > 0:
+            if exact_match:
+                locations_ = [l["nom"] for l in result if equal(l["nom"], noun)]
+
+        locations += list(locations_)
+    return locations
+
+
+def get_locations(query_, all_location_names, MODEL_PATH, ip_address=None):
     """
     Use NER to extract locations from query,
     if NER gives no result, look for demonyms and return corresponding location,
     if none found, return geolocation
     """
-
+    query = re.sub("d'", "de ", re.sub("l'", "le ", query_))
     locations = get_locations_flair(query, MODEL_PATH)
-    if len(locations) > 0:
-        print("flair")
-        return locations
+    all, communes, departements, regions, count = classify(locations)
+    if count > 0:
+        print(colored("Extracted with NER ", "green"), locations)
+        return all, communes, departements, regions, count
     else:
-        locations = get_locations_static(query, communes)
+        locations = get_locations_static(query, all_location_names)
         if len(locations) > 0:
-            print("static")
-            return locations
+            print(colored("Extracted with locations dictionnary ", "green"), locations)
+            return classify(locations)
         else:
-            adjs = POS(query, "ADJ")
-            locs = [get_location_from_adj(adj, communes) for adj in adjs]  # get_location_from_adj will be modified
-            # to work with the dictionnary, for now it
-            # uses string similarity
-            if len(locs) > 0:
-                print("demonym")
-                return locs
-            else:
-                print("geolocation")
-                return [get_geolocation(ip_address)]
+            locations = get_locations_api(query)
+            if len(locations) > 0:
+                print(colored( "Exctracted using geo api queries ", "green"), locations)
+                return classify(locations)
 
-
-def get_locations_truecase(query, communes, MODEL_PATH, ip_address=None):
-    """
-    Use a Truecase annotator
-    Use NER model to extract locations from query,
-    if NER gives no result, look for demonyms and return corresponding location,
-    if none found, return geolocation
-    """
-    FRENCH_CUSTOM_PROPS = {
-        'annotators': 'truecase,tokenize,ssplit,ner', 'tokenize.language': 'fr',
-        'ner.model': 'edu/stanford/nlp/models/ner/french-wikiner-4class.crf.ser.gz',
-        "truecase.overwriteText": "true",
-        'outputFormat': 'text'
-    }
-    # "french", annotators = "tokenize,ssplit, ner"
-    with CoreNLPClient(properties=FRENCH_CUSTOM_PROPS) as client:
-        # client.start_cmd.append("-bias")
-        result = client.annotate(query)
-
-        truecased = []
-        print(result)
-        for sentence in result.sentence:
-            for token in sentence.token:
-                truecased.append(token.trueCaseText)
-
-        truecased = " ".join(truecased)
-
-        # batch_size = 4
-        # tag_type = "label"
-        # model = SequenceTagger.load(MODEL_PATH)
-        #
-        # snippets = [[1, truecased]]
-        # result = predict_flair.get_entities(snippets, model, tag_type, batch_size)["snippets"][0][1]
-        # locations = [entity["text"] for entity in result["entities"] if "LOC" in str(entity["labels"][0])]
-        # if len(locations) > 0:
-        #     return locations
-        #
-        # if len(locations) > 0:
-        #     return locations
-        #
-        # else:
-        #     adjs = POS_adj(query)
-        #     locs = [get_location_from_adj(adj, communes) for adj in adjs]  # get_location_from_adj will be modified
-        #                                                                     # to work with the dictionnary, for now it
-        #                                                                     # uses string similarity
-        #     if len(locs) > 0:
-        #         return locs
-        #     else:
-        #         return [get_geolocation(ip_address)]
+            else:   # no exact match found: we look for demonyms
+                    # get_location_from_adj will be modified
+                    # to work with the dictionnary, for now it uses string similarity
+                locations = get_location_from_adj(query, all_location_names)
+                if len(locations) > 0:
+                    print(colored("Extracted from demonyms ", "green"), locations)
+                    return classify(locations)
+                else: # no demonyms, geolocalization
+                    locations = [get_geolocation(ip_address)]
+                    print(colored("Extacted with geolocalization ", "green"), locations)
+                    return classify(locations)
 
 
 def distance(lon1, lat1, lon2, lat2):
