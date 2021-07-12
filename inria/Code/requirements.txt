@@ -210,7 +210,7 @@ pycurl==7.43.0.5
 pydantic==1.7.4
 pydocstyle==5.0.2
 pyflakes==2.2.0
-Pygments==2.6.1
+Pygments==2.7.4
 pylint==2.5.3
 pylodstorage==0.0.32
 pyodbc==4.0.0-unsupported
