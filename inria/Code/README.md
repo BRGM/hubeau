@@ -2,10 +2,10 @@
 Create environment that runs python 3.6
 
 
-Clone the github repo, go to the "inria" directory
+Clone the github repository, go to the "inria" directory
 
 
-Run install_package.py to install dependencies
+Run "python -m pip install -r requirements.txt" to install dependencies
 
 
 Download the flair model "stacked-standard-flair-150-wikiner.pt". You can use https://drive.google.com/file/d/1n6SCcOcwvrxDaH8C8IZOxZ133uZ31pzc/view?usp=sharing
