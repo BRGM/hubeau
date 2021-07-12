@@ -5,12 +5,12 @@ anaconda-project==0.8.3
 aniso8601==9.0.1
 argh==0.26.2
 asn1crypto==1.3.0
-astroid @ file:///tmp/build/80754af9/astroid_1592495913683/work
+astroid
 astropy==4.0.1.post1
 async-timeout==3.0.1
 atomicwrites==1.4.0
 attrs==20.3.0
-autopep8 @ file:///tmp/build/80754af9/autopep8_1592412889138/work
+autopep8
 Babel==2.8.0
 backcall==0.2.0
 backports.shutil-get-terminal-size==1.0.0
@@ -18,11 +18,11 @@ banal==1.0.6
 beautifulsoup4==4.9.1
 bio==0.0.1
 biopython==1.77
-bitarray @ file:///tmp/build/80754af9/bitarray_1594753875891/work
+bitarray
 bkcharts==0.2
 bleach==3.1.5
 blis==0.7.4
-bokeh @ file:///tmp/build/80754af9/bokeh_1593187604562/work
+bokeh
 boto==2.49.0
 Bottleneck==1.3.2
 bpemb==0.3.2
@@ -44,17 +44,17 @@ cryptography==3.0
 cssselect==1.1.0
 cycler==0.10.0
 cymem==2.0.5
-Cython @ file:///tmp/build/80754af9/cython_1594831565616/work
+Cython
 cytoolz==0.10.1
-dask @ file:///tmp/build/80754af9/dask-core_1594156306305/work
+dask
 dataclasses==0.6
 DateTime==4.3
 decorator==4.4.2
 defusedxml==0.6.0
 Deprecated==1.2.10
 dicttoxml==1.7.4
-diff-match-patch @ file:///tmp/build/80754af9/diff-match-patch_1594828741838/work
-distributed @ file:///tmp/build/80754af9/distributed_1594750294389/work
+diff-match-patch
+distributed
 docutils==0.16
 emoji==1.2.0
 entrypoints==0.3
@@ -77,7 +77,7 @@ gensim==3.8.3
 geocoder==1.38.1
 geograpy3==0.1.24
 geoip2==4.2.0
-gevent @ file:///tmp/build/80754af9/gevent_1593009522166/work
+gevent
 glob2==0.7
 gmpy2==2.0.8
 greenlet==0.4.16
@@ -85,22 +85,22 @@ gunicorn==20.1.0
 h5py==2.10.0
 HeapDict==1.0.1
 html2text==2020.1.16
-html5lib @ file:///tmp/build/80754af9/html5lib_1593446221756/work
+html5lib
 huggingface-hub==0.0.12
 hyperopt==0.2.5
-idna @ file:///tmp/build/80754af9/idna_1593446292537/work
+idna
 idna-ssl==1.1.0
-imageio @ file:///tmp/build/80754af9/imageio_1594161405741/work
+imageio
 imagesize==1.2.0
-immutables @ file:///tmp/build/80754af9/immutables_1592425991038/work
+immutables
 importlib-metadata==4.5.0
 iniconfig==1.1.1
 intervaltree==3.1.0
 ip2geotools==0.1.5
 IP2Location==8.6.0
 ipinfo==4.2.0
-ipykernel @ file:///tmp/build/80754af9/ipykernel_1594755318398/work/dist/ipykernel-5.3.2-py3-none-any.whl
-ipython @ file:///tmp/build/80754af9/ipython_1593447367857/work
+ipykernel
+ipython
 ipython-genutils==0.2.0
 ipywidgets==7.5.1
 isodate==0.6.0
@@ -108,7 +108,7 @@ isort==4.3.21
 itsdangerous==1.1.0
 Janome==0.4.1
 jdcal==1.4.1
-jedi @ file:///tmp/build/80754af9/jedi_1592841914522/work
+jedi
 jeepney==0.4.3
 jellyfish==0.8.2
 jieba3k==0.35.1
@@ -118,12 +118,12 @@ JPype1==1.3.0
 json5==0.9.5
 jsonschema==3.2.0
 jupyter==1.0.0
-jupyter-client @ file:///tmp/build/80754af9/jupyter_client_1594826976318/work
+jupyter-client
 jupyter-console==6.1.0
 jupyter-core==4.6.3
 jupyterlab==2.1.5
-jupyterlab-server @ file:///tmp/build/80754af9/jupyterlab_server_1594164409481/work
-keyring @ file:///tmp/build/80754af9/keyring_1593109722358/work
+jupyterlab-server
+keyring
 kiwisolver==1.3.1
 konoha==4.6.5
 langdetect==1.0.8
@@ -133,7 +133,7 @@ lexicons-builder==0.1.6
 libarchive-c==2.9
 llvmlite==0.33.0+1.g022ab0f
 locket==0.2.0
-lxml @ file:///tmp/build/80754af9/lxml_1594826482013/work
+lxml
 MarkupSafe==1.1.1
 matplotlib==3.3.3
 maxminddb==2.0.3
@@ -154,16 +154,16 @@ nbconvert==5.6.1
 nbformat==5.0.7
 networkx==2.5
 newspaper3k==0.2.8
-nltk @ file:///tmp/build/80754af9/nltk_1592496090529/work
+nltk
 nose==1.3.7
 notebook==6.0.3
 numba==0.50.1
 numexpr==2.7.1
 numpy==1.19.4
-numpydoc @ file:///tmp/build/80754af9/numpydoc_1594166760263/work
+numpydoc
 olefile==0.46
 opencv-python==4.4.0.42
-openpyxl @ file:///tmp/build/80754af9/openpyxl_1594167385094/work
+openpyxl
 overrides==3.1.0
 packaging==20.4
 pandas==1.1.1
@@ -193,24 +193,24 @@ prompt-toolkit==3.0.5
 protobuf==3.14.0
 psutil==5.7.3
 ptyprocess==0.6.0
-py @ file:///tmp/build/80754af9/py_1593446248552/work
+py
 py-heideltime @ git+https://github.com/JMendes1995/py_heideltime.git@fc5a81692e73e0c6ed59bf002d1c0afa506f2d39
 pybind11==2.6.2
 pycodestyle==2.6.0
 pycorenlp==0.3.0
 pycosat==0.6.3
 pycountry==20.7.3
-pycparser @ file:///tmp/build/80754af9/pycparser_1594388511720/work
+pycparser
 pycrypto==2.6.1
 pycurl==7.43.0.5
 pydantic==1.7.4
-pydocstyle @ file:///tmp/build/80754af9/pydocstyle_1592848020240/work
+pydocstyle
 pyflakes==2.2.0
 Pygments==2.6.1
-pylint @ file:///tmp/build/80754af9/pylint_1592496018559/work
+pylint @
 pylodstorage==0.0.32
 pyodbc===4.0.0-unsupported
-pyOpenSSL @ file:///tmp/build/80754af9/pyopenssl_1594392929924/work
+pyOpenSSL
 pyparsing==2.4.7
 PyPDF2==1.26.0
 pyquery==1.4.3
@@ -219,8 +219,8 @@ PySocks==1.7.1
 pytest==6.1.2
 python-dateutil==2.8.1
 python-dotenv==0.15.0
-python-jsonrpc-server @ file:///tmp/build/80754af9/python-jsonrpc-server_1594397536060/work
-python-language-server @ file:///tmp/build/80754af9/python-language-server_1594161872821/work
+python-jsonrpc-server
+python-language-server
 pytz==2020.1
 PyWavelets==1.1.1
 pyxdg==0.26
@@ -228,7 +228,7 @@ PyYAML==5.3.1
 pyzmq==19.0.1
 QDarkStyle==2.8.1
 QtAwesome==0.7.2
-qtconsole @ file:///tmp/build/80754af9/qtconsole_1592848611704/work
+qtconsole
 QtPy==1.9.0
 ratelim==0.1.6
 rdflib==5.0.0
@@ -265,7 +265,7 @@ spacy-alignments==0.8.3
 spacy-legacy==3.0.6
 spacy-transformers==1.0.3
 SPARQLWrapper==1.8.5
-Sphinx @ file:///tmp/build/80754af9/sphinx_1594223420021/work
+Sphinx
 sphinx-rtd-theme==0.5.2
 sphinxcontrib-applehelp==1.0.2
 sphinxcontrib-devhelp==1.0.2
@@ -273,16 +273,16 @@ sphinxcontrib-htmlhelp==1.0.3
 sphinxcontrib-jsmath==1.0.1
 sphinxcontrib-qthelp==1.0.3
 sphinxcontrib-serializinghtml==1.1.4
-sphinxcontrib-websupport @ file:///tmp/build/80754af9/sphinxcontrib-websupport_1593446360927/work
-spyder @ file:///tmp/build/80754af9/spyder_1594830385321/work
-spyder-kernels @ file:///tmp/build/80754af9/spyder-kernels_1594751550835/work
-SQLAlchemy @ file:///tmp/build/80754af9/sqlalchemy_1593446287777/work
+sphinxcontrib-websupport
+spyder
+spyder-kernels
+SQLAlchemy
 sqlitedict==1.7.0
 srsly==2.4.1
 stanfordnlp==0.2.0
 stanza==1.2.1
 statsmodels==0.11.1
-sympy @ file:///tmp/build/80754af9/sympy_1594236561473/work
+sympy
 tables==3.6.1
 tabulate==0.8.7
 tblib==1.6.0
@@ -290,7 +290,7 @@ termcolor==1.1.0
 terminado==0.8.3
 testpath==0.4.4
 thinc==8.0.5
-threadpoolctl @ file:///tmp/tmp9twdgx9k/threadpoolctl-2.1.0-py3-none-any.whl
+threadpoolctl
 tika==1.24
 tinysegmenter==0.3
 tldextract==3.1.0
@@ -314,18 +314,18 @@ Unidecode==1.2.0
 urllib3==1.24.3
 values==2020.12.3
 wasabi==0.8.2
-watchdog @ file:///tmp/build/80754af9/watchdog_1593447344476/work
-wcwidth @ file:///tmp/build/80754af9/wcwidth_1593447189090/work
+watchdog
+wcwidth
 webencodings==0.5.1
 Werkzeug==1.0.1
 widgetsnbextension==3.5.1
 wptools==0.4.17
 wrapt==1.12.1
-wurlitzer @ file:///tmp/build/80754af9/wurlitzer_1594753847913/work
+wurlitzer
 xlrd==1.2.0
 XlsxWriter==1.2.9
 xlwt==1.3.0
-yapf @ file:///tmp/build/80754af9/yapf_1593528177422/work
+yapf
 yarl==1.6.3
 zict==2.0.0
 zipp==3.4.0
