@@ -207,7 +207,7 @@ pydantic==1.7.4
 pydocstyle
 pyflakes==2.2.0
 Pygments==2.6.1
-pylint @
+pylint
 pylodstorage==0.0.32
 pyodbc===4.0.0-unsupported
 pyOpenSSL
