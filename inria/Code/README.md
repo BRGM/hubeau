@@ -2,7 +2,7 @@
 Create environment that runs python 3.6 with command **virtualenv --python python3.6 venv** and activate it **source venv/bin/activate**
 
 
-Clone the github repository, go to the "inria" directory
+Clone the github repository, go to the "hubeau/inria/Code" directory
 
 
 Run "python -m pip install -r requirements.txt" to install dependencies
