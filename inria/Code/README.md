@@ -1,5 +1,5 @@
 
-Create environment that runs python 3.6 with command **virtualenv --python python3.6 venv** and activate it **source venv/bin/activate**
+Create environment that runs python 3.7 with command **virtualenv --python python3.7 venv** and activate it **source venv/bin/activate**
 
 
 Clone the github repository, go to the "hubeau/inria/Code" directory
