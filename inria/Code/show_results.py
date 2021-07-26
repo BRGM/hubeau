@@ -164,6 +164,7 @@ def get_table_data_locations(coms_to_keep, deps_to_keep, regs_to_keep, start_dat
                     bss[station]["count"] = result["count"]
 
                 data[loc] = bss
+    return data
 
 
 def format_table_general(mesures, nb_mesures=None):
