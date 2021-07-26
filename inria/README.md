@@ -1,5 +1,5 @@
 # Répertoire pour dépôt des fichiers créés dans le cadre du stage INRIA  
   
   
-  Pad: https://pad.inria.fr/p/np_zsbGAKeSbDMGyFHq_brgm
+  Pad: https://notes.inria.fr/oXt6s7kOS46_ulcLgkO_Aw
     

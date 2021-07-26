@@ -2,6 +2,8 @@
 Create environment that runs python 3.7 with command **virtualenv --python python3.7 venv** and activate it **source venv/bin/activate**
 
 
+You also need to have java installed.
+
 Clone the github repository, go to the "hubeau/inria/Code" directory
 
 
