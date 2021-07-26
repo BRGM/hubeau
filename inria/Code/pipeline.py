@@ -28,7 +28,7 @@ with open("queries.txt", "a") as a_file:
     while True:
         query = input("\n\nPlease enter a new query: ")
         #
-        query = "Quel est le niveau de la nappe à Orléans du 15 mars 2019 au 30 mars 2019 "
+        #query = "Quel est le niveau de la nappe à Orléans du 15 mars 2019 au 30 mars 2019 "
         a_file.write(query)
         a_file.write("\n")
         ####################################################################################################################
