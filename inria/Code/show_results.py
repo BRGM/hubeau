@@ -149,37 +149,44 @@ def get_table_data_locations(coms_to_keep, deps_to_keep, regs_to_keep, start_dat
     data = {}
     for gran, gran_dict in {"commune": coms_to_keep, "departement": deps_to_keep, "region": regs_to_keep}.items():
         for loc, details in gran_dict.items():
+            data[loc] = {}
             code = details.get("codeDepartements", loc)
             bss = insee_to_bss(code, gran)
             if bss == -1:
-                print(colored(f"There are no stations in {details['nom']} ({loc}):\n", "green"))
-                data[loc] = -1
+                data[loc]["data"] = -1
+                data[loc]["name"] = details['nom']
             else:
-                print(colored(f"There are {len(bss)} stations bss codes in {details['nom']} ({loc}):\n", "green"))
-                print(colored(f"List of the stations bss codes:\n", "green"))
-                pprint(list(bss.keys()))
+
                 for station in bss:
                     result = get_mesure_piezo(station, start_date=start_date, end_date=end_date)
                     bss[station]["mesures"] = result["mesures"]
                     bss[station]["count"] = result["count"]
 
-                data[loc] = bss
+                data[loc]["data"] = bss
+                data[loc]["name"] = details['nom']
     return data
 
 
-def format_table_general(mesures, nb_mesures=None):
-    headers = ["Insee Code", "Code station", "Nombre de mesures", "Date plus ancienne", "Date plus récente",
+def format_table_general(mesures, nb_mesures=None, print_=False):
+    headers = ["Lieu", "Code station", "Nombre de mesures", "Date plus ancienne", "Date plus récente",
                "Niveau enregistré (altitude / mer)\nMIN", "Niveau enregistré (altitude / mer)\nMAX",
                "Niveau enregistré (altitude / mer)\nAVG",
                "Profondeur de la nappe (/ au sol)\nMIN", "Profondeur de la nappe (/ au sol)\nMAX",
                "Profondeur de la nappe (/ au sol)\nAVG"]
     table_data = []
     for location, data_ in mesures.items():
-        if data_ == -1:
-            table_data.append([location, "-", "-", "-", "-", "-", "-", "-", "-", "-", "-"])
+        if data_["data"] == -1:
+            if print_:
+                print(colored(f"Il n ya aucune station de mesure à : {data_['name']} ({location}):\n", "green"))
+            table_data.append([data_["name"] + "(" + location + ")", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-"])
         else:
+            if print_:
+                print(colored(f"Il ya {len(data_['data'])} stations de mesure à {data_['name']} ({location}):\n",
+                              "green"))
+                print(colored(f"Liste des codes BSS des stations:\n", "green"))
+                pprint(list(data_['data'].keys()))
             s, c, d1, d2, n1_max, n1_min, n1_avg, n2_max, n2_min, n2_avg = "", "", "", "", "", "", "", "", "", ""
-            for station, data in data_.items():
+            for station, data in data_['data'].items():
                 s += station + "\n"
                 if data["mesures"] == -1:
                     c += "0" + "\n"
@@ -211,7 +218,8 @@ def format_table_general(mesures, nb_mesures=None):
                     n2_max += str(max(n2_[sortd])) + "\n"
                     n2_avg += str(sum(n2_[sortd]) / nb_mesures) + "\n"
 
-            table_data.append([location, s, c, d1, d2, n1_min, n1_max, n1_avg, n2_min, n2_max, n2_avg])
+            table_data.append(
+                [data_["name"] + "(" + location + ")", s, c, d1, d2, n1_min, n1_max, n1_avg, n2_min, n2_max, n2_avg])
 
     return tabulate(table_data, headers, tablefmt="grid")
 

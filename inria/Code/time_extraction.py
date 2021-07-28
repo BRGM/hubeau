@@ -34,26 +34,28 @@ def get_time(query):
     """
     Extract dates from query
     """
-
+    query = re.sub(r"\.", "-", query)
+    print(query)
     heideltime_parser = Heideltime()
     heideltime_parser.set_document_type('NEWS')
     heideltime_parser.set_language('FRENCH')
     heideltime_parser.set_interval_tagger('True')
     heideltime_parser.set_document_time(datetime.now().strftime("%Y-%m-%d"))
-    result = heideltime_parser.parse(query)
-    dom = xml.dom.minidom.parseString(result)
-    pretty_xml_as_string = dom.toprettyxml()
-
+    parsed = heideltime_parser.parse(query)
+    # dom = xml.dom.minidom.parseString(parsed)
+    # pretty_xml_as_string = dom.toprettyxml()
+    #
     regex1 = "<TIMEX3INTERVAL earliestBegin=\"(.*?)\" latestBegin=\".*?\"" \
-             " earliestEnd=\".*?\" latestEnd=\"(.*?)\">.*?</TIMEX3INTERVAL>"
+             " earliestEnd=\".*?\" latestEnd=\"(.*?)\">(.*?)</TIMEX3INTERVAL>"
 
     regex = "<TIMEX3 tid=\".*?\" type=\"(.*?)\" value=\"(.*?)\">(.*?)</TIMEX3>"
-    intervals = re.findall(regex1, result)
-    dates = re.findall(regex, result)
+
+    intervals = re.findall(regex1, parsed)
+    normalized_q = query
     result = []
 
     if len(intervals) > 0:
-        for start_date, end_date in intervals:
+        for start_date, end_date, exp in intervals:
             start_date_ = preprocess_date(start_date)
             end_date_ = preprocess_date(end_date)
 
@@ -61,10 +63,16 @@ def get_time(query):
                 result.append(
                     {"start_date": start_date_.strftime("%Y-%m-%d"), "end_date": end_date_.strftime("%Y-%m-%d")})
 
-        return result
+                interval_exp = re.sub("<TIMEX3 .*?>|</TIMEX3>", "", exp)
+                normalized_q = re.sub(interval_exp, f'du {start_date_} au {end_date_}', normalized_q)
+
+        return result, normalized_q
+
+    dates = re.findall(regex, parsed)
 
     if len(dates) > 0:
         for type, date, exp in dates:
+            start_date_, end_date_ = "", ""
             if type == 'DATE':
                 start_date_ = preprocess_date(date)
                 match = re.search(f"depuis {exp}", query)
@@ -112,6 +120,8 @@ def get_time(query):
                 result.append(
                     {"start_date": start_date_.strftime("%Y-%m-%d"), "end_date": end_date_.strftime("%Y-%m-%d")})
 
-        return result
+            normalized_q = re.sub(exp, f'du {start_date_} au {end_date_}', normalized_q)
 
-    return result
+        return result, normalized_q
+
+    return result, query

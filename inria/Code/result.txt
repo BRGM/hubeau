@@ -1,0 +1,405 @@
+
+Exemples de résultat d'execution :
+
+
+Exemple 1 : "Quel est le niveau de la nappe à Orléans, Lyon et l'Aube le 30 mars 2020 et le 15 avril 2020"
+Exemple 2: "Quelle est la qualité de l'eau souterraine dans mon departement"
+Exemple 3: "Quelle est la profondeur maximale des nappes à Abancourt en Oise cette année"
+
+Étape 1: Extraire les expressions temporelles :
+On utilise le modèle heideltime
+Le résultat affiché  est une liste de couples (date debut, date fin) pour chaque periode/ expression de temps extraite :
+
+Pour l'exemple 1:
+    [{'end_date': '2020-03-31', 'start_date': '2020-03-30'},
+     {'end_date': '2020-04-16', 'start_date': '2020-04-15'}]
+
+POur l'exemple 2:
+
+    [{'end_date': '2021-12-31', 'start_date': '2021-01-01'}]
+Si la question ne contient pas d'expressions temporelles (exemple 2), aucune contrainte de dates n'est utilisée pour l'affichage des résultats.
+
+Étape 2: Extraire les lieux (communes, departements ou régions) ou directement des codes de stations:
+
+   - On verifie d'abord si la question ne contient pas directement des codes BSS de stations. Si oui, les extraire avec
+    une expression régulière et on passe directement à l'afichage des mesures.
+    Sinon:
+
+   - Extraire à partir de la requete utilisateur les noms de lieux ou les gentilés.Si aucune expression n'est detectée, prendre la géolocalisation.
+
+     Dans l'exemple 1, le résultat affiché est :
+     Expressions de lieux extraites avec le modèle NER et la base de noms de lieux:  ['orléans', 'lyon', 'aube']
+
+     Dans l'exemple 2:
+     Geolocalisation  {'location': 'Pomponne', 'lat': 48.8816121, 'long': 2.6913606}
+
+     Dans l'exemple 3 :
+     Expressions de lieux extraites avec le modèle NER et la base de noms de lieux:  ['abancourt', 'oise']
+
+Étape 3: Classifier les noms de lieux en commune, departement ou région:
+
+   - Cas 1: Dans le cas ou la requete contient bien des expressions de lieux (noms ou gentilés):
+
+       1- Pour chaque nom de lieu, récuperer grace à l'API géographique, toutes les communes, départements ou regions portant chacun des noms extraits.
+
+         Dans l'exemple 1, le résultat est :
+
+            {'aube': {'count': 3,
+                      'communes': {'57037': {'codeDepartement': '57',
+                                             'codeRegion': '44',
+                                             'nom': 'Aube'},
+                                   '61008': {'codeDepartement': '61',
+                                             'codeRegion': '28',
+                                             'nom': 'Aube'}},
+                      'departements': {'10': {'codeRegion': '44', 'nom': 'Aube'},
+                      'regions': {}
+                       },
+
+            'lyon':  {'count': 1,
+                      'communes': {'69123': {'codeDepartement': '69',
+                                             'codeRegion': '84',
+                                             'nom': 'Lyon'}},
+
+                      'departements': {},
+                      'regions': {}},
+
+            'orléans': {'count': 1,
+                        'communes': {'45234': {'codeDepartement': '45',
+                                               'codeRegion': '24',
+                                               'nom': 'Orléans'}},
+
+                        'departements': {},
+                        'regions': {}}
+            }
+
+           ==> Il ya deux communes et un département portant le nom "Aube", une seule commune portant le nom "Orléans" et une seule commune portant le nom "Lyon"
+
+         Dans l'exemple 3:
+         {'abancourt': {'count': 2,
+                        'communes':  {'59001': {'codeDepartement': '59',
+                                                'codeRegion': '32',
+                                                'nom': 'Abancourt'},
+                                      '60001': {'codeDepartement': '60',
+                                                'codeRegion': '32',
+                                                'nom': 'Abancourt'}},
+
+                        'departements': {},
+                         'regions': {}},
+          'oise': { 'count': 1,
+                   'communes': {},
+                   'departements': {'60': {'codeRegion': '32', 'nom': 'Oise'}},
+                   'regions': {}}}
+
+          ==> Il ya deux communes ayant le nom "Abancourt" et un seul departement avec le nom "Oise"
+
+       2- La prochaine étape est de decider pour un nom de lieu la granularité à prendre ie : considerer le lieu comme commune, departement ou region.
+          Pour un nom donné, le choix est trivial lorsqu'il n'existe qu'une seule catégorie de lieux ayant ce nom. Dans l'exemple 1, il n ya que des communes portant
+          le nom "Lyon" donc "Lyon" est classée comme commune.
+          Par contre, si le meme nom correspond à deux granularités différentes (commune et departement ou commune et region). On utilise le contexte de la requete
+          pour determiner la catégorie. Dans l'exemple, "Aube" peut etre une commune ou un departement, le contexte de la requete ne donne pas d'indice
+          donc on considère par défaut que c'est une commune. Si la requete avait la forme " Quelle est la qualité de l'eau au département de l'Aube",
+          "Aube" serait considéré comme département.
+          Pour faire cela, on utilise un modèle de dependency parsing:
+             - On recherche grace à une expression regulière le mot "departement" (resp. "region").
+             - Si le mot "departement" (resp. "region") n'existe pas, le lieu est considéré comme commune.
+             - Sinon, le modele permet d'extraire tous les mots de la requete qui sont syntaxiquement dependant du mot "departement"(resp. "region").
+             - Tous les noms de lieux posant ce problème d'ambiguité et qui font partie des dependances sont classés comme departement (resp. region).
+
+          Pour l'exemple  1, la classification ne concerne que le nom "Aube" et donne le résultat:
+          Les trois lieux sont considérés comme communes:
+
+            Communes
+
+                {'aube': {'57037': {'codeDepartement': '57', 'codeRegion': '44', 'nom': 'Aube'},
+                          '61008': {'codeDepartement': '61',
+                                    'codeRegion': '28',
+                                    'nom': 'Aube'}},
+                 'lyon': {'69123': {'codeDepartement': '69',
+                                    'codeRegion': '84',
+                                    'nom': 'Lyon'}},
+                 'orléans': {'45234': {'codeDepartement': '45',
+                                       'codeRegion': '24',
+                                       'nom': 'Orléans'}}}
+
+           Departements
+
+                {}
+
+           Regions
+
+                {}
+
+          Dans l'exemple 3, la classification est triviale:
+          Communes
+
+           {'abancourt': {'59001': {'codeDepartement': '59',
+                                     'codeRegion': '32',
+                                     'nom': 'Abancourt'},
+                          '60001': {'codeDepartement': '60',
+                                     'codeRegion': '32',
+                                     'nom': 'Abancourt'}}}
+
+          Departements
+
+            {'oise': {'60': {'codeRegion': '32', 'nom': 'Oise'}}}
+
+          Regions
+
+            {}
+
+
+   - Cas 2 : Dans ce cas, il n ya aucune expression de lieu, on prend la géolocalisation.
+     Par exemple, une question de la forme : "Quelle est la qualité de l'eau dans mon département"
+     Dans ce cas aussi, le problème de granularité se pose. On utilise une expression regulière pour detecter le mot "departement"(resp. "region") dans la requete.
+     Si le mot "departement"(resp. "region") est bien présent, on considere le département(resp. region) où l'utilisateur est géolocalisé.
+     Si aucun des deux mots n'est présent, on prend la commune.
+
+     Dans l'exemple 2, on aura :
+     Communes
+        {}
+
+     Departements
+
+     {'Seine-et-Marne': {'77': {'codeRegion': '11', 'nom': 'Seine-et-Marne'}}}
+
+     Regions
+
+     {}
+
+Étape 3: Parmi tous les lieux, décider lesquels sont pértinents.
+
+    - Cette étape concerne les cas où, aprés classification, il ya des lieux de granularités différentes, par exemple, des communes et des départements.
+    - Plusieurs règles sont utilisées, la suite detaille le cas où il ya des communes et des départements.Pour le reste
+      des cas (communes et régions - départements et régions - communes, départements et régions), les règles sont similaires.
+
+    - Il ya deux soucis à l'origine de ce cas:
+
+         - Un utilisateur site simplement le departement de la commune dont il parle, par exemple: "Combien de nappes ya t il a Loury au Loiret?".
+           Il n'est pas pertinent de considerer le departement du "Loiret", il suffirait de ne prendre que la commune "Loury".
+         - Plusieurs communes de différents départements peuvent avoir un meme nom.  Dans l'exemple 2, "Abancourt" existe dans le département de "Oise"
+           et de "Nord" mais le seul lieu pertinent par rapport à la requête est la commune de "Abancourt" en "Oise".
+
+    - Les règles sont les suivantes:
+
+      1- Cas trivial : S'il n y a qu'une seule categorie de lieux: uniquement des communes, uniquement des départements
+         ou uniquement des régions, alors tous ces lieux sont pertinents
+      2- Cas 1: Des communes et des départements:
+         - Pour chaque nom de commune:
+            - S'il n'y a qu'une seule commune qui porte ce nom, il n ya pas d'ambiguité, elle est considérée comme pertinente. Si son département
+            existe dans la liste des lieux, il est considéré comme non pertinent.
+            - S'il ya plusieurs communes portant ce nom, choisir celles dont le département existe dans la liste des lieux.
+              Les départements de ces communes sont considérés comme non pértinents.
+              Si aucune n'a son département dans la liste, l'utilisateur ne précise donc pas
+              de quelle commune il parle exactement. Toutes le communes de ce nom sont pertinentes.
+            - Enfin, tous les départements de la liste initiale, et qui n'ont pas été classés comme non pertinents par les règles précedentes sont classés pertinents.
+
+      Quelques exemples :
+
+        "Abancourt en Oise" => Abancourt( 60220)
+        "Abancour" au Nord" => Abancourt (59268)
+        "Abancourt au Nord et en Oise" => Abancourt( 60220) et Abancourt (59268)
+        "Abancourt" => Abancourt( 60220) et Abancourt (59268)
+        "Abancourt en Oise et Loury au Loiret" => Abancourt (59268) et la commune "Loury"
+        "Abancourt en Oise et Loiret" => Abancourt (59268) et le département du "Loiret"
+          ...etc
+
+      3- Autres cas (communes et régions - départements et régions - communes, départements et régions), les règles sont similaires.
+
+
+ Le résultat pour l'exemple 1: Cas trivial
+    Communes:
+
+    {'45234': {'codeDepartement': '45', 'codeRegion': '24', 'nom': 'Orléans'},
+     '57037': {'codeDepartement': '57', 'codeRegion': '44', 'nom': 'Aube'},
+     '61008': {'codeDepartement': '61', 'codeRegion': '28', 'nom': 'Aube'},
+     '69123': {'codeDepartement': '69', 'codeRegion': '84', 'nom': 'Lyon'}}
+
+    Departements:
+
+    {}
+    Regions:
+
+    {}
+
+ Le résultat pour l'exemple 2: Cas trivial
+    Communes:
+
+    {}
+    Departements:
+
+    {'77': {'codeRegion': '11', 'nom': 'Seine-et-Marne'}}
+    Regions:
+
+    {}
+ Le résultat pour l'exemple 3:
+
+    Communes:
+
+    {'60001': {'codeDepartement': '60', 'codeRegion': '32', 'nom': 'Abancourt'}}
+    Departements:
+
+    {}
+    Regions:
+
+    {}
+
+Étape 4: À partir des lieux récuperer les codes bss des stations et les mesures, en considérant les contraintes de dates.
+Pour chaque période de temps, pour toutes les stations des lieux considérés, les données des mesures sont récupérées dans un dictionnaire:
+
+Pour l'exemple 1 : Il ya deux periodes de temps, donc une liste de deux dictionnaires :
+
+    [ {'end_date': '2020-03-31',
+       'start_date': '2020-03-30',
+       'data': {'45234': {'data': {'03635X0545/PZ1': {'count': 1,
+                                                 'date_debut_mesure': '2012-01-01',
+                                                 'date_fin_mesure': '2021-06-21',
+                                                 'mesures': [...]},
+                              '03636X1060/PZ2': {'count': 0,
+                                                 'date_debut_mesure': '2012-01-01',
+                                                 'date_fin_mesure': '2017-12-17',
+                                                 'mesures': -1},
+                              '03636X1061/PZ3': {'count': 1,
+                                                 'date_debut_mesure': '2012-01-01',
+                                                 'date_fin_mesure': '2021-06-21',
+                                                 'mesures': [...]},
+                              '03636X1062/PZ4': {'count': 1,
+                                                 'date_debut_mesure': '2012-01-06',
+                                                 'date_fin_mesure': '2021-06-21',
+                                                 'mesures': [...]},
+                              '03982X1045/F': {'count': 1,
+                                               'date_debut_mesure': '2012-01-01',
+                                               'date_fin_mesure': '2021-06-21',
+                                               'mesures': [...]}},
+                     'name': 'Orléans'},
+               '57037': {'data': -1, 'name': 'Aube'},
+               '61008': {'data': -1, 'name': 'Aube'},
+               '69123': {'data': {'06986B0234/S': {'count': 0,
+                                                   'date_debut_mesure': '2000-08-04',
+                                                   'date_fin_mesure': '2001-08-02',
+                                                   'mesures': -1}},
+                         'name': 'Lyon'}},
+       },
+
+       {'end_date': '2020-04-16',
+       'start_date': '2020-04-15',
+       'data': {'45234': {'data': {'03635X0545/PZ1': {'count': 1,
+                                                 'date_debut_mesure': '2012-01-01',
+                                                 'date_fin_mesure': '2021-06-21',
+                                                 'mesures': [...]},
+                                   '03636X1060/PZ2': {'count': 0,
+                                                 'date_debut_mesure': '2012-01-01',
+                                                 'date_fin_mesure': '2017-12-17',
+                                                 'mesures': -1},
+                                   '03636X1061/PZ3': {'count': 1,
+                                                 'date_debut_mesure': '2012-01-01',
+                                                 'date_fin_mesure': '2021-06-21',
+                                                 'mesures': [...]},
+                                   '03636X1062/PZ4': {'count': 1,
+                                                 'date_debut_mesure': '2012-01-06',
+                                                 'date_fin_mesure': '2021-06-21',
+                                                 'mesures': [...]},
+                                   '03982X1045/F': {'count': 1,
+                                                 'date_debut_mesure': '2012-01-01',
+                                                 'date_fin_mesure': '2021-06-21',
+                                                 'mesures': [..]}},
+                              'name': 'Orléans'},
+                   '57037': {'data': -1, 'name': 'Aube'},
+                   '61008': {'data': -1, 'name': 'Aube'},
+                   '69123': {'data': {'06986B0234/S': {'count': 0,
+                                                       'date_debut_mesure': '2000-08-04',
+                                                       'date_fin_mesure': '2001-08-02',
+                                                       'mesures': -1}},
+                             'name': 'Lyon'}},
+     }]
+
+Pour l'exemple 3:
+
+    [{ 'end_date': '2021-12-31',
+      'start_date': '2021-01-01',
+      'data': {'60001': {'data': {'00608X0039/P': {'count': 0,
+                                               'date_debut_mesure': '2001-04-18',
+                                               'date_fin_mesure': '2005-10-20',
+                                               'mesures': -1}},
+                     'name': 'Abancourt'}}
+      }]
+
+- Ces données sont organisées en tableaux et utilisées pour calculer les métriques : max, min et avg
+
+Exemple 1: Le resumé des résultats affichés :
+
+Il ya 1 stations de mesure à Lyon (69123):
+
+Liste des codes BSS des stations:
+
+['06986B0234/S']
+Il ya 5 stations de mesure à Orléans (45234):
+
+Liste des codes BSS des stations:
+
+['03635X0545/PZ1',
+ '03636X1060/PZ2',
+ '03636X1061/PZ3',
+ '03636X1062/PZ4',
+ '03982X1045/F']
+Il n ya aucune station de mesure à : Aube (57037):
+
+Il n ya aucune station de mesure à : Aube (61008):
+
+Tableau des mesures correspondant à la periode: 2020-03-30  2020-03-31
+
++----------------+----------------+---------------------+----------------------+---------------------+--------------------------------------+--------------------------------------+--------------------------------------+-------------------------------------+-------------------------------------+-------------------------------------+
+| Lieu           | Code station   | Nombre de mesures   | Date plus ancienne   | Date plus récente   | Niveau enregistré (altitude / mer)   | Niveau enregistré (altitude / mer)   | Niveau enregistré (altitude / mer)   | Profondeur de la nappe (/ au sol)   | Profondeur de la nappe (/ au sol)   | Profondeur de la nappe (/ au sol)   |
+|                |                |                     |                      |                     | MIN                                  | MAX                                  | AVG                                  | MIN                                 | MAX                                 | AVG                                 |
++================+================+=====================+======================+=====================+======================================+======================================+======================================+=====================================+=====================================+=====================================+
+| Lyon(69123)    | 06986B0234/S   | 0                   | -                    | -                   | -                                    | -                                    | -                                    | -                                   | -                                   | -                                   |
++----------------+----------------+---------------------+----------------------+---------------------+--------------------------------------+--------------------------------------+--------------------------------------+-------------------------------------+-------------------------------------+-------------------------------------+
+| Orléans(45234) | 03635X0545/PZ1 | 1                   | 2020-03-30           | 2020-03-30          | 88.64                                | 88.64                                | 88.64                                | 4.7                                 | 4.7                                 | 4.7                                 |
+|                | 03636X1060/PZ2 | 0                   | -                    | -                   | -                                    | -                                    | -                                    | -                                   | -                                   | -                                   |
+|                | 03636X1061/PZ3 | 1                   | 2020-03-30           | 2020-03-30          | 89.95                                | 89.95                                | 89.95                                | 4.57                                | 4.57                                | 4.57                                |
+|                | 03636X1062/PZ4 | 1                   | 2020-03-30           | 2020-03-30          | 90.08                                | 90.08                                | 90.08                                | 4.88                                | 4.88                                | 4.88                                |
+|                | 03982X1045/F   | 1                   | 2020-03-30           | 2020-03-30          | 90.85                                | 90.85                                | 90.85                                | 3.4                                 | 3.4                                 | 3.4                                 |
++----------------+----------------+---------------------+----------------------+---------------------+--------------------------------------+--------------------------------------+--------------------------------------+-------------------------------------+-------------------------------------+-------------------------------------+
+| Aube(57037)    | -              | -                   | -                    | -                   | -                                    | -                                    | -                                    | -                                   | -                                   | -                                   |
++----------------+----------------+---------------------+----------------------+---------------------+--------------------------------------+--------------------------------------+--------------------------------------+-------------------------------------+-------------------------------------+-------------------------------------+
+| Aube(61008)    | -              | -                   | -                    | -                   | -                                    | -                                    | -                                    | -                                   | -                                   | -                                   |
++----------------+----------------+---------------------+----------------------+---------------------+--------------------------------------+--------------------------------------+--------------------------------------+-------------------------------------+-------------------------------------+-------------------------------------+
+Tableau des mesures correspondant à la periode: 2020-04-15  2020-04-16
+
++----------------+----------------+---------------------+----------------------+---------------------+--------------------------------------+--------------------------------------+--------------------------------------+-------------------------------------+-------------------------------------+-------------------------------------+
+| Lieu           | Code station   | Nombre de mesures   | Date plus ancienne   | Date plus récente   | Niveau enregistré (altitude / mer)   | Niveau enregistré (altitude / mer)   | Niveau enregistré (altitude / mer)   | Profondeur de la nappe (/ au sol)   | Profondeur de la nappe (/ au sol)   | Profondeur de la nappe (/ au sol)   |
+|                |                |                     |                      |                     | MIN                                  | MAX                                  | AVG                                  | MIN                                 | MAX                                 | AVG                                 |
++================+================+=====================+======================+=====================+======================================+======================================+======================================+=====================================+=====================================+=====================================+
+| Lyon(69123)    | 06986B0234/S   | 0                   | -                    | -                   | -                                    | -                                    | -                                    | -                                   | -                                   | -                                   |
++----------------+----------------+---------------------+----------------------+---------------------+--------------------------------------+--------------------------------------+--------------------------------------+-------------------------------------+-------------------------------------+-------------------------------------+
+| Orléans(45234) | 03635X0545/PZ1 | 1                   | 2020-04-15           | 2020-04-15          | 88.36                                | 88.36                                | 88.36                                | 4.98                                | 4.98                                | 4.98                                |
+|                | 03636X1060/PZ2 | 0                   | -                    | -                   | -                                    | -                                    | -                                    | -                                   | -                                   | -                                   |
+|                | 03636X1061/PZ3 | 1                   | 2020-04-15           | 2020-04-15          | 89.71                                | 89.71                                | 89.71                                | 4.81                                | 4.81                                | 4.81                                |
+|                | 03636X1062/PZ4 | 1                   | 2020-04-15           | 2020-04-15          | 89.85                                | 89.85                                | 89.85                                | 5.11                                | 5.11                                | 5.11                                |
+|                | 03982X1045/F   | 1                   | 2020-04-15           | 2020-04-15          | 90.64                                | 90.64                                | 90.64                                | 3.61                                | 3.61                                | 3.61                                |
++----------------+----------------+---------------------+----------------------+---------------------+--------------------------------------+--------------------------------------+--------------------------------------+-------------------------------------+-------------------------------------+-------------------------------------+
+| Aube(57037)    | -              | -                   | -                    | -                   | -                                    | -                                    | -                                    | -                                   | -                                   | -                                   |
++----------------+----------------+---------------------+----------------------+---------------------+--------------------------------------+--------------------------------------+--------------------------------------+-------------------------------------+-------------------------------------+-------------------------------------+
+| Aube(61008)    | -              | -                   | -                    | -                   | -                                    | -                                    | -                                    | -                                   | -                                   | -                                   |
++----------------+----------------+---------------------+----------------------+---------------------+--------------------------------------+--------------------------------------+--------------------------------------+-------------------------------------+-------------------------------------+-------------------------------------+
+
+
+Exemple 2:
+
+
+
+Exemple 3:
+
+Il ya 1 stations de mesure à Abancourt (60001):
+
+Liste des codes BSS des stations:
+['00608X0039/P']
+
+Tableau des mesures correspondant à la periode: 2021-01-01  2021-12-31
+
++------------------+----------------+---------------------+----------------------+---------------------+--------------------------------------+--------------------------------------+--------------------------------------+-------------------------------------+-------------------------------------+-------------------------------------+
+| Lieu             | Code station   |   Nombre de mesures | Date plus ancienne   | Date plus récente   | Niveau enregistré (altitude / mer)   | Niveau enregistré (altitude / mer)   | Niveau enregistré (altitude / mer)   | Profondeur de la nappe (/ au sol)   | Profondeur de la nappe (/ au sol)   | Profondeur de la nappe (/ au sol)   |
+|                  |                |                     |                      |                     | MIN                                  | MAX                                  | AVG                                  | MIN                                 | MAX                                 | AVG                                 |
++==================+================+=====================+======================+=====================+======================================+======================================+======================================+=====================================+=====================================+=====================================+
+| Abancourt(60001) | 00608X0039/P   |                   0 | -                    | -                   | -                                    | -                                    | -                                    | -                                   | -                                   | -                                   |
++------------------+----------------+---------------------+----------------------+---------------------+--------------------------------------+--------------------------------------+--------------------------------------+-------------------------------------+-------------------------------------+-------------------------------------+
+

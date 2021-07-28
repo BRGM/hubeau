@@ -411,8 +411,8 @@ def get_insee(locations):
         - Uses the functions get_insee_commune, get_insee_departement, get_insee_region using "name" as the parameter type
          and the location as parameter value to get all the locations (communes, departements or regions) that have that name.
 
-    Returns a first dictionnary of all communes, departements and regions that match exactly.
-    Returns a second dictionnary of all communes, departements and regions that are similar (returned by the API but don't match exactly).
+    Returns a first dictionnary of all communes, departements and regions that match exactly the value.
+    Returns a second dictionnary of all communes, departements and regions that are similar (returned by the API but don't match exactly/substring ).
 
     @param locations: list of location names
     @return: dictionnary of all data extracted from the names using the three functions.
@@ -436,20 +436,19 @@ def get_insee(locations):
 
 def classify_else(query, locations, exact_match_, similar_):
     """
-    Classification for when the locations were extracted using NER or locations dataset.
-    For a list of location names in a query, and having all the data of all actual locations (communes, departements and regions)
-    related to those names. Classify each name to one of the three location types : commune departement or regions.
+    Classification of the location names into one of the three types : commune, departement or region
+    for when the locations were extracted using NER or locations dataset.
 
     - The classification is trivial when there's only one type of location that has that name (only communes, only departements ...).
     - In case two types of locations have that name, the function uses the query context to classify that name
-        (e.g "Aube" is both a commune and a departement)
-    - If the context does not help, the default type is the thinest granularity: commune
+        (e.g "Aube" is both a commune and a departement name)
+    - If the context does not help, the default type is the thinnest granularity: commune
     After classifying the name, take the right data from exact_match_ (or similar_) and add it to the right returned dictionnary.
 
     @param query: query text
     @param locations: list of words in the query that are location names
     @param exact_match_: data related to all locations having the names in the list (name matches exactly)
-    @param similar_: same as exact_match_ except the names is similar or a substring and does not match exactly
+    @param similar_: same as exact_match_ except the names are similar or substrings and do not match exactly
     @return: three dictionnaries where the data in exact_match_ (or similar_) is classified and separated into the three types.
     """
     communes, regions, departements = {}, {}, {}
@@ -507,6 +506,7 @@ def classify_else(query, locations, exact_match_, similar_):
 def classify_geoloc(query, locations):
     """
     Classification for when the location was extracted using geolocation.
+
     - Here the function checks with a regular expression if the query contains the word "departement", if true
     classifies the location as departement and gets data using get_insee_departement.
     - Same thing with the word "region"
@@ -579,17 +579,16 @@ def classify_demonym(query, locations):
 
 def classify(query, locations, method_used, exact_match_, similar_):
     """
-    For a list of locations, according to the method used to extract the locations,
-    get the insee codes and classify the locations into commune,
-    departement or region by following a set of rules
+    For a list of locations, according to the method used to extract them (demonym, geoloc or else),
+    call the right classifying method.
 
     @param query: query text
     @param locations: extracted locations
     @param method_used: method used to extract location (DEMONYM, GEOLOC or ELSE)
     @param exact_match_: all data related to the extracted locations
-    @param similar_: same as exact_match_ but the names don't match exactly
+    @param similar_: same as exact_match_ but the names don't match exactly (substrings)
     @return: three dictionnaries : regions, communes and departements where the data in exact_match is sorted by the
-            type of the location word.
+            type of the location  after classifying.
     """
 
     if method_used == method.GEOLOCATION:
@@ -605,7 +604,7 @@ def classify(query, locations, method_used, exact_match_, similar_):
 def get_locations_(query_, all_location_names, MODEL_PATH, ip_address=None):
     """
     Use NER and static names dataset to extract locations from query,
-    if NER gives no result, look for demonyms and return corresponding locations,
+    if NER gives no result.txt, look for demonyms and return corresponding locations,
     if none found, use nouns and the GEO API,
     if none found, use geolocation
     """
@@ -644,7 +643,7 @@ def get_locations_(query_, all_location_names, MODEL_PATH, ip_address=None):
 def get_locations(query_, all_location_names, demonym_dict, MODEL_PATH, ip_address=None):
     """
     Use NER and static names dataset to extract locations from query,
-    if NER gives no result, look for demonyms and return corresponding locations,
+    if NER gives no result.txt, look for demonyms and return corresponding locations,
     if none found, use nouns and the GEO API,
     if none found, use geolocation
     """
@@ -654,13 +653,13 @@ def get_locations(query_, all_location_names, demonym_dict, MODEL_PATH, ip_addre
     locations = list(set(locations1 + locations2))
     exact_match, similar, count = get_insee(locations)
     if count > 0:
-        print(colored("Extracted with NER, and static dataset", "green"), locations)
+        print(colored("Expressions de lieux extraites avec le modèle NER et la base de noms de lieux: ", "green"), locations)
         return locations, method.ELSE, exact_match, similar
 
     else:
         locations = get_locations_api(query)
         if len(locations) > 0:
-            print(colored("Exctracted using geo api queries ", "green"), locations)
+            print(colored("Expressions de lieux extraites avec l'API geographique: ", "green"), locations)
             exact_match, similar, count = get_insee(locations)
             return locations, method.ELSE, exact_match, similar
 
@@ -670,12 +669,12 @@ def get_locations(query_, all_location_names, demonym_dict, MODEL_PATH, ip_addre
             # to work with the dictionnary, for now it uses string similarity
             locations = get_location_demonym_dict(query, demonym_dict)
             if len(locations) > 0:
-                print(colored("Extracted from demonyms ", "green"), locations)
+                print(colored("Expressions de lieux extraites à partir des gentilés: ", "green"), locations)
                 exact_match, similar, count = get_insee(locations)
                 return locations, method.DEMONYM, exact_match, similar
             else:  # no demonyms, geolocalization
                 location = get_geolocation(ip_address)
-                print(colored("Extacted with geolocalization ", "green"), location)
+                print(colored("Geolocalisation ", "green"), location)
                 return location, method.GEOLOCATION, None, None
 
 
