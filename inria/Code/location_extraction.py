@@ -282,6 +282,7 @@ def get_location_demonym_dict(query, stemmed_dict):
                 set(stemmed_dict["communes"].get(stemmed, []) + stemmed_dict["departements"].get(stemmed, [])))
     return locations
 
+
 def get_insee_commune(commune, parameter):
     """
     Query the geo API to get data (name, insee code, departement code and region code ) related to a french commune.
@@ -415,7 +416,7 @@ def get_insee(locations):
     Returns a second dictionnary of all communes, departements and regions that are similar (returned by the API but don't match exactly/substring ).
 
     @param locations: list of location names
-    @return: dictionnary of all data extracted from the names using the three functions.
+    @return: dictionnary of all data extracted from the names using the three functions and the total number of them.
     """
     similar, exact_match, total = {}, {}, 0
     for location in locations:
@@ -434,7 +435,7 @@ def get_insee(locations):
     return exact_match, similar, total
 
 
-def classify_else(query, locations, exact_match_, similar_):
+def classify_else(query, locations, exact_match_):
     """
     Classification of the location names into one of the three types : commune, departement or region
     for when the locations were extracted using NER or locations dataset.
@@ -443,19 +444,18 @@ def classify_else(query, locations, exact_match_, similar_):
     - In case two types of locations have that name, the function uses the query context to classify that name
         (e.g "Aube" is both a commune and a departement name)
     - If the context does not help, the default type is the thinnest granularity: commune
-    After classifying the name, take the right data from exact_match_ (or similar_) and add it to the right returned dictionnary.
+    After classifying the name, take the right data from exact_match_ and add it to the right returned dictionnary.
 
     @param query: query text
     @param locations: list of words in the query that are location names
-    @param exact_match_: data related to all locations having the names in the list (name matches exactly)
-    @param similar_: same as exact_match_ except the names are similar or substrings and do not match exactly
-    @return: three dictionnaries where the data in exact_match_ (or similar_) is classified and separated into the three types.
+    @param exact_match_: data related to all locations having the names in the list
+    @return: three dictionnaries where the data in exact_match_ is classified and separated into the three types.
     """
     communes, regions, departements = {}, {}, {}
+    check_again, code_regions, code_departements = {}, set(), set()
     d_dependencies, r_dependencies = None, None
     for loc in locations:
         exact_match = exact_match_[loc]
-        similar = similar_[loc]
         if exact_match["count"] > 0:  # Locations that match exactly exist
             if len(exact_match["regions"]) == 0 and len(
                     exact_match["departements"]) == 0:  # The location is a commune
@@ -464,10 +464,11 @@ def classify_else(query, locations, exact_match_, similar_):
             elif len(exact_match["regions"]) == 0 and len(
                     exact_match["communes"]) == 0:  # The location is a departement
                 departements[loc] = exact_match["departements"]
-
+                code_departements = code_departements.union(list(exact_match["departements"].keys()))
             elif len(exact_match["departements"]) == 0 and len(
                     exact_match["communes"]) == 0:  # The location is a region
                 regions[loc] = exact_match["regions"]
+                code_regions = code_regions.union(list(exact_match["regions"].keys()))
 
             elif len(exact_match["departements"]) > 0 and len(exact_match["communes"]) > 0 and len(
                     exact_match["regions"]) == 0:  # There's a departement and a commune that both have this name
@@ -477,10 +478,36 @@ def classify_else(query, locations, exact_match_, similar_):
                                                               "départements"]) if d_dependencies is None else d_dependencies
                     if loc in d_dependencies:
                         departements[loc] = exact_match["departements"]
+                        code_departements = code_departements.union(list(exact_match["departements"].keys()))
+                    else:
+                        dep_regions, com_regions = [d["codeRegion"] for d in exact_match["departements"].values()], [
+                            d["codeRegion"]
+                            for d in
+                            exact_match["communes"].values()]
+                        inter = list(set(dep_regions).intersection(com_regions))
+                        if len(inter) == 0:
+                            com_departements = [d["codeDepartement"] for d in exact_match["communes"].values()]
+                            check_again[loc] = {"com_regions": com_regions, "dep_regions": dep_regions,
+                                                "com_departements": com_departements}
+                        else:
+                            communes[loc] = exact_match["communes"]
+                else:
+                    # communes[loc] = exact_match["communes"]# This case needs to be changed
+                    # conditions for the special case:
+                    # 1-having a region in the locations
+                    # 2-all the communes are located in a different region than the departement
+
+                    dep_regions, com_regions = [d["codeRegion"] for d in exact_match["departements"].values()], [
+                        d["codeRegion"]
+                        for d in
+                        exact_match["communes"].values()]
+                    inter = list(set(dep_regions).intersection(com_regions))
+                    if len(inter) == 0:
+                        com_departements = [d["codeDepartement"] for d in exact_match["communes"].values()]
+                        check_again[loc] = {"com_regions": com_regions, "dep_regions": dep_regions,
+                                            "com_departements": com_departements}
                     else:
                         communes[loc] = exact_match["communes"]
-                else:
-                    communes[loc] = exact_match["communes"]
 
             elif len(exact_match["departements"]) == 0 and len(exact_match["communes"]) > 0 and len(
                     exact_match["regions"]) > 0:  # There's a departement and a commune that both have this name
@@ -490,22 +517,40 @@ def classify_else(query, locations, exact_match_, similar_):
                                                               "régions"]) if r_dependencies is None else r_dependencies
                     if loc in r_dependencies:
                         regions[loc] = exact_match["regions"]
+                        code_regions = code_regions.union(list(exact_match["regions"].keys()))
                     else:
                         communes[loc] = exact_match["communes"]
                 else:
                     communes[loc] = exact_match["communes"]
 
-        elif similar["count"] > 0:
-            communes[loc] = similar["communes"]
-            departements[loc] = similar["departements"]
-            regions[loc] = similar["regions"]
 
-    return communes, departements, regions
+        # elif similar["count"] > 0:
+        #     communes[loc] = similar["communes"]
+        #     departements[loc] = similar["departements"]
+        #     regions[loc] = similar["regions"]
+    if len(regions) == 0:
+        for loc in check_again:
+            exact_match = exact_match_[loc]
+            communes[loc] = exact_match["communes"]
+        return communes, departements, regions
+    else:
+        for loc, values in check_again.items():
+            exact_match = exact_match_[loc]
+            if len(code_regions.intersection(values["com_regions"])) == 0 and len(
+                    code_regions.intersection(values["dep_regions"])) == 0:
+                communes[loc] = exact_match["communes"]
+            if len(set(values["dep_regions"]).intersection(code_regions)) > 0:
+                departements[loc] = exact_match["departements"]
+            if len(set(values["com_regions"]).intersection(code_regions)) > 0 or len(
+                    set(values["com_departements"]).intersection(code_departements)) > 0:
+                communes[loc] = exact_match["communes"]
+        return communes, departements, regions
 
 
 def classify_geoloc(query, locations):
     """
-    Classification for when the location was extracted using geolocation.
+        Classification of the location names into one of the three types : commune, departement or region
+        for when the location was extracted using geolocation.
 
     - Here the function checks with a regular expression if the query contains the word "departement", if true
     classifies the location as departement and gets data using get_insee_departement.
@@ -543,8 +588,8 @@ def classify_demonym(query, locations):
     The function just adapts the parameters to call classify_else.
 
     @param query: query text
-    @param locations: dictionnary of extrcated demonyms and corresponding location names
-    @return: three dictionnaries where the data in exact_match_ (or similar_) is classified and separated into the three types.
+    @param locations: dictionnary of extracted demonyms and corresponding location names
+    @return: three dictionnaries where the data extracted with the locations is classified into the three categpries
     """
     exact_match = {}
     similar = {}
@@ -574,111 +619,169 @@ def classify_demonym(query, locations):
         similar[demonym]["departements"] = deps_
         similar[demonym]["regions"] = regs_
 
-    return classify_else(query, list(locations.keys()), exact_match, similar)
+    return classify_else(query, list(locations.keys()), exact_match)
 
 
-def classify(query, locations, method_used, exact_match_, similar_):
+def classify(query, locations):
     """
     For a list of locations, according to the method used to extract them (demonym, geoloc or else),
     call the right classifying method.
 
     @param query: query text
     @param locations: extracted locations
-    @param method_used: method used to extract location (DEMONYM, GEOLOC or ELSE)
-    @param exact_match_: all data related to the extracted locations
-    @param similar_: same as exact_match_ but the names don't match exactly (substrings)
-    @return: three dictionnaries : regions, communes and departements where the data in exact_match is sorted by the
-            type of the location  after classifying.
+    @return: three dictionnaries : regions, communes and departements where locations are sorted by the
+             type of the location  after classifying.
     """
+    communes1, departements1, regions1 = {}, {}, {}
+    communes2, departements2, regions2 = {}, {}, {}
+    for locations_ in locations:
+        if locations_["method"] == method.GEOLOCATION:
+            return classify_geoloc(query, locations_["locations"])
 
-    if method_used == method.GEOLOCATION:
-        return classify_geoloc(query, locations)
+        if locations_["method"] == method.ELSE:
+            communes1, departements1, regions1 = classify_else(query, locations_["locations"],
+                                                               locations_["exact_match"])
 
-    if method_used == method.ELSE:
-        return classify_else(query, locations, exact_match_, similar_)
+        if locations_["method"] == method.DEMONYM:
+            communes2, departements2, regions2 = classify_demonym(query, locations_["locations"])
 
-    if method_used == method.DEMONYM:
-        return classify_demonym(query, locations)
+    communes1.update(communes2)
+    departements2.update(departements2)
+    regions1.update(regions2)
+
+    return communes1, departements1, regions1
 
 
-def get_locations_(query_, all_location_names, MODEL_PATH, ip_address=None):
-    """
-    Use NER and static names dataset to extract locations from query,
-    if NER gives no result.txt, look for demonyms and return corresponding locations,
-    if none found, use nouns and the GEO API,
-    if none found, use geolocation
-    """
-    query = re.sub("d'", "de ", re.sub("l'", "le ", query_))
-    locations = get_locations_flair(query, MODEL_PATH)
-    exact_match, similar, count = get_insee(locations)
-    if count > 0:
-        print(colored("Extracted with NER ", "green"), locations)
-        return locations, method.NER, exact_match, similar
-    else:
-        locations = get_locations_static(query, all_location_names)
-        if len(locations) > 0:
-            print(colored("Extracted with locations dictionnary ", "green"), locations)
-            exact_match, similar, count = get_insee(locations)
-            return locations, method.STATIC, exact_match, similar
-        else:
-            locations = get_locations_api(query)
-            if len(locations) > 0:
-                print(colored("Exctracted using geo api queries ", "green"), locations)
-                exact_match, similar, count = get_insee(locations)
-                return locations, method.GEO_API, exact_match, similar
-
-            else:  # no exact match found: we look for demonyms
-                # get_location_from_adj will be modified
-                # to work with the dictionnary, for now it uses string similarity
-                locations = get_location_demonym(query, all_location_names)
-                if len(locations) > 0:
-                    print(colored("Extracted from demonyms ", "green"), locations)
-                    return locations, method.DEMONYM, None, None
-                else:  # no demonyms, geolocalization
-                    location = get_geolocation(ip_address)
-                    print(colored("Extacted with geolocalization ", "green"), location)
-                    return location, method.GEOLOCATION, None, None
+# def get_locations_(query_, all_location_names, MODEL_PATH, ip_address=None):
+#     """
+#     Use NER and static names dataset to extract locations from query,
+#     if NER gives no result.txt, look for demonyms and return corresponding locations,
+#     if none found, use nouns and the GEO API,
+#     if none found, use geolocation
+#     """
+#     query = re.sub("d'", "de ", re.sub("l'", "le ", query_))
+#     locations = get_locations_flair(query, MODEL_PATH)
+#     exact_match, similar, count = get_insee(locations)
+#     if count > 0:
+#         print(colored("Extracted with NER ", "green"), locations)
+#         return locations, method.NER, exact_match, similar
+#     else:
+#         locations = get_locations_static(query, all_location_names)
+#         if len(locations) > 0:
+#             print(colored("Extracted with locations dictionnary ", "green"), locations)
+#             exact_match, similar, count = get_insee(locations)
+#             return locations, method.STATIC, exact_match, similar
+#         else:
+#             locations = get_locations_api(query)
+#             if len(locations) > 0:
+#                 print(colored("Exctracted using geo api queries ", "green"), locations)
+#                 exact_match, similar, count = get_insee(locations)
+#                 return locations, method.GEO_API, exact_match, similar
+#
+#             else:  # no exact match found: we look for demonyms
+#                 # get_location_from_adj will be modified
+#                 # to work with the dictionnary, for now it uses string similarity
+#                 locations = get_location_demonym(query, all_location_names)
+#                 if len(locations) > 0:
+#                     print(colored("Extracted from demonyms ", "green"), locations)
+#                     return locations, method.DEMONYM, None, None
+#                 else:  # no demonyms, geolocalization
+#                     location = get_geolocation(ip_address)
+#                     print(colored("Extacted with geolocalization ", "green"), location)
+#                     return location, method.GEOLOCATION, None, None
+#
+#
+# def get_locations__(query_, all_location_names, demonym_dict, MODEL_PATH, ip_address=None):
+#     """
+#     Use NER and static names dataset to extract locations from query,
+#     if NER gives no result.txt, look for demonyms and return corresponding locations,
+#     if none found, use nouns and the GEO API,
+#     if none found, use geolocation
+#     """
+#     query = re.sub("l'", "le ", query_)
+#
+#     locations1 = get_locations_flair(query, MODEL_PATH)
+#     locations2 = get_locations_static(query_, all_location_names)
+#     print(locations2, locations1)
+#     locations = list(set(locations1 + locations2))
+#     exact_match, similar, count = get_insee(locations)
+#     if count > 0:
+#         print(colored("Expressions de lieux extraites avec le modèle NER et la base de noms de lieux: ", "green"),
+#               locations)
+#         return locations, method.ELSE, exact_match, similar
+#
+#     else:
+#         locations = get_locations_api(query)
+#         if len(locations) > 0:
+#             print(colored("Expressions de lieux extraites avec l'API geographique: ", "green"), locations)
+#             exact_match, similar, count = get_insee(locations)
+#             return locations, method.ELSE, exact_match, similar
+#
+#         else:
+#             # no exact match found: we look for demonyms
+#             # get_location_from_adj will be modified
+#             # to work with the dictionnary, for now it uses string similarity
+#             locations = get_location_demonym_dict(query, demonym_dict)
+#             if len(locations) > 0:
+#                 print(colored("Expressions de lieux extraites à partir des gentilés: ", "green"), locations)
+#                 exact_match, similar, count = get_insee(locations)
+#                 return locations, method.DEMONYM, exact_match, similar
+#             else:  # no demonyms, geolocalization
+#                 location = get_geolocation(ip_address)
+#                 print(colored("Geolocalisation ", "green"), location)
+#                 return location, method.GEOLOCATION, None, None
 
 
 def get_locations(query_, all_location_names, demonym_dict, MODEL_PATH, ip_address=None):
     """
     Use NER and static names dataset to extract locations from query,
-    if NER gives no result.txt, look for demonyms and return corresponding locations,
-    if none found, use nouns and the GEO API,
+    Looks for demonyms and return corresponding locations,
+    if none found above, use nouns and the GEO API,
     if none found, use geolocation
     """
-    query = re.sub("d'", "de ", re.sub("l'", "le ", query_))
+    final_result = []
+    query = re.sub(r"l'", "le ", query_)
+
     locations1 = get_locations_flair(query, MODEL_PATH)
-    locations2 = get_locations_static(query, all_location_names)
+    locations2 = get_locations_static(query_, all_location_names)
     locations = list(set(locations1 + locations2))
     exact_match, similar, count = get_insee(locations)
     if count > 0:
-        print(colored("Expressions de lieux extraites avec le modèle NER et la base de noms de lieux: ", "green"), locations)
-        return locations, method.ELSE, exact_match, similar
+        print(colored("Expressions de lieux extraites avec le modèle NER et la base de noms de lieux: ", "green"),
+              locations)
+        final_result.append(
+            {"locations": locations, "method": method.ELSE, "exact_match": exact_match})
 
-    else:
+    locations = get_location_demonym_dict(query, demonym_dict)
+    if len(locations) > 0:
+        print(colored("Expressions de lieux extraites à partir des gentilés: ", "green"), locations)
+        final_result.append({"locations": locations, "method": method.DEMONYM})
+
+    if count + len(locations) == 0:
         locations = get_locations_api(query)
         if len(locations) > 0:
             print(colored("Expressions de lieux extraites avec l'API geographique: ", "green"), locations)
             exact_match, similar, count = get_insee(locations)
-            return locations, method.ELSE, exact_match, similar
+            final_result.append(
+                {"locations": locations, "method": method.ELSE, "exact_match": exact_match})
 
         else:
-            # no exact match found: we look for demonyms
-            # get_location_from_adj will be modified
-            # to work with the dictionnary, for now it uses string similarity
-            locations = get_location_demonym_dict(query, demonym_dict)
-            if len(locations) > 0:
-                print(colored("Expressions de lieux extraites à partir des gentilés: ", "green"), locations)
-                exact_match, similar, count = get_insee(locations)
-                return locations, method.DEMONYM, exact_match, similar
-            else:  # no demonyms, geolocalization
-                location = get_geolocation(ip_address)
-                print(colored("Geolocalisation ", "green"), location)
-                return location, method.GEOLOCATION, None, None
+            location = get_geolocation(ip_address)
+            print(colored("Geolocalisation ", "green"), location)
+            final_result.append({"method": method.GEOLOCATION, "locations": location})
+
+    return final_result
 
 
 def get_relevant(communes, departements, regions):
+    """
+    This function choses the locations that are relevant for the user with a set of rules.
+
+    @param communes: dictionnary of communes
+    @param departements: dictionnary of departements
+    @param regions: dictionnary of regions
+    @return: three dictionnaries of communes, departements and regions that are considered relevant
+    """
     deps_to_keep, coms_to_keep, regs_to_keep = {}, {}, {}
     if len(regions) == 0 and len(departements) == 0 and len(
             communes) > 0:  # Simple case where there are only communes
@@ -761,4 +864,61 @@ def get_relevant(communes, departements, regions):
         # We still have to add regions that have no commune extracted
         regs_to_keep = {k: v for k, v in regs_codes.items() if k not in regs_to_omit}
 
-    return deps_to_keep, coms_to_keep, regs_to_keep
+    elif len(regions) > 0 and len(departements) > 0 and len(communes) == 0:
+
+        regs_codes = {k_: v_ for k, v in regions.items() for k_, v_ in v.items()}
+        regs_to_omit = set()
+        deps_to_keep = {}
+        for name, content in departements.items():
+            if len(content) == 1:  # dep name is unique, dep is added its region is ommited
+                deps_to_keep.update(content)
+                regs_to_omit.add(list(content.values())[0]["codeRegion"])
+
+            else:  # more than one departement correspond to the name, so we chose the one that has its region extrcated (omit the region), if none take all of them
+                _ = {}
+                for dep, info in content.items():
+                    if info["codeRegion"] in regs_codes:
+                        _[dep] = info
+                        regs_to_omit.add(info["codeRegion"])
+                if len(_) > 0:
+                    deps_to_keep.update(_)
+                else:
+                    deps_to_keep.update(content)
+
+        # We still have to add regions that have no departement extracted
+        regs_to_keep = {k: v for k, v in regs_codes.items() if k not in regs_to_omit}
+
+    elif len(regions) > 0 and len(departements) > 0 and len(communes) > 0:
+        dep_codes = {k_: v_ for k, v in departements.items() for k_, v_ in v.items()}
+        regs_codes = {k_: v_ for k, v in regions.items() for k_, v_ in v.items()}
+        deps_to_omit = set()
+        regs_to_omit = set()
+        coms_to_keep = {}
+        for name, content in communes.items():
+            if len(content) == 1:  # commune name is unique, commune is added its departement is ommited
+                coms_to_keep.update(content)
+                deps_to_omit.add(list(content.values())[0]["codeDepartement"])
+                regs_to_omit.add(list(content.values())[0]["codeRegion"])
+
+            else:  # more than one communes correspond to the name, so we chose the one that has a departement cited (omit the departement), if none take all of them
+                _ = {}
+                for com, info in content.items():
+                    if info["codeDepartement"] in dep_codes or info["codeRegion"] in regs_codes:
+                        _[com] = info
+                        deps_to_omit.add(info["codeDepartement"])
+                        regs_to_omit.add(info["codeRegion"])
+                if len(_) > 0:
+                    coms_to_keep.update(_)
+                else:
+                    coms_to_keep.update(content)
+
+        for code, content in dep_codes.items():
+            if code not in deps_to_omit:
+                deps_to_keep[code] = content
+                regs_to_omit.add(content["codeRegion"])
+
+
+        # We still have to add departements that have no commune sited
+        regs_to_keep = {k: v for k, v in regs_codes.items() if k not in regs_to_omit}
+
+    return coms_to_keep, deps_to_keep, regs_to_keep

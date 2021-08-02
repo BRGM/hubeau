@@ -3,23 +3,26 @@ from time_extraction import *
 from show_results import *
 import pandas as pd
 from termcolor import colored
-from pprint import pprint
+from pprintpp import pprint
 
 # stanza.download('fr') # run once
-
 
 MODEL_PATH = "NER_tool/stacked-standard-flair-150-wikiner.pt"
 nb_mesures = None
 
 ##################################################################################
-communes_ = pd.read_csv("demonyms/Data/commune2021.csv", encoding='utf-8')["LIBELLE"].tolist()
-departements_ = pd.read_csv("demonyms/Data/departement2021.csv", encoding='utf-8')["LIBELLE"].tolist()
-regions_ = pd.read_csv("demonyms/Data/region2021.csv", encoding='utf-8')["LIBELLE"].tolist()
-_ = np.concatenate((communes_, departements_, regions_))
-all_locations = list(map(replace, np.unique(_)))
+
+# Reading dataset of all location names
+communes_ = pd.read_csv("demonyms/Data/locations/commune2021.csv", encoding='utf-8')["LIBELLE"].tolist()
+departements_ = pd.read_csv("demonyms/Data/locations/departement2021.csv", encoding='utf-8')["LIBELLE"].tolist()
+regions_ = pd.read_csv("demonyms/Data/locations/region2021.csv", encoding='utf-8')["LIBELLE"].tolist()
+all_locations = list(map(replace, np.unique(np.concatenate((communes_, departements_, regions_)))))
+
+#Reading the dictionnary of demonyms
 demonym_dict = {"communes": json.load(open("demonyms/Data/coms_reversed_stemmed.json")),
                 "departements": json.load(open("demonyms/Data/deps_stemmed_reversed.json"))}
 
+#Getting user's IP adress
 with requests.get("https://geolocation-db.com/json") as url:
     data = json.loads(url.text)
     ip_address = data["IPv4"]
@@ -28,8 +31,8 @@ with open("queries.txt", "a") as a_file:
     # while True:
     # query = input("\n\nPlease enter a new query: ")
     #
-    query = "Quelle est la qualité de l'eau souterraine dans mon departement"
-
+    ## User Query
+    query = "Quelle est la qualité de l'eau souterraine à Vienne en Auvergne-Rhône-Alpes et du Manche en Normandie le 19-02-2020"
     # a_file.write(query)
     # a_file.write("\n")
     ####################################################################################################################
@@ -57,13 +60,13 @@ with open("queries.txt", "a") as a_file:
             data.append(_)
     else:
 
-        locations, method, exact_match, similar = get_locations(normalized_query, all_locations, demonym_dict,
+        locations = get_locations(normalized_query, all_locations, demonym_dict,
                                                                 MODEL_PATH,
                                                                 ip_address=ip_address)
-        if exact_match is not None:
-            print(colored("Tous les lieux correspondant:", "red"))
-            pprint(exact_match)
-        communes, departements, regions = classify(normalized_query, locations, method, exact_match, similar)
+
+        print(colored("Toutes les données recoltées sur les lieux :", "red"))
+        pprint(locations)
+        communes, departements, regions = classify(normalized_query, locations)
 
         print(colored("Après classifications des lieux :", "red"))
         print("Communes\n")
@@ -73,7 +76,7 @@ with open("queries.txt", "a") as a_file:
         print("\nRegions\n")
         pprint(regions)
 
-        deps_to_keep, coms_to_keep, regs_to_keep = get_relevant(communes, departements, regions)
+        coms_to_keep, deps_to_keep, regs_to_keep = get_relevant(communes, departements, regions)
 
         print(colored("Lieux pertinents utilisés pour afficher les mesures:", "red"))
         print("Communes:\n")
@@ -99,6 +102,7 @@ with open("queries.txt", "a") as a_file:
         table_general = format_table_general(data_["data"], nb_mesures, print_=print_)
         print_ = False
 
-        print(colored(f"Tableau des mesures correspondant à la periode: {data_.get('start_date', '')}  {data_.get('start_date', '')}  \n",
-                      "red"))
+        print(colored(
+            f"Tableau des mesures correspondant à la periode: {data_.get('start_date', '')}  {data_.get('start_date', '')}  \n",
+            "red"))
         print(table_general)

@@ -19,6 +19,7 @@ def insee_to_bss(code_location, type_location):
     """
     Returns the BSS codes corresponding to the INSEE code
     """
+    url = ""
     if type_location == 'commune':
         url = "https://hubeau.eaufrance.fr/api/v1/niveaux_nappes/stations?code_commune={c}&format=json&size=500".format(
             c=code_location)

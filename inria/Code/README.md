@@ -1,3 +1,5 @@
+The text below describes the steps to follow to be able to execute the code 
+
 
 Create environment that runs python 3.7 with command **virtualenv --python python3.7 venv** and activate it **source venv/bin/activate**
 
