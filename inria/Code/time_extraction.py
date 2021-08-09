@@ -30,13 +30,12 @@ def preprocess_date(date):
 
 
 # Heideltime
-def get_time(query):
+def get_time(query, heideltime_parser):
     """
     Extract dates from query
     """
     query = re.sub(r"\.", "-", query)
     print(query)
-    heideltime_parser = Heideltime()
     heideltime_parser.set_document_type('NEWS')
     heideltime_parser.set_language('FRENCH')
     heideltime_parser.set_interval_tagger('True')
