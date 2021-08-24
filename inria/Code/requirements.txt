@@ -1,5 +1,6 @@
 DateTime==4.3
 flair==0.8.0.post1
+gdown
 ip2geotools==0.1.5
 ipinfo==4.2.1
 nltk==3.6.2

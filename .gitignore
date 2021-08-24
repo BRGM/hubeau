@@ -4,3 +4,6 @@ stanford*
 .idea
 .ipynb_checkpoints
 __pycache__
+venv
+model
+stacked-standard-flair-150-wikiner.pt

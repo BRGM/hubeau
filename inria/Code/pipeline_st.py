@@ -9,7 +9,7 @@ import stanza
 import streamlit as st
 # stanza.download('fr') # run once
 
-MODEL_PATH = "NER_tool/stacked-standard-flair-150-wikiner.pt"
+MODEL_PATH = "stacked-standard-flair-150-wikiner.pt"
 nb_mesures = None
 
 
