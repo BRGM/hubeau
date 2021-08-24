@@ -6,4 +6,4 @@ stanford*
 __pycache__
 venv
 model
-stacked-standard-flair-150-wikiner.pt
+stacked-standard-flair-150-wikiner.pt*
