@@ -13,3 +13,4 @@ termcolor==1.1.0
 
 pprintpp~=0.4.0
 isodate~=0.6.0
+streamlit~=0.87.0

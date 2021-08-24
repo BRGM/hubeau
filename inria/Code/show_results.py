@@ -71,6 +71,7 @@ def get_details_from_bss(bss):
         data = json.loads(requests.get(url).text)
         infos = data["data"]
         return {info["code_bss"]: {"code_commune": info["code_commune_insee"],
+                                   "nom_commune": info["nom_commune"],
                                    "code_departement": info["code_departement"],
                                    "long": info["geometry"]["coordinates"][0],
                                    "lat": info["geometry"]["coordinates"][1],
@@ -130,62 +131,118 @@ def format_table(mesures, nb_mesures):
     return tabulate(table_data, headers, tablefmt="grid")
 
 
-def get_table_data_bss(bss_codes, start_date=None, end_date=None):
+def get_table_data_bss(bss_codes, dates):
     details_ = get_details_from_bss(",".join(bss_codes))
-    data = {}
+    data = []
     if details_ != -1:
-        for code, details in details_.items():
-            result = get_mesure_piezo(code, start_date=start_date, end_date=end_date)
-            if details["code_commune"] not in data:
-                data[details["code_commune"]] = {}
-            data[details["code_commune"]][code] = {"date_debut_mesure": details["date_debut_mesure"],
-                                                   "date_fin_mesure": details["date_fin_mesure"],
-                                                   "mesures": result["mesures"],
-                                                   "count": result["count"]
-                                                   }
+        if len(dates) > 0:
+            for date in dates:
+                data_ = {}
+                for code, details in details_.items():
+                    result = get_mesure_piezo(code, start_date=date.get("start_date", None),
+                                              end_date=date.get("end_date", None))
+                    if details["code_commune"] not in data_:
+                        data_[details["code_commune"]] = {"data":{}, "name": details["nom_commune"]}
+
+                    data_[details["code_commune"]]["data"][code] = {"date_debut_mesure": details["date_debut_mesure"],
+                                                            "date_fin_mesure": details["date_fin_mesure"],
+                                                            "mesures": result["mesures"],
+                                                            "count": result["count"]
+                                                            }
+                _ = {"data": data_,
+                     "start_date": date.get("start_date", None), "end_date": date.get("end_date", None)}
+                data.append(_)
+        else:
+            data_ = {}
+            for code, details in details_.items():
+                result = get_mesure_piezo(code)
+                if details["code_commune"] not in data_:
+                    data_[details["code_commune"]] = {}
+
+                data_[details["code_commune"]][code] = {"date_debut_mesure": details["date_debut_mesure"],
+                                                        "date_fin_mesure": details["date_fin_mesure"],
+                                                        "mesures": result["mesures"],
+                                                        "count": result["count"]
+                                                        }
+            _ = {"data": data_}
+            data.append(_)
+
     return data
 
 
-def get_table_data_locations(coms_to_keep, deps_to_keep, regs_to_keep, start_date=None, end_date=None):
-    data = {}
-    for gran, gran_dict in {"commune": coms_to_keep, "departement": deps_to_keep, "region": regs_to_keep}.items():
-        for loc, details in gran_dict.items():
-            data[loc] = {}
-            code = details.get("codeDepartements", loc)
-            bss = insee_to_bss(code, gran)
-            if bss == -1:
-                data[loc]["data"] = -1
-                data[loc]["name"] = details['nom']
-            else:
-
-                for station in bss:
-                    result = get_mesure_piezo(station, start_date=start_date, end_date=end_date)
-                    bss[station]["mesures"] = result["mesures"]
-                    bss[station]["count"] = result["count"]
-
-                data[loc]["data"] = bss
-                data[loc]["name"] = details['nom']
-    return data
 
 
-def format_table_general(mesures, nb_mesures=None, print_=False):
+def get_table_data_locations(coms_to_keep, deps_to_keep, regs_to_keep, dates_to_keep):
+    data_ = []
+    if len(dates_to_keep) > 0:
+        for date in dates_to_keep:
+            data = {}
+            for gran, gran_dict in {"commune": coms_to_keep, "departement": deps_to_keep,
+                                    "region": regs_to_keep}.items():
+                for loc, details in gran_dict.items():
+                    data[loc] = {}
+                    code = details.get("codesDepartements", loc)
+                    bss = insee_to_bss(code, gran)
+                    if bss == -1:
+                        data[loc]["data"] = -1
+                        data[loc]["name"] = details['nom']
+                    else:
+                        for station in bss:
+                            result = get_mesure_piezo(station,start_date=date.get("start_date", None),
+                                              end_date=date.get("end_date", None))
+                            bss[station]["mesures"] = result["mesures"]
+                            bss[station]["count"] = result["count"]
+
+                        data[loc]["data"] = bss
+                        data[loc]["name"] = details['nom']
+
+            _ = {"data": data,
+                 "start_date": date.get("start_date", None), "end_date": date.get("end_date", None)}
+            data_.append(_)
+    else:
+        data = {}
+        for gran, gran_dict in {"commune": coms_to_keep, "departement": deps_to_keep,
+                                "region": regs_to_keep}.items():
+            for loc, details in gran_dict.items():
+                data[loc] = {}
+                code = details.get("codesDepartements", loc)
+                bss = insee_to_bss(code, gran)
+                if bss == -1:
+                    data[loc]["data"] = -1
+                    data[loc]["name"] = details['nom']
+                else:
+                    for station in bss:
+                        result = get_mesure_piezo(station)
+                        bss[station]["mesures"] = result["mesures"]
+                        bss[station]["count"] = result["count"]
+
+                    data[loc]["data"] = bss
+                    data[loc]["name"] = details['nom']
+        _ = {"data": data}
+        data_.append(_)
+
+    return data_
+
+def format_table_general(mesures, nb_mesures=None, return_text = True):
     headers = ["Lieu", "Code station", "Nombre de mesures", "Date plus ancienne", "Date plus récente",
                "Niveau enregistré (altitude / mer)\nMIN", "Niveau enregistré (altitude / mer)\nMAX",
                "Niveau enregistré (altitude / mer)\nAVG",
                "Profondeur de la nappe (/ au sol)\nMIN", "Profondeur de la nappe (/ au sol)\nMAX",
                "Profondeur de la nappe (/ au sol)\nAVG"]
     table_data = []
+    text = []
     for location, data_ in mesures.items():
         if data_["data"] == -1:
-            if print_:
-                print(colored(f"Il n ya aucune station de mesure à : {data_['name']} ({location}):\n", "green"))
+            if return_text:
+                text.append(f"Il n ya aucune station de mesure à : {data_['name']} ({location}):\n")
+
             table_data.append([data_["name"] + "(" + location + ")", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-"])
         else:
-            if print_:
-                print(colored(f"Il ya {len(data_['data'])} stations de mesure à {data_['name']} ({location}):\n",
-                              "green"))
-                print(colored(f"Liste des codes BSS des stations:\n", "green"))
-                pprint(list(data_['data'].keys()))
+            if return_text:
+                text.append(f"Il ya {len(data_['data'])} stations de mesure à {data_['name']} ({location}):\n")
+                text.append(f"Liste des codes BSS des stations:\n")
+                text.append(list(data_['data'].keys()))
+            return_text = False
             s, c, d1, d2, n1_max, n1_min, n1_avg, n2_max, n2_min, n2_avg = "", "", "", "", "", "", "", "", "", ""
             for station, data in data_['data'].items():
                 s += station + "\n"
@@ -220,9 +277,9 @@ def format_table_general(mesures, nb_mesures=None, print_=False):
                     n2_avg += str(sum(n2_[sortd]) / nb_mesures) + "\n"
 
             table_data.append(
-                [data_["name"] + "(" + location + ")", s, c, d1, d2, n1_min, n1_max, n1_avg, n2_min, n2_max, n2_avg])
+                [data_.get("name", '') + "(" + location + ")", s, c, d1, d2, n1_min, n1_max, n1_avg, n2_min, n2_max, n2_avg])
 
-    return tabulate(table_data, headers, tablefmt="grid")
+    return tabulate(table_data, headers, tablefmt="grid"), text
 
 # def get_closest_stations(bss, N=4):
 #     info = get_coordinates(bss)
@@ -245,3 +302,37 @@ def format_table_general(mesures, nb_mesures=None, print_=False):
 #         return list(sortd.keys())[: min(N, len(sortd.keys()))]
 #
 #     return -1
+# def get_table_data_bss2(bss_codes, start_date=None, end_date=None):
+#     details_ = get_details_from_bss(",".join(bss_codes))
+#     data = {}
+#     if details_ != -1:
+#         for code, details in details_.items():
+#             result = get_mesure_piezo(code, start_date=start_date, end_date=end_date)
+#             if details["code_commune"] not in data:
+#                 data[details["code_commune"]] = {"data":{}}
+#             data[details["code_commune"]]["data"][code] = {"date_debut_mesure": details["date_debut_mesure"],
+#                                                    "date_fin_mesure": details["date_fin_mesure"],
+#                                                    "mesures": result["mesures"],
+#                                                    "count": result["count"]
+#                                                    }
+#     return data
+# def get_table_data_locations2(coms_to_keep, deps_to_keep, regs_to_keep, start_date=None, end_date=None):
+#     data = {}
+#     for gran, gran_dict in {"commune": coms_to_keep, "departement": deps_to_keep, "region": regs_to_keep}.items():
+#         for loc, details in gran_dict.items():
+#             data[loc] = {}
+#             code = details.get("codesDepartements", loc)
+#             bss = insee_to_bss(code, gran)
+#             if bss == -1:
+#                 data[loc]["data"] = -1
+#                 data[loc]["name"] = details['nom']
+#             else:
+#
+#                 for station in bss:
+#                     result = get_mesure_piezo(station, start_date=start_date, end_date=end_date)
+#                     bss[station]["mesures"] = result["mesures"]
+#                     bss[station]["count"] = result["count"]
+#
+#                 data[loc]["data"] = bss
+#                 data[loc]["name"] = details['nom']
+#     return data

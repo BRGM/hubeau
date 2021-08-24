@@ -438,7 +438,116 @@ def get_insee(locations):
     return exact_match, similar, total
 
 
-def classify_nameNdemonym(query, locations, exact_match_, nlp):
+# def classify_nameNdemonym(query, locations, exact_match_, nlp):
+#     """
+#     Classification of the location names into one of the three types : commune, departement or region
+#     for when the locations were extracted using NER or locations dataset.
+#
+#     - The classification is trivial when there's only one type of location that has that name (only communes, only departements ...).
+#     - In case two types of locations have that name, the function uses the query context to classify that name
+#         (e.g "Aube" is both a commune and a departement name)
+#     - If the context does not help, the default type is the thinnest granularity: commune
+#     After classifying the name, take the right data from exact_match_ and add it to the right returned dictionnary.
+#
+#     @param query: query text
+#     @param locations: list of words in the query that are location names
+#     @param exact_match_: data related to all locations having the names in the list
+#     @return: three dictionnaries where the data in exact_match_ is classified and separated into the three types.
+#     """
+#     communes, regions, departements = {}, {}, {}
+#     check_again, code_regions, code_departements = {}, set(), set()
+#     d_dependencies, r_dependencies = None, None
+#     for loc in locations:
+#         exact_match = exact_match_[loc]
+#         if exact_match["count"] > 0:  # Locations that match exactly exist
+#             if len(exact_match["regions"]) == 0 and len(
+#                     exact_match["departements"]) == 0:  # The location is a commune
+#                 communes[loc] = exact_match["communes"]
+#
+#             elif len(exact_match["regions"]) == 0 and len(
+#                     exact_match["communes"]) == 0:  # The location is a departement
+#                 departements[loc] = exact_match["departements"]
+#                 code_departements = code_departements.union(list(exact_match["departements"].keys()))
+#             elif len(exact_match["departements"]) == 0 and len(
+#                     exact_match["communes"]) == 0:  # The location is a region
+#                 regions[loc] = exact_match["regions"]
+#                 code_regions = code_regions.union(list(exact_match["regions"].keys()))
+#
+#             elif len(exact_match["departements"]) > 0 and len(exact_match["communes"]) > 0 and len(
+#                     exact_match["regions"]) == 0:  # There's a departement and a commune that both have this name
+#                 d_match = re.search("(departement|département|departements|départements)", query)
+#                 if d_match:
+#                     d_dependencies = get_dependencies(query, ["departement", "département", "departements",
+#                                                               "départements"], nlp) if d_dependencies is None else d_dependencies
+#                     if loc in d_dependencies:
+#                         departements[loc] = exact_match["departements"]
+#                         code_departements = code_departements.union(list(exact_match["departements"].keys()))
+#                     else:
+#                         dep_regions, com_regions = [d["codeRegion"] for d in exact_match["departements"].values()], [
+#                             d["codeRegion"]
+#                             for d in
+#                             exact_match["communes"].values()]
+#                         inter = list(set(dep_regions).intersection(com_regions))
+#                         if len(inter) == 0:
+#                             com_departements = [d["codeDepartement"] for d in exact_match["communes"].values()]
+#                             check_again[loc] = {"com_regions": com_regions, "dep_regions": dep_regions,
+#                                                 "com_departements": com_departements}
+#                         else:
+#                             communes[loc] = exact_match["communes"]
+#                 else:
+#                     # communes[loc] = exact_match["communes"]# This case needs to be changed
+#                     # conditions for the special case:
+#                     # 1-having a region in the locations
+#                     # 2-all the communes are located in a different region than the departement
+#
+#                     dep_regions, com_regions = [d["codeRegion"] for d in exact_match["departements"].values()], [
+#                         d["codeRegion"]
+#                         for d in
+#                         exact_match["communes"].values()]
+#                     inter = list(set(dep_regions).intersection(com_regions))
+#                     if len(inter) == 0:
+#                         com_departements = [d["codeDepartement"] for d in exact_match["communes"].values()]
+#                         check_again[loc] = {"com_regions": com_regions, "dep_regions": dep_regions,
+#                                             "com_departements": com_departements}
+#                     else:
+#                         communes[loc] = exact_match["communes"]
+#
+#             elif len(exact_match["departements"]) == 0 and len(exact_match["communes"]) > 0 and len(
+#                     exact_match["regions"]) > 0:  # There's a departement and a commune that both have this name
+#                 r_match = re.search("(region|région|regions|régions)", query)
+#                 if r_match:
+#                     r_dependencies = get_dependencies(query, ["region", "région", "regions",
+#                                                               "régions"], nlp) if r_dependencies is None else r_dependencies
+#                     if loc in r_dependencies:
+#                         regions[loc] = exact_match["regions"]
+#                         code_regions = code_regions.union(list(exact_match["regions"].keys()))
+#                     else:
+#                         communes[loc] = exact_match["communes"]
+#                 else:
+#                     communes[loc] = exact_match["communes"]
+#
+#         # elif similar["count"] > 0:
+#         #     communes[loc] = similar["communes"]
+#         #     departements[loc] = similar["departements"]
+#         #     regions[loc] = similar["regions"]
+#     if len(regions) == 0:
+#         for loc in check_again:
+#             exact_match = exact_match_[loc]
+#             communes[loc] = exact_match["communes"]
+#         return communes, departements, regions
+#     else:
+#         for loc, values in check_again.items():
+#             exact_match = exact_match_[loc]
+#             if len(code_regions.intersection(values["com_regions"])) == 0 and len(
+#                     code_regions.intersection(values["dep_regions"])) == 0:
+#                 communes[loc] = exact_match["communes"]
+#             if len(set(values["dep_regions"]).intersection(code_regions)) > 0:
+#                 departements[loc] = exact_match["departements"]
+#             if len(set(values["com_regions"]).intersection(code_regions)) > 0 or len(
+#                     set(values["com_departements"]).intersection(code_departements)) > 0:
+#                 communes[loc] = exact_match["communes"]
+#         return communes, departements, regions
+def classify_nameNdemonym(query, locations, exact_match_, similar_, nlp):
     """
     Classification of the location names into one of the three types : commune, departement or region
     for when the locations were extracted using NER or locations dataset.
@@ -458,73 +567,74 @@ def classify_nameNdemonym(query, locations, exact_match_, nlp):
     check_again, code_regions, code_departements = {}, set(), set()
     d_dependencies, r_dependencies = None, None
     for loc in locations:
-        exact_match = exact_match_[loc]
-        if exact_match["count"] > 0:  # Locations that match exactly exist
-            if len(exact_match["regions"]) == 0 and len(
-                    exact_match["departements"]) == 0:  # The location is a commune
-                communes[loc] = exact_match["communes"]
+        insee_locations = exact_match_[loc] if exact_match_[loc]["count"] > 0 else similar_[loc]
+        if insee_locations["count"] > 0:
+            if len(insee_locations["regions"]) == 0 and len(
+                    insee_locations["departements"]) == 0:  # The location is a commune
+                communes[loc] = insee_locations["communes"]
 
-            elif len(exact_match["regions"]) == 0 and len(
-                    exact_match["communes"]) == 0:  # The location is a departement
-                departements[loc] = exact_match["departements"]
-                code_departements = code_departements.union(list(exact_match["departements"].keys()))
-            elif len(exact_match["departements"]) == 0 and len(
-                    exact_match["communes"]) == 0:  # The location is a region
-                regions[loc] = exact_match["regions"]
-                code_regions = code_regions.union(list(exact_match["regions"].keys()))
+            elif len(insee_locations["regions"]) == 0 and len(
+                    insee_locations["communes"]) == 0:  # The location is a departement
+                departements[loc] = insee_locations["departements"]
+                code_departements = code_departements.union(list(insee_locations["departements"].keys()))
+            elif len(insee_locations["departements"]) == 0 and len(
+                    insee_locations["communes"]) == 0:  # The location is a region
+                regions[loc] = insee_locations["regions"]
+                code_regions = code_regions.union(list(insee_locations["regions"].keys()))
 
-            elif len(exact_match["departements"]) > 0 and len(exact_match["communes"]) > 0 and len(
-                    exact_match["regions"]) == 0:  # There's a departement and a commune that both have this name
+            elif len(insee_locations["departements"]) > 0 and len(insee_locations["communes"]) > 0 and len(
+                    insee_locations["regions"]) == 0:  # There's a departement and a commune that both have this name
                 d_match = re.search("(departement|département|departements|départements)", query)
                 if d_match:
                     d_dependencies = get_dependencies(query, ["departement", "département", "departements",
+
                                                               "départements"], nlp) if d_dependencies is None else d_dependencies
                     if loc in d_dependencies:
-                        departements[loc] = exact_match["departements"]
-                        code_departements = code_departements.union(list(exact_match["departements"].keys()))
+                        departements[loc] = insee_locations["departements"]
+                        code_departements = code_departements.union(list(insee_locations["departements"].keys()))
                     else:
-                        dep_regions, com_regions = [d["codeRegion"] for d in exact_match["departements"].values()], [
+                        dep_regions, com_regions = [d["codeRegion"] for d in insee_locations["departements"].values()], [
                             d["codeRegion"]
                             for d in
-                            exact_match["communes"].values()]
+                            insee_locations["communes"].values()]
                         inter = list(set(dep_regions).intersection(com_regions))
                         if len(inter) == 0:
-                            com_departements = [d["codeDepartement"] for d in exact_match["communes"].values()]
+                            com_departements = [d["codeDepartement"] for d in insee_locations["communes"].values()]
                             check_again[loc] = {"com_regions": com_regions, "dep_regions": dep_regions,
                                                 "com_departements": com_departements}
                         else:
-                            communes[loc] = exact_match["communes"]
+                            communes[loc] = insee_locations["communes"]
                 else:
                     # communes[loc] = exact_match["communes"]# This case needs to be changed
                     # conditions for the special case:
                     # 1-having a region in the locations
                     # 2-all the communes are located in a different region than the departement
 
-                    dep_regions, com_regions = [d["codeRegion"] for d in exact_match["departements"].values()], [
+                    dep_regions, com_regions = [d["codeRegion"] for d in insee_locations["departements"].values()], [
                         d["codeRegion"]
                         for d in
-                        exact_match["communes"].values()]
+                        insee_locations["communes"].values()]
                     inter = list(set(dep_regions).intersection(com_regions))
                     if len(inter) == 0:
-                        com_departements = [d["codeDepartement"] for d in exact_match["communes"].values()]
+                        com_departements = [d["codeDepartement"] for d in insee_locations["communes"].values()]
                         check_again[loc] = {"com_regions": com_regions, "dep_regions": dep_regions,
                                             "com_departements": com_departements}
                     else:
-                        communes[loc] = exact_match["communes"]
+                        communes[loc] = insee_locations["communes"]
 
-            elif len(exact_match["departements"]) == 0 and len(exact_match["communes"]) > 0 and len(
-                    exact_match["regions"]) > 0:  # There's a departement and a commune that both have this name
+            elif len(insee_locations["departements"]) == 0 and len(insee_locations["communes"]) > 0 and len(
+                    insee_locations["regions"]) > 0:  # There's a departement and a commune that both have this name
                 r_match = re.search("(region|région|regions|régions)", query)
                 if r_match:
                     r_dependencies = get_dependencies(query, ["region", "région", "regions",
                                                               "régions"], nlp) if r_dependencies is None else r_dependencies
                     if loc in r_dependencies:
-                        regions[loc] = exact_match["regions"]
-                        code_regions = code_regions.union(list(exact_match["regions"].keys()))
+                        regions[loc] = insee_locations["regions"]
+                        code_regions = code_regions.union(list(insee_locations["regions"].keys()))
                     else:
-                        communes[loc] = exact_match["communes"]
+                        communes[loc] = insee_locations["communes"]
                 else:
-                    communes[loc] = exact_match["communes"]
+                    communes[loc] = insee_locations["communes"]
 
         # elif similar["count"] > 0:
         #     communes[loc] = similar["communes"]
@@ -532,22 +642,21 @@ def classify_nameNdemonym(query, locations, exact_match_, nlp):
         #     regions[loc] = similar["regions"]
     if len(regions) == 0:
         for loc in check_again:
-            exact_match = exact_match_[loc]
-            communes[loc] = exact_match["communes"]
+            insee_locations = exact_match_[loc]
+            communes[loc] = insee_locations["communes"]
         return communes, departements, regions
     else:
         for loc, values in check_again.items():
-            exact_match = exact_match_[loc]
+            insee_locations = exact_match_[loc]
             if len(code_regions.intersection(values["com_regions"])) == 0 and len(
                     code_regions.intersection(values["dep_regions"])) == 0:
-                communes[loc] = exact_match["communes"]
+                communes[loc] = insee_locations["communes"]
             if len(set(values["dep_regions"]).intersection(code_regions)) > 0:
-                departements[loc] = exact_match["departements"]
+                departements[loc] = insee_locations["departements"]
             if len(set(values["com_regions"]).intersection(code_regions)) > 0 or len(
                     set(values["com_departements"]).intersection(code_departements)) > 0:
-                communes[loc] = exact_match["communes"]
+                communes[loc] = insee_locations["communes"]
         return communes, departements, regions
-
 
 def classify_geoloc(query, locations):
     """
@@ -633,23 +742,34 @@ def organize(locations):
     @return: three dictionnaries where the data extracted with the locations is classified into the three categpries
     """
     exact_match = {}
+    similar = {}
     for demonym, locs in locations.items():
         exact_match[demonym] = {}
+        similar[demonym] = {}
         e, s, count = get_insee(locs)
         coms, deps, regs = {}, {}, {}
+        coms_, deps_, regs_ = {}, {}, {}
         count = 0
-        for name, v in e.items():
+        for name in e:
+            v, v_ = e[name], s[name]
             coms.update(v["communes"])
             deps.update(v["departements"])
             regs.update(v["regions"])
             count += v["count"]
+            coms_.update(v_["communes"])
+            deps_.update(v_["departements"])
+            regs_.update(v_["regions"])
 
         exact_match[demonym]["communes"] = coms
         exact_match[demonym]["departements"] = deps
         exact_match[demonym]["regions"] = regs
         exact_match[demonym]["count"] = count
 
-    return exact_match
+        similar[demonym]["communes"] = coms_
+        similar[demonym]["departements"] = deps_
+        similar[demonym]["regions"] = regs_
+
+    return exact_match, similar
 
 
 def classify(query, locations, nlp):
@@ -669,7 +789,7 @@ def classify(query, locations, nlp):
 
         if locations_["method"] == Method.NAME or locations_["method"] == Method.DEMONYM:
             c, d, r = classify_nameNdemonym(query, locations_["locations"],
-                                            locations_["exact_match"], nlp)
+                                            locations_["exact_match"], locations_["similar"], nlp)
 
             communes.update(c)
             departements.update(d)
@@ -757,7 +877,6 @@ def classify(query, locations, nlp):
 #                 print(colored("Geolocalisation ", "green"), location)
 #                 return location, method.GEOLOCATION, None, None
 
-
 def get_locations(query_, all_location_names, demonym_dict, model, nlp, ip_address=None):
     """
     Use NER and static names dataset to extract locations from query,
@@ -766,9 +885,8 @@ def get_locations(query_, all_location_names, demonym_dict, model, nlp, ip_addre
     if none found, use geolocation
     """
     final_result = []
-    query = re.sub(r"l'", "le ", query_)
-
-    locations1 = get_locations_flair(query, model)
+    locations1 = get_locations_flair(query_, model)
+    locations1 = [ re.sub("^l'", "", l) for l in locations1]
     locations2 = get_locations_static(query_, all_location_names, nlp)
     locations = list(set(locations1 + locations2))
     exact_match, similar, count = get_insee(locations)
@@ -776,25 +894,26 @@ def get_locations(query_, all_location_names, demonym_dict, model, nlp, ip_addre
         print(colored("Expressions de lieux extraites avec le modèle NER et la base de noms de lieux: ", "green"),
               locations)
         final_result.append(
-            {"locations": locations, "method": Method.NAME, "exact_match": exact_match})
+            {"locations": locations, "method": Method.NAME, "exact_match": exact_match, "similar": similar})
 
-    locations = get_location_demonym_dict(query, demonym_dict, nlp)
+    locations = get_location_demonym_dict(query_, demonym_dict, nlp)
     if len(locations) > 0:
         print(colored("Expressions de lieux extraites à partir des gentilés: ", "green"), locations)
-        final_result.append({"locations": locations, "method": Method.DEMONYM, "exact_match": organize(locations)})
+        exact_match_, similar_ = organize(locations)
+        final_result.append({"locations": locations, "method": Method.DEMONYM, "exact_match": exact_match_, "similar": similar_})
 
     if count + len(locations) == 0:
-        locations = get_locations_api(query, nlp)
-        if len(locations) > 0:
-            print(colored("Expressions de lieux extraites avec l'API geographique: ", "green"), locations)
-            exact_match, similar, count = get_insee(locations)
-            final_result.append(
-                {"locations": locations, "method": Method.NAME, "exact_match": exact_match})
-
-        else:
-            location = get_geolocation(ip_address)
-            print(colored("Geolocalisation ", "green"), location)
-            final_result.append({"method": Method.GEOLOCATION, "locations": location})
+        # locations = get_locations_api(query, nlp)
+        # if len(locations) > 0:
+        #     print(colored("Expressions de lieux extraites avec l'API geographique: ", "green"), locations)
+        #     exact_match, similar, count = get_insee(locations)
+        #     final_result.append(
+        #         {"locations": locations, "method": Method.NAME, "exact_match": exact_match})
+        #
+        # else:
+        location = get_geolocation(ip_address)
+        print(colored("Geolocalisation ", "green"), location)
+        final_result.append({"method": Method.GEOLOCATION, "locations": location})
 
     return final_result
 

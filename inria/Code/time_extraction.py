@@ -43,7 +43,7 @@ def get_time(query, heideltime_parser):
     parsed = heideltime_parser.parse(query)
     # dom = xml.dom.minidom.parseString(parsed)
     # pretty_xml_as_string = dom.toprettyxml()
-    #
+    # print(pretty_xml_as_string)
     regex1 = "<TIMEX3INTERVAL earliestBegin=\"(.*?)\" latestBegin=\".*?\"" \
              " earliestEnd=\".*?\" latestEnd=\"(.*?)\">(.*?)</TIMEX3INTERVAL>"
 
