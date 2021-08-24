@@ -30,7 +30,7 @@ def main():
 
 
     with st.form(key='my_form'):
-        query = st.text_input(label='Enter your name')
+        query = st.text_input(label='Entrer la question')
         submit_button = st.form_submit_button(label='Submit')
 
         ####################################################################################################################
