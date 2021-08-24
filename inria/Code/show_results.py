@@ -7,7 +7,9 @@ import itertools
 from tabulate import tabulate
 from termcolor import colored
 from pprint import pprint
-
+import pandas as pd
+from location_extraction import *
+from time_extraction import *
 
 def distance(lon1, lat1, lon2, lat2):
     p = pi / 180
@@ -157,9 +159,8 @@ def get_table_data_bss(bss_codes, dates):
             for code, details in details_.items():
                 result = get_mesure_piezo(code)
                 if details["code_commune"] not in data_:
-                    data_[details["code_commune"]] = {}
-
-                data_[details["code_commune"]][code] = {"date_debut_mesure": details["date_debut_mesure"],
+                    data_[details["code_commune"]] = {"data":{}, "name": details["nom_commune"]}
+                data_[details["code_commune"]]["data"][code] = {"date_debut_mesure": details["date_debut_mesure"],
                                                         "date_fin_mesure": details["date_fin_mesure"],
                                                         "mesures": result["mesures"],
                                                         "count": result["count"]
@@ -174,6 +175,7 @@ def get_table_data_bss(bss_codes, dates):
 
 def get_table_data_locations(coms_to_keep, deps_to_keep, regs_to_keep, dates_to_keep):
     data_ = []
+    stations = {}
     if len(dates_to_keep) > 0:
         for date in dates_to_keep:
             data = {}
@@ -183,9 +185,13 @@ def get_table_data_locations(coms_to_keep, deps_to_keep, regs_to_keep, dates_to_
                     data[loc] = {}
                     code = details.get("codesDepartements", loc)
                     bss = insee_to_bss(code, gran)
+                    stations[loc] = {}
                     if bss == -1:
                         data[loc]["data"] = -1
                         data[loc]["name"] = details['nom']
+                        stations[loc]["nb_stations"] = 0
+                        stations[loc]["stations"] = []
+                        stations[loc]["name"] = details['nom']
                     else:
                         for station in bss:
                             result = get_mesure_piezo(station,start_date=date.get("start_date", None),
@@ -195,6 +201,10 @@ def get_table_data_locations(coms_to_keep, deps_to_keep, regs_to_keep, dates_to_
 
                         data[loc]["data"] = bss
                         data[loc]["name"] = details['nom']
+
+                        stations[loc]["nb_stations"] = len(bss)
+                        stations[loc]["stations"] = list(bss.keys())
+                        stations[loc]["name"] = details['nom']
 
             _ = {"data": data,
                  "start_date": date.get("start_date", None), "end_date": date.get("end_date", None)}
@@ -207,9 +217,13 @@ def get_table_data_locations(coms_to_keep, deps_to_keep, regs_to_keep, dates_to_
                 data[loc] = {}
                 code = details.get("codesDepartements", loc)
                 bss = insee_to_bss(code, gran)
+                stations[loc] = {}
                 if bss == -1:
                     data[loc]["data"] = -1
                     data[loc]["name"] = details['nom']
+                    stations[loc]["nb_stations"] = 0
+                    stations[loc]["stations"] = []
+                    stations[loc]["name"] = details['nom']
                 else:
                     for station in bss:
                         result = get_mesure_piezo(station)
@@ -218,31 +232,25 @@ def get_table_data_locations(coms_to_keep, deps_to_keep, regs_to_keep, dates_to_
 
                     data[loc]["data"] = bss
                     data[loc]["name"] = details['nom']
+                    stations[loc]["nb_stations"] = len(bss)
+                    stations[loc]["stations"] = list(bss.keys())
+                    stations[loc]["name"] = details['nom']
         _ = {"data": data}
         data_.append(_)
 
-    return data_
+    return data_, stations
 
-def format_table_general(mesures, nb_mesures=None, return_text = True):
+def format_table_general(mesures, nb_mesures=None):
     headers = ["Lieu", "Code station", "Nombre de mesures", "Date plus ancienne", "Date plus récente",
                "Niveau enregistré (altitude / mer)\nMIN", "Niveau enregistré (altitude / mer)\nMAX",
                "Niveau enregistré (altitude / mer)\nAVG",
                "Profondeur de la nappe (/ au sol)\nMIN", "Profondeur de la nappe (/ au sol)\nMAX",
                "Profondeur de la nappe (/ au sol)\nAVG"]
     table_data = []
-    text = []
     for location, data_ in mesures.items():
         if data_["data"] == -1:
-            if return_text:
-                text.append(f"Il n ya aucune station de mesure à : {data_['name']} ({location}):\n")
-
             table_data.append([data_["name"] + "(" + location + ")", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-"])
         else:
-            if return_text:
-                text.append(f"Il ya {len(data_['data'])} stations de mesure à {data_['name']} ({location}):\n")
-                text.append(f"Liste des codes BSS des stations:\n")
-                text.append(list(data_['data'].keys()))
-            return_text = False
             s, c, d1, d2, n1_max, n1_min, n1_avg, n2_max, n2_min, n2_avg = "", "", "", "", "", "", "", "", "", ""
             for station, data in data_['data'].items():
                 s += station + "\n"
@@ -279,7 +287,56 @@ def format_table_general(mesures, nb_mesures=None, return_text = True):
             table_data.append(
                 [data_.get("name", '') + "(" + location + ")", s, c, d1, d2, n1_min, n1_max, n1_avg, n2_min, n2_max, n2_avg])
 
-    return tabulate(table_data, headers, tablefmt="grid"), text
+    return tabulate(table_data, headers, tablefmt="grid")
+
+
+def show_results(query, flair_model, nlp, heideltime_parser, nb_mesures, all_locations, demonym_dict, ip_address):
+
+    final_result = {}
+    dates_to_keep, normalized_query = get_time(query, heideltime_parser)
+
+    final_result["tmmporal_expressions"] = dates_to_keep
+    bss_codes = get_bss(normalized_query)
+    if len(bss_codes) > 0:
+        final_result["BSS_codes"] = bss_codes
+        data = get_table_data_bss(bss_codes, dates_to_keep)
+        if len(data) == 0:
+            final_result["BSS_codes"] = "Le(s) code(s) ne correspond(ent)  à aucune station de mesure"
+    else:
+
+        locations = get_locations(normalized_query, all_locations, demonym_dict,
+                                  flair_model, nlp,
+                                  ip_address=ip_address)
+
+        final_result["all_location_data"] = locations
+
+        communes, departements, regions = classify(normalized_query, locations, nlp)
+
+        final_result["classified_location_data"] = {
+            "communes": communes,
+            "departements" : departements,
+            "regions": regions
+        }
+
+        coms_to_keep, deps_to_keep, regs_to_keep = get_relevant(communes, departements, regions)
+
+        final_result["relevant_location_data"] = {
+            "communes": coms_to_keep,
+            "departements": deps_to_keep,
+            "regions": regs_to_keep
+        }
+
+        data, stations = get_table_data_locations(coms_to_keep, deps_to_keep, regs_to_keep, dates_to_keep)
+        final_result["stations"] = stations
+
+    final_result["tables"] = []
+    for data_ in data:
+        table_general = format_table_general(data_["data"], nb_mesures)
+        final_result["tables"].append({"start_date": data_.get('start_date', ''), "end_date": data_.get('end_date', ''), "table": table_general})
+
+    return final_result
+
+
 
 # def get_closest_stations(bss, N=4):
 #     info = get_coordinates(bss)

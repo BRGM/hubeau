@@ -891,14 +891,14 @@ def get_locations(query_, all_location_names, demonym_dict, model, nlp, ip_addre
     locations = list(set(locations1 + locations2))
     exact_match, similar, count = get_insee(locations)
     if count > 0:
-        print(colored("Expressions de lieux extraites avec le modèle NER et la base de noms de lieux: ", "green"),
-              locations)
+        # print(colored("Expressions de lieux extraites avec le modèle NER et la base de noms de lieux: ", "green"),
+        #       locations)
         final_result.append(
             {"locations": locations, "method": Method.NAME, "exact_match": exact_match, "similar": similar})
 
     locations = get_location_demonym_dict(query_, demonym_dict, nlp)
     if len(locations) > 0:
-        print(colored("Expressions de lieux extraites à partir des gentilés: ", "green"), locations)
+        # print(colored("Expressions de lieux extraites à partir des gentilés: ", "green"), locations)
         exact_match_, similar_ = organize(locations)
         final_result.append({"locations": locations, "method": Method.DEMONYM, "exact_match": exact_match_, "similar": similar_})
 
@@ -912,7 +912,7 @@ def get_locations(query_, all_location_names, demonym_dict, model, nlp, ip_addre
         #
         # else:
         location = get_geolocation(ip_address)
-        print(colored("Geolocalisation ", "green"), location)
+        # print(colored("Geolocalisation ", "green"), location)
         final_result.append({"method": Method.GEOLOCATION, "locations": location})
 
     return final_result
