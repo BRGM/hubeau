@@ -30,21 +30,21 @@ def main():
         ip_address = data["IPv4"]
 
     ## User Query
-    query = "Y'a-t-il de l'eau dans le sous-sol à 03635X0545/PZ1 ?"
+    query = "Ya t il de l'eau orléanais et parisien et aubois en mars 2020 et décembre 2020  ?"
     # a_file.write(query)
     # a_file.write("\n")
     ####################################################################################################################
     final_result = show_results(query, flair_model, nlp, heideltime_parser, nb_mesures, all_locations, demonym_dict,
                                 ip_address)
+
     for text, elem in final_result.items():
 
-        if text == "tables":
+        if text == "recaps":
             for tb in elem:
-                print(tb["table"])
+                pprint(tb["recap"])
         else:
             print(colored(text, "red"))
-            print()
-            print(elem)
+            pprint(elem)
 
 if __name__ == "__main__":
     main()
