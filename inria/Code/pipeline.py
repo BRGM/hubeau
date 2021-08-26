@@ -6,7 +6,7 @@ from flair.models import SequenceTagger
 import stanza
 # stanza.download('fr') # run once
 def main():
-    MODEL_PATH = "NER_tool/stacked-standard-flair-150-wikiner.pt"
+    MODEL_PATH = "stacked-standard-flair-150-wikiner.pt"
     nb_mesures = None
 
     flair_model = SequenceTagger.load(MODEL_PATH)

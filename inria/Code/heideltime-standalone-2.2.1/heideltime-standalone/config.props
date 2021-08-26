@@ -21,7 +21,7 @@ considerTemponym = false
 # Path to TreeTagger home directory
 ###################################
 # Ensure there is no white space in path (try to escape white spaces)
-treeTaggerHome = /home/maya/Documents/hubeau/inria/Code/heideltime-standalone-2.2.1/tree_tagger
+treeTaggerHome = /heideltime-standalone-2.2.1/tree_tagger
 # This one is only necessary if you want to process chinese documents.
 chineseTokenizerPath = SET ME IN CONFIG.PROPS! (e.g., /home/jannik/treetagger/chinese-tokenizer)
 
