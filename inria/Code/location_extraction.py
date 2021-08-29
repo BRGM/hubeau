@@ -273,9 +273,9 @@ def get_location_demonym_dict(query, stemmed_dict, nlp):
     locations = {}
     for demonym in demonyms:
         stemmed = stem_nltk(demonym)
-        if stemmed in stemmed_dict["communes"] or stemmed in stemmed_dict["departements"]:
+        if stemmed in stemmed_dict["communes"] or stemmed in stemmed_dict["departements"] or stemmed in stemmed_dict["regions"]:
             locations[demonym] = list(
-                set(stemmed_dict["communes"].get(stemmed, []) + stemmed_dict["departements"].get(stemmed, [])))
+                set(stemmed_dict["communes"].get(stemmed, []) + stemmed_dict["departements"].get(stemmed, []) + stemmed_dict["regions"].get(stemmed, [])))
     return locations
 
 

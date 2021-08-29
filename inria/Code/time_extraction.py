@@ -13,7 +13,6 @@ def preprocess_date(date):
     Return string format yyyy-mm-dd
     """
     today_year = datetime.now().year
-
     match = re.match('([0-9]{4}-02)-29', date)
     if match:
         d = isodate.parse_date(match.group(1))
@@ -73,45 +72,53 @@ def get_time(query, heideltime_parser):
         for type, date, exp in dates:
             start_date_, end_date_ = "", ""
             if type == 'DATE':
-                start_date_ = preprocess_date(date)
-                match = re.search(f"depuis {exp}", query)
-                if match:
-                    end_date_ = datetime.now()
+                if date == "PRESENT_REF":
+                    start_date_ = datetime.now()
+                    end_date_ = start_date_ + timedelta(days=1)
                     result.append(
-                        {"start_date": start_date_.strftime("%Y-%m-%d"), "end_date": end_date_.strftime("%Y-%m-%d")})
-
+                        {"start_date": start_date_.strftime("%Y-%m-%d"),
+                         "end_date": end_date_.strftime("%Y-%m-%d")})
                 else:
-                    match = re.match(r"^[0-9]{4}-[0-9]{2}-[0-9]{2}$", date)
+                    start_date_ = preprocess_date(date)
+                    match = re.search(f"(depuis|Depuis) {exp}", query)
                     if match:
-                        end_date_ = start_date_ + timedelta(days=1)
+                        end_date_ = datetime.now()
                         result.append(
                             {"start_date": start_date_.strftime("%Y-%m-%d"),
                              "end_date": end_date_.strftime("%Y-%m-%d")})
 
                     else:
-                        match = re.match(r"^[0-9]{4}-[0-9]{2}$", date)
+                        match = re.match(r"^[0-9]{4}-[0-9]{2}-[0-9]{2}$", date)
                         if match:
-                            end_date_ = start_date_.replace(
-                                day=calendar.monthrange(start_date_.year, start_date_.month)[1])
+                            end_date_ = start_date_ + timedelta(days=1)
                             result.append(
                                 {"start_date": start_date_.strftime("%Y-%m-%d"),
                                  "end_date": end_date_.strftime("%Y-%m-%d")})
 
                         else:
-                            match = re.match(r"^[0-9]{4}$", date)
+                            match = re.match(r"^[0-9]{4}-[0-9]{2}$", date)
                             if match:
-                                end_date_ = start_date_.replace(day=31, month=12)
+                                end_date_ = start_date_.replace(
+                                    day=calendar.monthrange(start_date_.year, start_date_.month)[1])
                                 result.append(
                                     {"start_date": start_date_.strftime("%Y-%m-%d"),
                                      "end_date": end_date_.strftime("%Y-%m-%d")})
 
                             else:
-                                match = re.match(r"^[0-9]{4}-W[0-9]{2}$", date)
+                                match = re.match(r"^[0-9]{4}$", date)
                                 if match:
-                                    end_date_ = start_date_ + timedelta(days=7)
+                                    end_date_ = start_date_.replace(day=31, month=12)
                                     result.append(
                                         {"start_date": start_date_.strftime("%Y-%m-%d"),
                                          "end_date": end_date_.strftime("%Y-%m-%d")})
+
+                                else:
+                                    match = re.match(r"^[0-9]{4}-W[0-9]{2}$", date)
+                                    if match:
+                                        end_date_ = start_date_ + timedelta(days=7)
+                                        result.append(
+                                            {"start_date": start_date_.strftime("%Y-%m-%d"),
+                                             "end_date": end_date_.strftime("%Y-%m-%d")})
 
             if type == 'DURATION':
                 end_date_ = datetime.now()

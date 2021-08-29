@@ -6,7 +6,7 @@ from flair.models import SequenceTagger
 import stanza
 # stanza.download('fr') # run once
 def main():
-    MODEL_PATH = "stacked-standard-flair-150-wikiner.pt"
+    MODEL_PATH =  "stacked-standard-flair-150-wikiner.pt"
     nb_mesures = None
 
     flair_model = SequenceTagger.load(MODEL_PATH)
@@ -21,8 +21,10 @@ def main():
     all_locations = list(map(replace, np.unique(np.concatenate((communes_, departements_, regions_)))))
 
     # Reading the dictionnary of demonyms
-    demonym_dict = {"communes": json.load(open("demonyms/Data/final/gentiles_merged_reversed_stemmed.json")),
-                    "departements": json.load(open("demonyms/Data/deps_stemmed_reversed.json"))}
+    demonym_dict = {"communes": json.load(open("demonyms/Data/final/gentiles_merged_stemmed_reversed.json")),
+                    "departements": json.load(open("demonyms/Data/final/deps_stemmed_reversed.json")),
+                    "regions": json.load(open("demonyms/Data/final/regs_stemmed_reversed.json"))
+                    }
 
     # Getting user's IP adress
     with requests.get("https://geolocation-db.com/json") as url:
@@ -30,7 +32,7 @@ def main():
         ip_address = data["IPv4"]
 
     ## User Query
-    query = "Ya t il de l'eau orléanais et parisien et aubois en mars 2020 et décembre 2020  ?"
+    query = "Y a t il de l'eau dans le sous-sol  d'Orléans actuellement  ?"
     # a_file.write(query)
     # a_file.write("\n")
     ####################################################################################################################
