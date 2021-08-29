@@ -1,0 +1,20 @@
+{"Auvergne-Rhône-Alpes" : [" Auvergnats", "Rhônalpins"],
+"Bourgogne-Franche-Comté" : ["Bourguignons" , "Francs-Comtois"],
+"Bretagne" : ["Bretons"],
+"Centre-Val de Loire" : ["Centrais"],
+"Corse" : ["Corses"],
+"Grand Est" : ["Alsaciens", "Champenois", "Lorrains"],
+"Hauts-de-France" : ["Nordiste", "Picards"],
+"Île-de-France" : ["Franciliens"],
+"Normandie" : ["Normands"],
+"Nouvelle-Aquitaine" : ["Néo-Aquitains"],
+"Occitanie" : ["Occitans"],
+"Pays de la Loire"  : ["Ligériens"],
+"Provence-Alpes-Côte d'Azur" : ["Provençaux"],
+"Réunion" : ["Réunionnais"],
+"Guadeloupe" : ["Guadeloupéens"],
+"Guyane" : ["Guyanais"],
+"Martinique" : ["Martiniquais"],
+"Mayotte" : ["Mahorais"]
+}
+
