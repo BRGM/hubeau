@@ -6,7 +6,7 @@ import streamlit as st
 
 
 def main():
-    MODEL_PATH = "stacked-standard-flair-150-wikiner.pt"
+    MODEL_PATH = "NER_tool/stacked-standard-flair-150-wikiner.pt"
     nb_mesures = None
 
     flair_model = SequenceTagger.load(MODEL_PATH)
@@ -21,10 +21,12 @@ def main():
     all_locations = list(map(replace, np.unique(np.concatenate((communes_, departements_, regions_)))))
 
     # Reading the dictionnary of demonyms
-    demonym_dict = {"communes": json.load(open("demonyms/Data/final/gentiles_merged_reversed_stemmed.json")),
-                    "departements": json.load(open("demonyms/Data/deps_stemmed_reversed.json"))}
+    demonym_dict = {"communes": json.load(open("demonyms/Data/final/gentiles_merged_stemmed_reversed.json")),
+                    "departements": json.load(open("demonyms/Data/final/deps_stemmed_reversed.json")),
+                    "regions": json.load(open("demonyms/Data/final/regs_stemmed_reversed.json"))
+                    }
 
-    # Getting user's IP adress
+    # Getting user's IP address
     with requests.get("https://geolocation-db.com/json") as url:
         data = json.loads(url.text)
         ip_address = data["IPv4"]
@@ -47,7 +49,7 @@ def main():
                 df.columns = ["Date de debut", "Date de fin"]
                 st.dataframe(df)
             else:
-                st.header("Aucune expression temporelle detectée")
+                st.markdown("Aucune expression temporelle detectée")
 
             st.header("Contraintes de lieu:")
 
@@ -57,70 +59,64 @@ def main():
 
             else:
                 all = final_result['all_location_data']
+
                 for dict in all:
-                    if dict["method"] == "NAME":
+                    if dict["method"] in ["NAME", "DEMONYM"]:
+                        loc_expressions, temp_exact_match, temp_sim = [], [], []
+                        if dict["method"] == "NAME":
+                            for l in dict["locations"]:
+                                loc_expressions.append([l, "nom" , "-"])
+                            for name, data in dict["exact_match"].items():
+                                coms = ", ".join([info["nom"]+"("+com+")" for com, info in data["communes"].items()])
+                                deps = ", ".join([info["nom"]+"("+com+")" for com, info in data["departements"].items()])
+                                regs = ", ".join([info["nom"]+"("+com+")" for com, info in data["regions"].items()])
+                                temp_exact_match.append([name, coms if coms!="" else "-", deps if deps!="" else "-", regs if regs!="" else "-"])
 
-                        names = pd.DataFrame(dict["locations"], columns=["Noms de lieux"])
-                        temp1 = []
-                        for name, data in dict["exact_match"].items():
-                            coms = ", ".join([info["nom"]+"("+com+")" for com, info in data["communes"].items()])
-                            deps = ", ".join([info["nom"]+"("+com+")" for com, info in data["departements"].items()])
-                            regs = ", ".join([info["nom"]+"("+com+")" for com, info in data["regions"].items()])
-                            temp1.append([name, coms, deps, regs])
-                        temp2 = []
-                        for name, data in dict["similar"].items():
-                            coms = ", ".join([info["nom"] + "(" + com + ")" for com, info in data["communes"].items()])
-                            deps = ", ".join(
-                                [info["nom"] + "(" + com + ")" for com, info in data["departements"].items()])
-                            regs = ", ".join([info["nom"] + "(" + com + ")" for com, info in data["regions"].items()])
-                            temp2.append([name, coms if coms!="" else "-", coms if deps!="" else "-", coms if regs!="" else "-"])
-
-
-                    elif dict["method"] == "DEMONYM":
-
-                        temp = [[dem, ", ".join(locs)] for dem, locs in dict["locations"].items()]
-                        demonyms = pd.DataFrame(temp, columns=["Gentilé", "Noms de lieux correspondant"])
-                        temp3 = []
-                        for dem, data in dict["exact_match"].items():
-                            coms = ", ".join([info["nom"]+"("+com+")" for com, info in data["communes"].items()])
-                            deps = ", ".join([info["nom"]+"("+com+")" for com, info in data["departements"].items()])
-                            regs = ", ".join([info["nom"]+"("+com+")" for com, info in data["regions"].items()])
-                            temp3.append([dem, coms if coms!="" else "-", coms if deps!="" else "-", coms if regs!="" else "-"])
+                            for name, data in dict["similar"].items():
+                                coms = ", ".join([info["nom"] + "(" + com + ")" for com, info in data["communes"].items()])
+                                deps = ", ".join([info["nom"] + "(" + com + ")" for com, info in data["departements"].items()])
+                                regs = ", ".join([info["nom"] + "(" + com + ")" for com, info in data["regions"].items()])
+                                temp_sim.append([name, coms if coms!="" else "-", deps if deps!="" else "-", regs if regs!="" else "-"])
 
 
+                        elif dict["method"] == "DEMONYM":
+                            for dem, locs in dict["locations"].items():
+                                loc_expressions.append([dem,"gentilé", ", ".join(locs)])
+                            for dem, data in dict["exact_match"].items():
+                                coms = ", ".join([info["nom"]+"("+com+")" for com, info in data["communes"].items()])
+                                deps = ", ".join([info["nom"]+"("+com+")" for com, info in data["departements"].items()])
+                                regs = ", ".join([info["nom"]+"("+com+")" for com, info in data["regions"].items()])
+                                temp_exact_match.append([dem, coms if coms!="" else "-", deps if deps!="" else "-", regs if regs!="" else "-"])
 
+                        st.subheader("Noms de lieux et gentilés mentionnés :")
+                        st.dataframe(pd.DataFrame(loc_expressions, columns=["Expression de lieu", "Type",
+                                                                            "Noms de lieux correspondant"]))
 
+                        st.subheader("Divisions adimistratives (à correspondance exacte):")
+                        st.table(pd.DataFrame(temp_exact_match,
+                                              columns=["Expression de lieu", "Communes", "Départements", "Régions"]))
+
+                        st.subheader("Divisions adimistratives (à peu près semblables):")
+                        st.table(pd.DataFrame(temp_sim,
+                                              columns=["Expression de lieu", "Communes", "Départements", "Régions"]))
+
+                        classified = final_result['classified_location_data']
+                        st.subheader("Classification :")
+                        temp = []
+                        for div, data in classified.items():
+                            text = []
+                            for name, locs in data.items():
+                                text.append(", ".join([info["nom"] + "(" + com + ")" for com, info in locs.items()]))
+                            _ = ", ".join(text)
+                            temp.append(_ if _ != "" else "-")
+
+                        st.table(
+                            pd.DataFrame(temp, index=["Communes", "Départements", "Régions"], columns=["Divisions"]))
 
 
                     elif dict["method"] == "GEOLOCATION":
-                        st.text("geo")
-                if len(names) > 0:
-                    st.subheader("Noms de lieux mentionnés :")
-                    st.dataframe(names)
-                if len(demonyms) > 0:
-                    st.subheader("Gentilé mentionnés et noms de lieux correspondant:")
-                    st.dataframe(demonyms)
+                       st.markdown("Aucune contrainte de lieu detectée, l'utilisateur est géolocalisé via son adresse IP.")
 
-                if len(names) > 0:
-                    st.subheader("Divisions adimistratives  portant les noms :")
-                    st.table(pd.DataFrame(temp1, columns=["Nom", "Communes", "Départements", "Régions"]))
-                    st.subheader("Divisions adimistratives  portant des noms ressemblant:")
-                    st.table(pd.DataFrame(temp2, columns=["Nom", "Communes", "Départements", "Régions"]))
-                if len(demonyms) > 0:
-                    st.subheader("Divisions adimistratives correspondant aux gentilés:")
-                    st.table(pd.DataFrame(temp3, columns=["Gentilé", "Communes", "Départements", "Régions"]))
-
-                classified = final_result['classified_location_data']
-                st.subheader("Classification :")
-                temp = []
-                for div, data in classified.items():
-                    text = []
-                    for name, locs in data.items():
-                        text.append(", ".join([info["nom"] + "(" + com + ")" for com, info in locs.items()]))
-                    _ = ", ".join(text)
-                    temp.append(_ if _!="" else "-")
-
-                st.table(pd.DataFrame(temp, index = ["Communes", "Départements", "Régions"], columns=["Divisions"]))
 
                 relevent = final_result['relevant_location_data']
                 st.header("Lieux pertinents retenus pour sélectionner les piézomètres:")
@@ -142,7 +138,7 @@ def main():
             if len(tables) == 0:
                 st.text("Le(s) code(s) ne correspond(ent) à aucun piézomètre existant")
             else:
-                st.header("Tableau récapitulatifs")
+                st.header("Tableaux récapitulatifs")
                 for tb in tables:
                     if tb["start_date"] != '' and tb["end_date"] != '':
                         st.markdown(
@@ -150,9 +146,13 @@ def main():
                                 "end_date"] + ":")
 
                     else:
-                        st.text("hello")
+                        st.text("Tableau récapitulatif de toutes les mesures prises sur les piézomètres selectionnés:")
                     df = pd.json_normalize(tb["recap"])
-                    df.reset_index(drop=True, inplace=True)
+                    df.columns = ["Lieu", "Code station", "Nombre de mesures", "Date plus ancienne", "Date plus récente",
+                   "Niveau enregistré (altitude / mer)\nMIN", "Niveau enregistré (altitude / mer)\nMAX",
+                   "Niveau enregistré (altitude / mer)\nAVG",
+                   "Profondeur de la nappe (/ au sol)\nMIN", "Profondeur de la nappe (/ au sol)\nMAX",
+                   "Profondeur de la nappe (/ au sol)\nAVG"]
                     st.table(df)
 
 
