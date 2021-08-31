@@ -1,3 +1,4 @@
+from python_heideltime import Heideltime
 from show_results import *
 import pandas as pd
 from flair.models import SequenceTagger
@@ -35,8 +36,9 @@ def main():
         layout="wide")
 
     with st.form(key='my_form'):
+        st.header("Hub'eau Chatbot")
         query = st.text_input(label='Entrer la question')
-        submit_button = st.form_submit_button(label='Submit')
+        submit_button = st.form_submit_button(label='Suivant')
 
         if query != "" and submit_button:
             final_result = show_results(query, flair_model, nlp, heideltime_parser, nb_mesures, all_locations,
@@ -45,8 +47,7 @@ def main():
             st.header("Contraintes de temps:")
             if len(exp) > 0:
                 st.subheader("Expressions temporelles extraites:")
-                df = pd.json_normalize(exp)
-                df.columns = ["Date de debut", "Date de fin"]
+                df = pd.DataFrame([[e["start_date"], e["end_date"]]for e in exp], columns = ["Date de debut", "Date de fin"])
                 st.dataframe(df)
             else:
                 st.markdown("Aucune expression temporelle detectée")
@@ -101,7 +102,7 @@ def main():
                                               columns=["Expression de lieu", "Communes", "Départements", "Régions"]))
 
                         classified = final_result['classified_location_data']
-                        st.subheader("Classification :")
+                        st.subheader("Choix du type de division à considérer :")
                         temp = []
                         for div, data in classified.items():
                             text = []
@@ -130,7 +131,7 @@ def main():
                 stations = final_result['stations']
                 st.header("Listes des stations de mesure:")
                 for insee, data in stations.items():
-                    st.subheader(data["name"] + "(" + insee + ")")
+                    st.subheader(data["name"] + "(" + insee + ") : " + f"{data['nb_stations']} stations" if data["nb_stations"] > 0 else "")
                     text = ", ".join(data["stations"]) if data["nb_stations"] > 0 else "Aucune station de mesure"
                     st.markdown(text)
 
@@ -150,9 +151,9 @@ def main():
                     df = pd.json_normalize(tb["recap"])
                     df.columns = ["Lieu", "Code station", "Nombre de mesures", "Date plus ancienne", "Date plus récente",
                    "Niveau enregistré (altitude / mer)\nMIN", "Niveau enregistré (altitude / mer)\nMAX",
-                   "Niveau enregistré (altitude / mer)\nAVG",
+                   "Niveau enregistré (altitude / mer)\nAVG", "Niveau enregistré (altitude / mer)\nLAST",
                    "Profondeur de la nappe (/ au sol)\nMIN", "Profondeur de la nappe (/ au sol)\nMAX",
-                   "Profondeur de la nappe (/ au sol)\nAVG"]
+                   "Profondeur de la nappe (/ au sol)\nAVG", "Profondeur de la nappe (/ au sol)\nLAST"]
                     st.table(df)
 
 

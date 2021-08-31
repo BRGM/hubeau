@@ -303,9 +303,12 @@ def format_dict_general(mesures, nb_mesures=None):
             dict_data["min_sea"] = "-"
             dict_data["max_sea"] = "-"
             dict_data["avg_sea"] = "-"
+            dict_data["last_sea"] = "-"
             dict_data["min_ground"] = "-"
             dict_data["max_ground"] = "-"
             dict_data["avg_ground"] = "-"
+            dict_data["last_ground"] = "-"
+
             result.append(dict_data)
         else:
             for station, data in data_['data'].items():
@@ -317,9 +320,11 @@ def format_dict_general(mesures, nb_mesures=None):
                     dict_data["min_sea"] = "-"
                     dict_data["max_sea"] = "-"
                     dict_data["avg_sea"] = "-"
+                    dict_data["last_sea"] = "-"
                     dict_data["min_ground"] = "-"
                     dict_data["max_ground"] = "-"
                     dict_data["avg_ground"] = "-"
+                    dict_data["last_ground"] = "-"
 
                 else:
                     n1_, n2_, dates = [], [], []
@@ -337,9 +342,12 @@ def format_dict_general(mesures, nb_mesures=None):
                     dict_data["min_sea"] = str(min(n1_[sortd]))
                     dict_data["max_sea"] = str(max(n1_[sortd]))
                     dict_data["avg_sea"] = str(sum(n1_[sortd]) / nb_mesures)
+                    dict_data["last_sea"] = str(n1_[sortd[-1]])
                     dict_data["min_ground"] = str(min(n2_[sortd]))
                     dict_data["max_ground"] = str(max(n2_[sortd]))
                     dict_data["avg_ground"] = str(sum(n2_[sortd]) / nb_mesures)
+                    dict_data["last_ground"] = str(n2_[sortd[-1]])
+
                 result.append(dict_data.copy())
     return result
 
@@ -347,7 +355,6 @@ def format_dict_general(mesures, nb_mesures=None):
 def show_results(query, flair_model, nlp, heideltime_parser, nb_mesures, all_locations, demonym_dict, ip_address):
     final_result = {}
     dates_to_keep, normalized_query = get_time(query, heideltime_parser)
-
     final_result["temporal_expressions"] = dates_to_keep
     bss_codes = get_bss(normalized_query)
     if len(bss_codes) > 0:
@@ -370,7 +377,6 @@ def show_results(query, flair_model, nlp, heideltime_parser, nb_mesures, all_loc
         }
 
         coms_to_keep, deps_to_keep, regs_to_keep = get_relevant(communes, departements, regions)
-
         final_result["relevant_location_data"] = {
             "communes": coms_to_keep,
             "departements": deps_to_keep,

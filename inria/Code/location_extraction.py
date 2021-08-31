@@ -882,7 +882,6 @@ def get_locations(query_, all_location_names, demonym_dict, model, nlp, ip_addre
     locations1 = [ re.sub("^l'", "", l) for l in locations1]
     locations2 = get_locations_static(query_, all_location_names, nlp)
     locations = list(set(locations1 + locations2))
-    print(locations)
     exact_match, similar, count = get_insee(locations)
     if count > 0:
         final_result.append(
@@ -891,7 +890,6 @@ def get_locations(query_, all_location_names, demonym_dict, model, nlp, ip_addre
     locations_ = get_location_demonym_dict(query_, demonym_dict, nlp)
     locations__ = {loc: locations_[loc] for loc in locations_ if loc not in locations}
     if len(locations__) > 0:
-        print(locations__)
         exact_match_, similar_ = organize(locations__)
         final_result.append({"locations": locations__, "method": "DEMONYM", "exact_match": exact_match_, "similar": similar_})
 
