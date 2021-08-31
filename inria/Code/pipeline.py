@@ -21,8 +21,11 @@ def main():
     all_locations = list(map(replace, np.unique(np.concatenate((communes_, departements_, regions_)))))
 
     # Reading the dictionnary of demonyms
-    demonym_dict = {"communes": json.load(open("demonyms/Data/final/gentiles_merged_reversed_stemmed.json")),
-                    "departements": json.load(open("demonyms/Data/deps_stemmed_reversed.json"))}
+    demonym_dict = {
+        "communes": json.load(open("demonyms/Data/final/gentiles_merged_stemmed_reversed.json")),
+                    "departements": json.load(open("demonyms/Data/final/deps_stemmed_reversed.json")),
+                    "regions": json.load(open("demonyms/Data/final/regs_stemmed_reversed.json"))
+                    }
 
     # Getting user's IP adress
     with requests.get("https://geolocation-db.com/json") as url:
@@ -30,7 +33,7 @@ def main():
         ip_address = data["IPv4"]
 
     ## User Query
-    query = "Y'a-t-il de l'eau dans le sous-sol à 03635X0545/PZ1 ?"
+    query = "Located in the region o"
     # a_file.write(query)
     # a_file.write("\n")
     ####################################################################################################################
@@ -38,13 +41,14 @@ def main():
                                 ip_address)
     for text, elem in final_result.items():
 
-        if text == "tables":
-            for tb in elem:
-                print(tb["table"])
-        else:
-            print(colored(text, "red"))
-            print()
-            print(elem)
+    # for text, elem in final_result.items():
+    #
+    #     if text == "recaps":
+    #         for tb in elem:
+    #             pprint(tb["recap"])
+    #     else:
+    #         print(colored(text, "red"))
+    #         pprint(elem)
 
 if __name__ == "__main__":
     main()

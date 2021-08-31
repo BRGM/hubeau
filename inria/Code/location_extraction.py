@@ -8,16 +8,9 @@ import predict_flair
 from ip2geotools.databases.noncommercial import DbIpCity
 import re
 import ipinfo
+from pprint import pprint
 from termcolor import colored
 from enum import Enum
-
-
-class Method(Enum):
-    GEOLOCATION = 1
-    NAME = 2
-    DEMONYM = 3
-
-
 def get_bss(query):
     """
      Extract BSS code from query using a regular expression: AAAABCDDDD/designation
@@ -280,9 +273,9 @@ def get_location_demonym_dict(query, stemmed_dict, nlp):
     locations = {}
     for demonym in demonyms:
         stemmed = stem_nltk(demonym)
-        if stemmed in stemmed_dict["communes"] or stemmed in stemmed_dict["departements"]:
+        if stemmed in stemmed_dict["communes"] or stemmed in stemmed_dict["departements"] or stemmed in stemmed_dict["regions"]:
             locations[demonym] = list(
-                set(stemmed_dict["communes"].get(stemmed, []) + stemmed_dict["departements"].get(stemmed, [])))
+                set(stemmed_dict["communes"].get(stemmed, []) + stemmed_dict["departements"].get(stemmed, []) + stemmed_dict["regions"].get(stemmed, [])))
     return locations
 
 
@@ -309,18 +302,18 @@ def get_insee_commune(commune, parameter):
     response = json.loads(requests.get(url).text)
     if parameter == "nom":
         exact_match = {
-            code["code"]: {"nom": code["nom"], "codeDepartement": code["codeDepartement"],
+            code.get("code", ""): {"nom": code.get("nom", ""), "codeDepartement": code.get("codeDepartement", ""),
                            "codeRegion": code["codeRegion"]} for code in response
-            if equal(code["nom"], commune)}
+            if equal(code.get("nom", ""), commune)}
 
-        similar = {code["code"]: {"nom": code["nom"], "codeDepartement": code["codeDepartement"],
-                                  "codeRegion": code["codeRegion"]} for code in response if
-                   not equal(code["nom"], commune)}
+        similar = {code.get("code", ""): {"nom": code.get("nom", ""), "codeDepartement": code.get("codeDepartement", ""),
+                                  "codeRegion": code.get("codeRegion", "")} for code in response if
+                   not equal(code.get("nom", ""), commune)}
         return exact_match, similar
     elif parameter == "code":
         exact_match = {
-            code["code"]: {"nom": code["nom"], "codeDepartement": code["codeDepartement"],
-                           "codeRegion": code["codeRegion"]} for code in response}
+            code.get("code", ""): {"nom": code.get("nom", ""), "codeDepartement": code.get("codeDepartement", ""),
+                           "codeRegion": code.get("codeRegion", "")} for code in response}
         return exact_match
 
 
@@ -345,15 +338,15 @@ def get_insee_departement(departement, parameter):
 
     response = json.loads(requests.get(url).text)
     if parameter == "nom":
-        exact_match = {code["code"]: {"nom": code["nom"], "codeRegion": code["codeRegion"]}
+        exact_match = {code.get("code", ""): {"nom": code.get("nom", ""), "codeRegion": code.get("codeRegion", "")}
                        for code in
-                       response if equal(code["nom"], departement)}
-        similar = {code["code"]: {"nom": code["nom"], "codeRegion": code["codeRegion"]} for
+                       response if equal( code.get("nom", ""), departement)}
+        similar = {code.get("code", ""): {"nom":  code.get("nom", ""), "codeRegion": code.get("codeRegion", "")} for
                    code in
-                   response if not equal(code["nom"], departement)}
+                   response if not equal( code.get("nom", ""), departement)}
         return exact_match, similar
     elif parameter == "code":
-        exact_match = {code["code"]: {"nom": code["nom"], "codeRegion": code["codeRegion"]}
+        exact_match = {code.get("code", ""): {"nom":  code.get("nom", ""), "codeRegion": code.get("codeRegion", "")}
                        for code in response}
         return exact_match
 
@@ -381,28 +374,28 @@ def get_insee_region(region, parameter):
 
     if parameter == "nom":
 
-        exact_match = {code["code"]: {"nom": code["nom"]} for code in response if
-                       equal(code["nom"], region)}
+        exact_match = {code.get("code", ""): {"nom": code.get("nom", "")} for code in response if
+                       equal(code.get("nom", ""), region)}
         for region in exact_match:
             url = "https://geo.api.gouv.fr/regions/{c}/departements".format(c=region)
             deps = json.loads(requests.get(url).text)
-            exact_match[region]["codesDepartements"] = [code["code"] for code in deps]
+            exact_match[region]["codesDepartements"] = [code.get("code", "") for code in deps]
 
         similar = {code["code"]: {"nom": code["nom"]} for code in response if not equal(code["nom"], region)}
         for similar_region in similar:
             url = "https://geo.api.gouv.fr/regions/{c}/departements".format(c=similar_region)
             deps = json.loads(requests.get(url).text)
-            similar[similar_region]["codesDepartements"] = [code["code"] for code in deps]
+            similar[similar_region]["codesDepartements"] = [code.get("code", "") for code in deps]
 
         return exact_match, similar
 
     elif parameter == "code":
 
-        exact_match = {code["code"]: {"nom": code["nom"]} for code in response}
+        exact_match = {code.get("code", ""): {"nom": code.get("nom", "")} for code in response}
         for region in exact_match:
             url = "https://geo.api.gouv.fr/regions/{c}/departements".format(c=region)
             deps = json.loads(requests.get(url).text)
-            exact_match[region]["codesDepartements"] = [code["code"] for code in deps]
+            exact_match[region]["codesDepartements"] = [code.get("code", "") for code in deps]
 
         return exact_match
 
@@ -676,7 +669,7 @@ def classify_geoloc(query, locations):
     url = "https://geo.api.gouv.fr/communes?lat={lat}&lon={long}&fields=code,codeDepartement,codeRegion".format(
         lat=locations["lat"], long=locations["long"])
     response = json.loads(requests.get(url).text)[0]
-    code_c, code_d, code_r = response["code"], response["codeDepartement"], response["codeRegion"]
+    code_c, code_d, code_r = response.get("code", ""), response.get("codeDepartement", ""), response.get("codeRegion", "")
     d_match = re.search("departement|département", query)
     if d_match:
         exact_match = get_insee_departement(code_d, "code")
@@ -784,10 +777,10 @@ def classify(query, locations, nlp):
     """
     communes, departements, regions = {}, {}, {}
     for locations_ in locations:
-        if locations_["method"] == Method.GEOLOCATION:
+        if locations_["method"] == "GEOLOCATION":
             return classify_geoloc(query, locations_["locations"])
 
-        if locations_["method"] == Method.NAME or locations_["method"] == Method.DEMONYM:
+        if locations_["method"] == "NAME" or locations_["method"] == "DEMONYM":
             c, d, r = classify_nameNdemonym(query, locations_["locations"],
                                             locations_["exact_match"], locations_["similar"], nlp)
 
@@ -891,18 +884,16 @@ def get_locations(query_, all_location_names, demonym_dict, model, nlp, ip_addre
     locations = list(set(locations1 + locations2))
     exact_match, similar, count = get_insee(locations)
     if count > 0:
-        # print(colored("Expressions de lieux extraites avec le modèle NER et la base de noms de lieux: ", "green"),
-        #       locations)
         final_result.append(
-            {"locations": locations, "method": Method.NAME, "exact_match": exact_match, "similar": similar})
+            {"locations": locations, "method": "NAME", "exact_match": exact_match, "similar": similar})
 
-    locations = get_location_demonym_dict(query_, demonym_dict, nlp)
-    if len(locations) > 0:
-        # print(colored("Expressions de lieux extraites à partir des gentilés: ", "green"), locations)
-        exact_match_, similar_ = organize(locations)
-        final_result.append({"locations": locations, "method": Method.DEMONYM, "exact_match": exact_match_, "similar": similar_})
+    locations_ = get_location_demonym_dict(query_, demonym_dict, nlp)
+    locations__ = {loc: locations_[loc] for loc in locations_ if loc not in locations}
+    if len(locations__) > 0:
+        exact_match_, similar_ = organize(locations__)
+        final_result.append({"locations": locations__, "method": "DEMONYM", "exact_match": exact_match_, "similar": similar_})
 
-    if count + len(locations) == 0:
+    if count + len(locations__) == 0:
         # locations = get_locations_api(query, nlp)
         # if len(locations) > 0:
         #     print(colored("Expressions de lieux extraites avec l'API geographique: ", "green"), locations)
@@ -913,7 +904,7 @@ def get_locations(query_, all_location_names, demonym_dict, model, nlp, ip_addre
         # else:
         location = get_geolocation(ip_address)
         # print(colored("Geolocalisation ", "green"), location)
-        final_result.append({"method": Method.GEOLOCATION, "locations": location})
+        final_result.append({"method": "GEOLOCATION", "locations": location})
 
     return final_result
 
