@@ -7,7 +7,7 @@ import streamlit as st
 
 
 def main():
-    MODEL_PATH = "stacked-standard-flair-150-wikiner.pt"
+    MODEL_PATH = "NER_tool/stacked-standard-flair-150-wikiner.pt"
     nb_mesures = None
 
     flair_model = SequenceTagger.load(MODEL_PATH)
@@ -37,6 +37,8 @@ def main():
 
     with st.form(key='my_form'):
         st.header("Hub'eau Chatbot")
+        st.markdown("Le chatbot Hub'eau est specialisé dans les données sur la qualité de l'eau, plus précisement les eaux souterraines! \
+        Il prend des questions du genre \" Quelle a été la profondeur des nappes chez moi, cette année? \" ou encore \"Y a t il de l'eau dans les sous-sols orléanais ?\"")
         query = st.text_input(label='Entrer la question')
         submit_button = st.form_submit_button(label='Suivant')
 
@@ -47,6 +49,8 @@ def main():
             st.header("Contraintes de temps:")
             if len(exp) > 0:
                 st.subheader("Expressions temporelles extraites:")
+                st.markdown(
+                    "Le tableau représente les intervalles de temps (debut et fin) utilisés pour récuperer les mesures piézométriques:")
                 df = pd.DataFrame([[e["start_date"], e["end_date"]]for e in exp], columns = ["Date de debut", "Date de fin"])
                 st.dataframe(df)
             else:
@@ -93,26 +97,28 @@ def main():
                         st.dataframe(pd.DataFrame(loc_expressions, columns=["Expression de lieu", "Type",
                                                                             "Noms de lieux correspondant"]))
 
-                        st.subheader("Divisions adimistratives (à correspondance exacte):")
+                        st.subheader("Divisions adiministratives (à correspondance exacte):")
                         st.table(pd.DataFrame(temp_exact_match,
                                               columns=["Expression de lieu", "Communes", "Départements", "Régions"]))
 
-                        st.subheader("Divisions adimistratives (à peu près semblables):")
-                        st.table(pd.DataFrame(temp_sim,
-                                              columns=["Expression de lieu", "Communes", "Départements", "Régions"]))
+                        if len(temp_sim)>0:
+                            st.subheader("Divisions adimistratives (à peu près semblables):")
+                            st.table(pd.DataFrame(temp_sim,
+                                                  columns=["Expression de lieu", "Communes", "Départements", "Régions"]))
 
-                        classified = final_result['classified_location_data']
-                        st.subheader("Choix du type de division à considérer :")
-                        temp = []
-                        for div, data in classified.items():
-                            text = []
-                            for name, locs in data.items():
-                                text.append(", ".join([info["nom"] + "(" + com + ")" for com, info in locs.items()]))
-                            _ = ", ".join(text)
-                            temp.append(_ if _ != "" else "-")
-
-                        st.table(
-                            pd.DataFrame(temp, index=["Communes", "Départements", "Régions"], columns=["Divisions"]))
+                        # classified = final_result['classified_location_data']
+                        # st.subheader("Choix du type de division à considérer :")
+                        # st.markdown("Pour les cas où un noms correspond à differents types de divisions")
+                        # temp = []
+                        # for div, data in classified.items():
+                        #     text = []
+                        #     for name, locs in data.items():
+                        #         text.append(", ".join([info["nom"] + "(" + com + ")" for com, info in locs.items()]))
+                        #     _ = ", ".join(text)
+                        #     temp.append(_ if _ != "" else "-")
+                        #
+                        # st.table(
+                        #     pd.DataFrame(temp, index=["Communes", "Départements", "Régions"], columns=["Divisions"]))
 
 
                     elif dict["method"] == "GEOLOCATION":
@@ -120,7 +126,7 @@ def main():
 
 
                 relevent = final_result['relevant_location_data']
-                st.header("Lieux pertinents retenus pour sélectionner les piézomètres:")
+                st.header("Récapitulatifs des lieux pertinents retenus pour sélectionner les piézomètres:")
                 temp = []
                 for div, locs in relevent.items():
                     for insee, data in locs.items():
