@@ -1,4 +1,3 @@
-from python_heideltime import Heideltime
 from show_results import *
 import pandas as pd
 from termcolor import colored
@@ -7,7 +6,7 @@ from flair.models import SequenceTagger
 import stanza
 # stanza.download('fr') # run once
 def main():
-    MODEL_PATH =  "stacked-standard-flair-150-wikiner.pt"
+    MODEL_PATH = "stacked-standard-flair-150-wikiner.pt"
     nb_mesures = None
 
     flair_model = SequenceTagger.load(MODEL_PATH)
@@ -40,6 +39,7 @@ def main():
     ####################################################################################################################
     final_result = show_results(query, flair_model, nlp, heideltime_parser, nb_mesures, all_locations, demonym_dict,
                                 ip_address)
+    for text, elem in final_result.items():
 
     # for text, elem in final_result.items():
     #

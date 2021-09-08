@@ -20,4 +20,4 @@ RUN python download_stanza_model.py
 
 COPY . .
 WORKDIR .
-CMD [ "streamlit", "run", "pipeline_st.py" ]
+CMD [ "streamlit", "run", "pipeline_st.py", "--server.enableCORS=false", "--server.enableXsrfProtection=false","--server.enableWebsocketCompression=false" ]
