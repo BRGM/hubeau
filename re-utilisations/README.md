@@ -1,4 +1,9 @@
 # Ré-utilisations des APIs Hub'Eau, disponibles sur GitHub ou divers blogs  
+## [hubeau-api-wrapper javascript](https://github.com/christophe77/hubeau-api-wrapper)  
+* Wrapper complet de toutes les API disponibles sur Hubeau.
+* Ecrit en typescript et disponible sur [npmjs.com](https://www.npmjs.com/package/hubeau-api), il fonctionne aussi bien sur une appli backend nodejs qu'avec un framework frontend comme ReactJS.
+* Des exemples ESM et CJS de chaque API sont disponibles sur le dépôt du wrapper et une démo d'utilisation avec React est [disponible ici](https://github.com/christophe77/hubeau-react-exemple).
+
 ## [Exploring (hydro-)geological data of France with python, by Guillaume Attard](https://guillaumeattard.com/exploring-hydro-geological-data-of-france-with-python/)  
 The aim of this article is to present some of the webservices managed by the [French Geological Survey](https://www.brgm.fr/). Particularly, we are going to:  
 * download and analyze boreholes information at the scale of the department of our choice: water supply wells and geothermal installations will be identified  
