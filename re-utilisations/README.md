@@ -1,4 +1,9 @@
 # Ré-utilisations des APIs Hub'Eau, disponibles sur GitHub ou divers blogs  
+## [GD4H : cas d’usage qualité de l'eau du robinet](https://github.com/blenzi/GD4H_eau)  
+Le Green Data for Health (GD4H) est un projet inscrit dans le 4ème Plan National Santé Environnement qui a pour objectif de faciliter la mobilisation et la valorisation, par les chercheurs et les experts, des données environnementales au service de la santé-environnement.  
+Un des cas d'usage identifiés est l'étude des impacts de la qualité de l'eau potable. 
+GD4H_eau est une collection de notebooks qui illustrent la cartographie des données d’analyse de l’eau potable, en s'appuyant sur l'API qualité de l'eau potable de Hub'Eau.  
+  
 ## [hubeau-api-wrapper javascript](https://github.com/christophe77/hubeau-api-wrapper)  
 * Wrapper complet de toutes les API disponibles sur Hubeau.
 * Ecrit en typescript et disponible sur [npmjs.com](https://www.npmjs.com/package/hubeau-api), il fonctionne aussi bien sur une appli backend nodejs qu'avec un framework frontend comme ReactJS.
