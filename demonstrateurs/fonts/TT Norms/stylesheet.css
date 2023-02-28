@@ -1,0 +1,8 @@
+@font-face {
+    font-family: 'tt_normsmedium';
+    src: url('ttnorms-medium-webfont.woff2') format('woff2'),
+         url('ttnorms-medium-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}
