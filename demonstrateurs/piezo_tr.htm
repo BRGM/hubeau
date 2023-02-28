@@ -1,0 +1,151 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr" >
+<head>
+<title>Démonstrateur Piézométrie Temps Réel Hub'Eau</title>
+<meta name="author" content="BRGM" />
+<meta name="description" content="Quelle est la profondeur de la nappe d'eau souterraine sous mes pieds ?" />
+<meta name="keywords" content="eau, eau souterraine, niveau, profondeur, nappe, aquifère, Hub'Eau, HubEau, France" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Language" content="fr" />
+<link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/odometer-theme-car-piezo.css" />
+<link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+<link rel="icon" href="images/favicon.ico" type="image/x-icon">
+<!-- si on veut ajouter le "m" dans le conteneur du compteur
+.odometer .odometer-inside:after {
+    content: "m"
+} !-->
+<script type="text/javascript" src="js/odometer.min.js"></script>
+<!--<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-103689621-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- HighCharts / StockCharts -->
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script src="https://code.highcharts.com/stock/highstock.js"></script>
+<script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/stock/modules/export-data.js"></script>
+<script src="https://code.highcharts.com/stock/modules/data.js"></script>
+<!-- OpenLayers 5 -->
+	<script src="https://cdn.rawgit.com/openlayers/openlayers.github.io/master/en/v5.3.0/build/ol.js"></script>
+    <link rel="stylesheet" href="https://cdn.rawgit.com/openlayers/openlayers.github.io/master/en/v5.3.0/css/ol.css" type="text/css">
+<!-- Fonctions javascript communes à tous les démonstrateurs -->
+<script type="text/javascript" src="js/commun.js"></script>
+<!-- Scripts Javascript propres à démonstrateur piezo TR -->
+<script src="js/piezo_tr.js"></script>
+
+<!-- walkermatt/ol-layerswitcher https://github.com/walkermatt/ol-layerswitcher/tree/master/dist -->
+<link rel="stylesheet" href="js/layerswitcher/ol-layerswitcher.css" />
+<script src="js/layerswitcher/ol-layerswitcher.js"></script>
+
+<!-- styles spécifiques à ce démonstrateur
+<!-- font-family: tt_normsmedium !important; le chiffre 1 n'est pas centré avec cette police 
+on a ajouté 1000 à la profondeur : enlever le 1er chiffre et le signe des milliers 
+arrondir le nouveau 1er chiffre à gauche 
+Affichage de 3 chiffres sans virgule -->
+<link rel="stylesheet" type="text/css" href="css/stylebase.css" media="all" />
+<style>
+.odometer .odometer-inside .odometer-digit:first-child,
+.odometer .odometer-inside .odometer-formatting-mark:nth-child(2) {
+    display: none
+}
+.odometer .odometer-inside .odometer-digit:nth-child(3) {
+  -moz-border-radius: 0.2em 0 0 0.2em;
+  -webkit-border-radius: 0.2em 0 0 0.2em;
+  -o-border-radius: 0.2em 0 0 0.2em;
+  -ms-border-radius: 0.2em 0 0 0.2em;
+  -khtml-border-radius: 0.2em 0 0 0.2em;
+  border-radius: 0.2em 0 0 0.2em;
+}
+#down img {
+		top: 338px;
+}
+#container {
+	width: 100%;
+	height: 10px;
+}
+#contact {
+	display: none;
+}	
+#etat {
+	bottom: 0px;
+}
+</style>
+</head>
+<body>
+  <div id="popup" class="ol-popup">
+    <a href="#" id="popupcloser" class="ol-popup-closer"></a>
+    <div id="popupcontent"></div>
+  </div>
+<div id="search"> 
+  <div id="search_haut">
+	<p>&nbsp;</p>
+	<div id="brgm"><a href="https://www.brgm.fr" target="_blank"><img src="images/logo_brgm_web_fr_couleur.svg" height="40px"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://hubeau.eaufrance.fr" target="_blank"><img src="images/logo_hubeau_long_transp.png" height="40px"></a></div>
+	<br>
+	<form id='form1' onSubmit="get_adresse(); return false;" >
+	<input type="text" id="adresse" name="adresse" size="40" placeholder="Entrez une adresse pour vous localiser">
+	<input type="submit" value="" class="loupe">
+	</form>
+	<img src="images/goutesousrecherche.svg" height="30px"> <!-- 48px -->
+	
+	<h3>Profondeur de l'eau au point de mesure sélectionné</h3>
+	<div id="odometer" class="odometer" style="font-size: 80px; font-family: tt_normsmedium;"><p>000</p><p><img src="images/Vagues.svg"></p></div>
+	<span class="metres">&nbsp;m</span>
+    <div id="vagues"><img src="images/Vagues.svg"></div>
+	</div>
+	<div id="search_bas">
+	<script>
+		delayedAlert("0");
+	</script>
+
+	<div id="down"><img src="images/arrowdown.png"></div>
+	<div id="detail">
+	  <div id="titre_detail"><img src="images/iconPiezo.svg"><b>Détail du point de mesure</b> <i><class id="code"></class></i></div>
+	<br><table width="100%">
+	<tr height="20px"><td style="text-align:center;"><class id="libpe"></class></td></tr>
+	<tr height="30px"><td style="text-align:center;"><class id="dat"></class></td></tr>
+	<tr><td style="text-align:center;">
+	<div id="container"></div>
+	</td></tr>
+	<tr height="30px"><td style="text-align:center;"><class id="station">(Pas de point de mesure sélectionné)</class></td></tr>
+	</table>
+	</div>
+<script>
+	calcul_hauteur();
+</script>
+<div id="contact"><a href="https://www.brgm.fr/content/contact" target="_blank">Contact</a></div>
+</div> <!-- de search_bas !-->
+</div>
+<p>&nbsp;</p>
+<div id="basicMap"></div>
+	<div id="bton_fm" title="Zoom sur France métropolitaine">Zoom sur France métro.</div>
+	<div id="bton_pp" title="Toute l'étendue">Toute l'étendue</div>
+<div id="aide" title="Aide"></div>
+<div id="fen_aide" title="Fenêtre d'aide">
+<p>Cliquer sur un point de mesure pour connaître la profondeur de l'eau à cet endroit. Le graphique affiche les 500 dernières mesures disponibles.</p>
+<p>Ce service utilise l'opération Chroniques Temps Réel de <a href="https://hubeau.eaufrance.fr/page/api-piezometrie" target="_blank">l'API Piézométrie</a> de <a href="https://hubeau.eaufrance.fr" target="_blank">Hub'Eau</a>, qui récolte une fois par jour les données horaires de plus de 1500 points d'eau souterrains (piézomètres).</p>
+</div>
+<div id="etat" name="etat">
+</div>
+ <!-- Piwik -->
+ <script type="text/javascript">
+ var _paq = _paq || [];
+ _paq.push(['trackPageView']);
+ _paq.push(['enableLinkTracking']);
+ (function() {
+ var u="https://wwwstats.brgm.fr/";
+ _paq.push(['setTrackerUrl', u+'piwik.php']);
+ _paq.push(['setSiteId', 121]);
+ var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+ g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+ })();
+ </script>
+ <noscript><p><img src="https://wwwstats.brgm.fr/piwik.php?idsite=121" style="border:0;" alt="" /></p></noscript>
+ <!-- End Piwik Code -->
+</body>
+</html>
