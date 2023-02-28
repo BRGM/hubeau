@@ -1,0 +1,85 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr" >
+<head>
+<title>Aide pour le démonstrateur Chroniques piézométriques de Hub'Eau</title>
+<meta name="author" content="BRGM" />
+<meta name="description" content="Profondeur des nappes d'eau en France" />
+<meta name="keywords" content="eau, eau souterraine, quantité, profondeur, niveau, hauteur, NGF, évolution, nappe, aquifère, Hub'Eau, HubEau, France" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Language" content="fr" />
+<link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+<link rel="icon" href="images/favicon.ico" type="image/x-icon">
+<style>
+#aide img { 
+vertical-align:middle; }
+</style>
+</head>
+<body>
+<div id="aide">
+<h2>Guide d'utilisation du visualiseur des chroniques piézométriques historiques de Hub'Eau</h2>
+<p>&nbsp;</p>
+<p>Dans la zone d'adresse <img src="images/input_adresse.png" align=middle height="48">, entrez une adresse complète ou simplement un nom de commune puis appuyez sur la touche Entrée du clavier
+ ou cliquez sur la petite loupe <img src="../images/magnifying-glass.png" align=middle> à droite. Ou déplacez-vous simplement sur la carte et zoomez/dézoomez
+ à l'aide des boutons <img src="images/bouton_plus.png" align=middle> et <img src="images/bouton_moins.png" align=middle> ou de la molette de la souris.
+ Il est possible également de déplacer le rectangle bleu sur la mini-carte <img src="images/mini_carte.png" align=middle> en haut à droite.</p>
+<p>Le fonds de carte peut être changé en passant la souris sur l'icône <img src="images/logo_openlayers70.png" height="32" align=middle></p>
+<p>Un click sur le bouton <img src="images/bouton_france_metro.png" height="32" align=middle> permet de recentrer la carte sur la France métropolitaine.
+ Un click sur le bouton <img src="images/bouton_toute_etendue.png" height="32" align=middle> centre la carte sur l'ensemble des points d'eau disponibles.</p>
+<p>Les points d'eau souterraine sont représentés par des icônes de couleur différente selon leur nature : <img src="../images/pointOr_on.png" align=middle> pour les forages,
+ <img src="../images/pointBleu_on.png" align=middle> pour les sources, <img src="../images/pointMauve_on.png" align=middle> pour les puits, <img src="../images/pointGris_on.png" align=middle> pour les ouvrages de nature inconnue. Seuls les points d'eau disposant d'au moins 2 mesures sont représentés.</p>
+<p>Cliquez sur un point d'eau pour afficher la dernière valeur de profondeur de la nappe et sa courbe d'évolution. En passant la souris sur un point d'eau, une infobulle indique le code BSS, le nom, le nombre total de mesures disponibles ainsi que la période de mesures sur ce point d'eau.</p>
+<p>Les données sont issues des opérations Stations et Chroniques de <a href="https://hubeau.eaufrance.fr/page/api-piezometrie" target="_blank">l'API Piézométrie</a> de <a href="https://hubeau.eaufrance.fr" target="_blank">Hub'Eau</a>, 
+qui diffuse les données de <a href="ades.eaufrance.fr/" target="_blank">la banque ADES</a>.</p>
+<p>La courbe d'évolution des profondeurs s'affiche si la résolution de l'écran est suffisante. Elle présente l'ensemble des mesures disponibles pour le point d'eau considéré.</p>
+<p>Dans la fenêtre du graphique, le bouton <img src="images/bouton_tout.png" align=middle> en haut à gauche permet de changer la période d'affichage.
+ Le bouton <img src="images/bouton_options_graphique.png" align=middle> en haut à droite de la fenêtre permet de voir le graphique en plein écran, d'imprimer le graphique, de télécharger le graphique sous forme d'image et enfin de télécharger ou visualiser les données.</p>
+<p>Passez la souris sur la courbe des profondeurs pour afficher une infobulle avec la date et le résultat de la mesure de profondeur.</p>
+<p>S'il y a assez de place à l'écran, un sélecteur <img src="images/graphique_selecteur.png" align=middle> présent en bas de la fenêtre permet de changer l'échelle de l'axe des temps.<p> 
+<p>Visualisez la fiche ADES du point d'eau sélectionné en cliquant sur <img src="images/lien_plus_infos_point_eau.png" align=middle>.</p>
+<p>&nbsp;</p>
+<p>Un click sur le bouton <img src="images/bouton_aide.png" height="32" align=middle> en bas à droite affiche une fenêtre d'aide.</p>
+<p>&nbsp;</p>
+<p>En dessous de la carte, une ligne de légende indique le nombre de points d'eau disponibles et permet de choisir les natures de point d'eau à afficher.<br><br>
+<img src="images/legende_chroniques.png" align=middle><br><br>
+Un clic sur chaque icone bascule entre l'affichage et le masquage des points d'eau de nature correspondante.
+ Une icone évidée signifie que les points d'eau de nature correspondante sont affichés, une icone pleine signifie que ces points d'eau sont masqués. Exemple : <br>
+<img src="images/nature_forage_on.png" align=middle> : les forages sont affichés<br>
+<img src="images/nature_forage_off.png" align=middle> : les forages sont masqués</p>
+<p>La ligne de légende permet également de filtrer l'affichage des points d'eau selon 3 autres critères :
+<ul>
+<li>nbobsmin - nombre minimal de mesures : affichage uniquement des points d'eau ayant au moins nbobsmin mesures</li>
+<li>datedeb - date de début des mesures (format AAAA-MM-JJ ou AAAA-MM ou AAAA) : affichage uniquement des points d'eau ayant des mesures antérieures à datedeb</li>
+<li>datefin - date de fin des mesures (format AAAA-MM-JJ ou AAAA-MM ou AAAA) : affichage uniquement des points d'eau ayant des mesures postérieures à datefin</li>
+</ul>
+Le nombre de points d'eau affiché reflète en permanence le nombre de points d'eau répondant aux critères choisis par l'utilisateur.</p>	
+<p>&nbsp;</p>
+<p>Des paramètres peuvent être passés directement dans l'URL : code_station, coord (longitude, latitude), adresse, fdp (fond de plan), size, nature (forage, puits, source ou inconnue), nbobsmin, datedeb, datefin, seuil, resdeb.<br>
+<ul>
+<li><i>code_station</i> permet de zoomer la carte sur le point d'eau en question et de le sélectionner pour affichage de la courbe d'évolution des profondeurs.</li>
+<li><i>coord</i>=long,lat permet de zoomer la carte aux coordonnées (long,lat)</li>
+<li><i>adresse</i> permet de zoomer la carte à l'adresse indiquée (comme quand l'utilisateur saisit une adresse dans l'interface). Pour le zoom, code station est prioritaire sur coord qui est prioritaire sur adresse.</li>
+<li>Les fonds de plan disponibles sont fdp=1 : OSM standard ; fdp=2 : JAWG terrain ; fdp=3 : ESRI topo ; fdp = 4 : Stadia Bright ; fdp = 5 : IGN plan v2 ; fdp=6 : IGN BD Ortho ; fdp = 7 : BRGM géologie.
+ Les fonds de plan 2, 3 et 4 ont été choisis car mettent bien en évidence les cours d'eau. Le fond de plan Stadia Bright peut être temporairement indisponible. En cas d'absence du paramètre fdp,le fond de plan par défaut est ESRI topo.</li>
+<li><i>nature</i> permet de n'afficher que les points d'eau de nature forage (nature=forage), source (nature=source), puits (nature=puits) ou inconnue (nature=inconnue). Des combinaisons de type nature=forage,puits sont possibles. Par défaut, les points d'eau de toute nature sont affichés.</li>
+<li><i>nbobsmin</i> permet d'afficher uniquement les points d'eau ayant au moins nbobsmin mesures</li>
+<li><i>datedeb</i> (format AAAA-MM-JJ ou AAAA-MM ou AAAA) : permet d'afficher uniquement les points d'eau ayant des mesures antérieures à datedeb</li>
+<li><i>datefin</i> (format AAAA-MM-JJ ou AAAA-MM ou AAAA) : permet d'afficher uniquement les points d'eau ayant des mesures postérieures à datefin</li>
+<li><i>seuil</i> permet de n'afficher que les points d'eau qui ont une mesure de profondeur d'eau supérieure à seuil (en mètres).</li>
+<li><i>size</i> permet de réduire le nombre de mesures récupérées dans Hub'Eau et affichées sur la courbe d'évolution. Par défaut, size = 40000 (valeur maximale), ce qui est largement suffisant pour récupérer l'ensemble de l'historique des stations (plus grans nombre de mesures : 20312 au 02/08/2022).</li>
+<li><i>resdeb</i> (format AAAA-MM-JJ impérativement) : date de début des graphiques - ne tracer la courbe d'évolution que depuis cette date pour toutes les stations (plus pratique que size car les stations n'ont pas toutes la même fréquence de mesures)</li>
+</ul>
+Par exemple :
+<ul>
+<li><a href="https://hubeau.eaufrance.fr/sites/default/files/api/demo/piezo_chroniques.htm?code_station=00905X0008/F&nature=forage,puits&fdp=5" target="_blank">https://hubeau.eaufrance.fr/sites/default/files/api/demo/piezo_chroniques.htm?code_station=00905X0008/F&nature=forage,puits&fdp=5</a> affiche les points d'eau de nature forage ou puits sur la carte en zoomant sur le point d'eau de code BSS 00905X0008/F avec le fond de plan IGN plan v2.</li>
+<li><a href="https://hubeau.eaufrance.fr/sites/default/files/api/demo/piezo_chroniques.htm?coord=5,49&fdp=1" target="_blank">https://hubeau.eaufrance.fr/sites/default/files/api/demo/piezo_chroniques.htm?coord=5,49&fdp=1</a> zoome la carte sur le point de 5° de longitude et 49° de latitude avec le fond de plan OSM standard.</li>
+<li><a href="https://hubeau.eaufrance.fr/sites/default/files/api/demo/piezo_chroniques.htm?adresse=36 rue henri poincaré nancy" target="_blank">https://hubeau.eaufrance.fr/sites/default/files/api/demo/piezo_chroniques.htm?adresse=36 rue henri poincaré nancy</a> zoome la carte sur l'adresse mentionnée.</li>
+<li><a href="https://hubeau.eaufrance.fr/sites/default/files/api/demo/piezo_chroniques.htm?nature=puits" target="_blank">https://hubeau.eaufrance.fr/sites/default/files/api/demo/piezo_chroniques.htm?nature=puits</a> n'affiche que les puits.</li>
+<li><a href="https://hubeau.eaufrance.fr/sites/default/files/api/demo/piezo_chroniques.htm?nbobsmin=1000&datedeb=2000&datefin=2020" target="_blank">https://hubeau.eaufrance.fr/sites/default/files/api/demo/piezo_chroniques.htm?nbobsmin=1000&datedeb=2000&datefin=2020</a> affiche les points d'eau disposant de plus de 1000 mesures de profondeur, dont des mesures avant le 1er janvier 2000 et après le 1er janvier 2020.</li>
+<li><a href="https://hubeau.eaufrance.fr/sites/default/files/api/demo/piezo_chroniques.htm?datefin=2022-07" target="_blank">https://hubeau.eaufrance.fr/sites/default/files/api/demo/piezo_chroniques.htm?datefin=2022-07</a> affiche les points d'eau disposant de mesures postérieures au 1er juillet 2022.</li>
+<li><a href="https://hubeau.eaufrance.fr/sites/default/files/api/demo/piezo_chroniques.htm?seuil=50" target="_blank">https://hubeau.eaufrance.fr/sites/default/files/api/demo/piezo_chroniques.htm?seuil=50</a> affiche les points d'eau dont la profondeur maximale dépasse 50 mètres.</li>
+<li><a href="https://hubeau.eaufrance.fr/sites/default/files/api/demo/piezo_chroniques.htm?size=100" target="_blank">https://hubeau.eaufrance.fr/sites/default/files/api/demo/piezo_chroniques.htm?size=100</a> n'affiche que les 100 dernières mesures de profondeur sur la courbe d'évolution des profondeurs.</li>
+<li><a href="https://hubeau.eaufrance.fr/sites/default/files/api/demo/piezo_chroniques.htm?datefin=2022&resdeb=2022-01-01" target="_blank">https://hubeau.eaufrance.fr/sites/default/files/api/demo/piezo_chroniques.htm?datefin=2022&resdeb=2022-01-01</a> n'affiche que les points d'eau ayant des mesures postérieures au 1er janvier 2022 et trace la courbe d'évolution des profondeurs à partir de cette date.</li>
+</ul>
+</p>
+</div>
+</body>
+</html>
