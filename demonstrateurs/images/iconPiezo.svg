@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36">
+  <g id="iconPiezo" transform="translate(0 0)">
+    <ellipse id="Ellipse_9" data-name="Ellipse 9" cx="12.728" cy="12.728" rx="12.728" ry="12.728" transform="translate(0 18) rotate(-45)" fill="#ffac30"/>
+    <path id="ic_pin_drop_24px" d="M15.506,6.8a4.849,4.849,0,0,0-9.7,0c0,3.6,4.849,8.8,4.849,8.8S15.506,10.4,15.506,6.8Zm-6.465,0a1.616,1.616,0,1,1,1.616,1.6A1.613,1.613,0,0,1,9.041,6.8ZM5,16.4V18H16.314V16.4Z" transform="translate(7.279 8.015)" fill="#fff"/>
+  </g>
+</svg>

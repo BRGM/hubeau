@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="79.279" height="105.293" viewBox="0 0 79.279 105.293">
+  <g id="Hydrométrie" transform="translate(-1276.999 -883.961)">
+    <g id="Groupe_144" data-name="Groupe 144" transform="translate(1078.332 767.314)">
+      <g id="Calque_2" data-name="Calque 2" transform="translate(199.667 117.686)">
+        <path id="Tracé_104" data-name="Tracé 104" d="M199.667,141.128v41.517a2.686,2.686,0,0,0,1.342,2.324l35.956,20.758a2.682,2.682,0,0,0,2.683,0L275.6,184.97a2.686,2.686,0,0,0,1.342-2.324V141.128A2.686,2.686,0,0,0,275.6,138.8l-35.956-20.758a2.675,2.675,0,0,0-2.683,0L201.009,138.8A2.686,2.686,0,0,0,199.667,141.128Z" transform="translate(-199.667 -117.686)" fill="#fff" stroke="#21b7ef" stroke-width="2"/>
+        <g id="Groupe_143" data-name="Groupe 143" transform="translate(22.304 70.582)">
+          <circle id="Ellipse_40" data-name="Ellipse 40" cx="16.336" cy="16.336" r="16.336" fill="#fff" stroke="#21b7ef" stroke-miterlimit="10" stroke-width="2"/>
+          <g id="Groupe_142" data-name="Groupe 142" transform="translate(10.435 6.207)">
+            <path id="Tracé_105" data-name="Tracé 105" d="M227.75,170.757l-4.764,8.31a5.9,5.9,0,1,0,10.239,0l-4.764-8.31A.41.41,0,0,0,227.75,170.757Z" transform="translate(-222.206 -170.552)" fill="#21b7ef"/>
+          </g>
+        </g>
+      </g>
+      <g id="Calque_3" data-name="Calque 3" transform="translate(229.44 141.715)">
+        <path id="Tracé_106" data-name="Tracé 106" d="M228.77,158.83V136.09l6.073,6.533,1.588-1.479-8.868-9.536-8.865,9.536,1.588,1.479,6.075-6.537v22.748l-6.075-6.538-1.588,1.479,8.865,9.536,8.868-9.536-1.588-1.479Z" transform="translate(-218.698 -131.609)" fill="#21b7ef" stroke="#21b7ef" stroke-miterlimit="10" stroke-width="1"/>
+      </g>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="30.204" height="44.788" viewBox="0 0 30.204 44.788">
+  <defs>
+    <radialGradient id="radial-gradient" cx="0.5" cy="0.5" r="0.5" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#616161"/>
+      <stop offset="1" stop-color="#616161" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g id="Marker" transform="translate(-1032.051 -454.212)">
+    <ellipse id="Ellipse_6" data-name="Ellipse 6" cx="9" cy="3" rx="9" ry="3" transform="translate(1038 493)" opacity="0.5" fill="url(#radial-gradient)"/>
+    <g id="Calque_2" transform="translate(990.851 454.212)">
+      <g id="Groupe_19" data-name="Groupe 19" transform="translate(41.2)">
+        <g id="Groupe_18" data-name="Groupe 18">
+          <path id="Tracé_46" data-name="Tracé 46" d="M52.427,37.328c.969,1.425,1.824,2.736,2.622,3.932a1.734,1.734,0,0,0,.456.456,1.485,1.485,0,0,0,2.052-.456c.741-1.2,1.6-2.451,2.622-3.932C64.68,30.717,71.4,20.744,71.4,15.045A15.034,15.034,0,0,0,66.959,4.388,15.226,15.226,0,0,0,56.3,0,15.177,15.177,0,0,0,41.2,15.1C41.2,20.8,47.925,30.717,52.427,37.328Z" transform="translate(-41.2 0)" fill="#209de5"/>
+        </g>
+      </g>
+      <g id="Groupe_21" data-name="Groupe 21" transform="translate(46.097 5.963)">
+        <g id="Groupe_20" data-name="Groupe 20" transform="translate(0)">
+          <path id="Tracé_47" data-name="Tracé 47" d="M76.946,52.016a1.461,1.461,0,0,0,1.539-1.368,7.336,7.336,0,0,1,1.083-3.476,6.926,6.926,0,0,1,2.622-2.508,1.506,1.506,0,0,0-1.482-2.622,9.875,9.875,0,0,0-3.647,3.533,9.7,9.7,0,0,0-1.482,4.9A1.461,1.461,0,0,0,76.946,52.016Z" transform="translate(-75.575 -41.85)" fill="#fff"/>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>
