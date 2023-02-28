@@ -1,0 +1,503 @@
+/* sur la base de stylehtm_piezo.css + style2.css */
+/* <link rel="stylesheet" type="text/css" href="css/stylebase.css" media="all" /> à mettre en toute fin de balise <head> du fichier htm de chaque démonstrateur */
+/* juste en dessous avant fin de balise <head> : css personnalisés de chaque démonstrateur */
+@font-face {
+    font-family: 'tt_normsmedium';
+    src: url('../fonts/TT Norms/ttnorms-medium-webfont.woff2') format('woff2'),
+         url('../fonts/TT Norms/ttnorms-medium-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'tt_normsextralight';
+    src: url('../fonts/TT Norms Thin/ttnorms-extralight-webfont.woff2') format('woff2'),
+         url('../fonts/TT Norms Thinttnorms-extralight-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+	  html { 
+		overflow-y: hidden;
+		height: 100%
+      } 
+	  body {
+		font-family: 'Roboto', sans-serif;	
+		height: 100%;
+		background-color: #FFFFFF;
+		margin: 2px;
+		padding: 0px;
+  	    border: solid 0px;
+	  }
+	h3 {
+		font-family: tt_normsmedium;
+		font-size:18px;
+	}	
+	input[type=text]{
+		-webkit-border-radius: 50px;
+		-moz-border-radius: 50px;
+		border-radius: 50px;
+		padding: 15px 20px 15px 25px;
+		margin: -10px -40px 0px 0px; /* top right bottom left */
+		font-size : 18px;
+		color : #818181;
+		border:0px;
+		font-family: 'Roboto', sans-serif;
+	}
+    input:focus {
+		outline: none;	
+	}
+	input.loupe {
+		background-image: url(../images/magnifying-glass.png); /* 16px x 16px */
+		background-color: transparent; /* make the button transparent */
+		background-repeat: no-repeat;  /* make the background image appear only once */
+		background-position: 0px 0px;  /* equivalent to 'top left' */
+		border: none;           /* assuming we don't want any borders */
+		cursor: pointer;        /* make the cursor like hovering over an <a> element */
+		height: 16px;           /* make this the size of your image */
+		padding-left: 16px;     /* make text start to the right of the image */
+		vertical-align: middle; /* align the text vertically centered */
+		outline: none;
+	}	/* séparateur de la loupe ? color #E0E0E0 */
+
+	.chiffres {
+		width : 240px;
+		height : 100px;
+		-webkit-border-radius: 8px;
+		-moz-border-radius: 8px;
+		border-radius: 8px 8px 8px 8px;
+		border: 1px solid #CDE8FA;
+		font-family: 'tt_normsmedium';
+		font-size : 80px;
+		color: #000000;
+	}	
+	.metres {
+		font-family: 'tt_normsextralight';
+		font-size: 54px;
+		color:#FFFFFF;
+		display: inline-block;
+    		vertical-align: bottom;
+    		padding-bottom: 10px;
+	}
+
+	  select {
+		-webkit-border-radius: 5px;
+		-moz-border-radius: 5px;
+		border-radius: 5px;
+		padding: 5px 5px 5px 5px;
+		margin: 0px 0px 0px 0px; /* top right bottom left */
+		font-size : 14px;
+		color : #818181;
+		border:0px;
+		font-family: 'Roboto', sans-serif;
+		}
+      select:focus {
+		outline: none;	
+	  }
+	
+#search_haut {
+	/*height: 640px;*/
+	background: #60bfd2; /* Old browsers */
+	background: -moz-linear-gradient(top,  #60bfd2 0%, #068fee 99%); /* FF3.6-15 */
+	background: -webkit-linear-gradient(top,  #60bfd2 0%,#068fee 99%); /* Chrome10-25,Safari5.1-6 */
+	background: linear-gradient(to bottom,  #60bfd2 0%,#068fee 99%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#60bfd2', endColorstr='#068fee',GradientType=0 ); /* IE6-9 */
+	color: #FFFFFF;
+	text-align: center;
+}	
+
+#search_bas {
+	/* margin: -30px 0px 0px 0px; /* top right bottom left */
+}
+
+#brgm {
+	/*float: right;*/
+	margin: -30px 0px 0px 0px; /* top right bottom left */
+	padding: 0px 0px 0px 0px;
+}	
+
+#plouf img {
+		display: block;
+		margin-left: auto;
+		margin-right: auto;
+		width: 20%;
+}	
+
+#detail {
+	width: 400px;
+	background-color: #FFFFFF;
+	margin: -60px 0px 0px 35px; /* top right bottom left - 2021-08-04 top passé de -50 à -60 pour gagner 10 pixels en hauteur */
+	padding: 15px 15px 5px 15px; /* top right bottom left - 2021-08-26 bottom passé de 15 à 5 pour moins d'espace entre Plus d'informations... et la bordure */
+	-webkit-border-radius: 20px;
+	-moz-border-radius: 20px;
+	border-radius: 20px 20px 20px 20px;
+	border: 1px solid #EAEAEA;
+	font-size: 14px;
+	color: #616161;
+}	
+
+#titre_detail {
+	font-size: 16px;
+	color: #000000; 
+	text-align:center;
+	margin-top:10px;
+ }	
+
+#titre_detail img {
+  vertical-align:middle;
+}
+
+#down img {
+		position: absolute;
+		top: 385px; /*270px;*/
+		left: 220px;
+}	
+
+      #search {
+          float: left;
+		  width: 500px;
+          height: 100%;
+		  margin-right: 6px;
+          margin-top: -30px!important;
+		  border: solid 0px;
+		  /* position: relative;
+		  left: 0px;
+		  top: 0px; */
+		  box-shadow: 2px 0px 6px rgba(0, 0, 0, .25); 
+      }
+ 
+#contact {
+	text-align: center;
+	background-color: #CDE8FA;
+	border-radius: 8px 8px 8px 8px;
+	font-family: 'tt_normsmedium', sans-serif;
+	font-size: 16px;
+	color: #078CE4;
+	padding: 15px;
+	margin: 20px 35px;
+}	
+#contact a {
+		outline: none;
+		text-decoration: none;
+		color: #078CE4;
+		display:block; width:100%; height:100%; /* rend le div entièrement cliquable */
+}	
+
+      #basicMap {
+		  overflow: hidden;
+		  width: auto;
+          height: 98%;
+          margin-top: -48px!important;
+		  border: solid 0px;
+		  /* position: relative;
+		  left: 500px;
+		  top: -1000px; */
+      }
+
+#bton_fm {
+	text-align: center;
+	background-color: rgba(255, 255, 255, 0.95);
+	font-size: 13px;
+	color: #616161;
+	height: 16px;
+	padding: 10px 16px;
+	cursor: pointer;
+	position: absolute;
+	top: 16px;
+	left: calc(400px + calc(42% - 253px));
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 2px 2px 2px 2px;
+}	
+
+#bton_pp {
+	text-align: center;
+	background-color: rgba(255, 255, 255, 0.95);
+	font-size: 13px;
+	color: #616161;
+	height: 16px;
+	padding: 10px 16px;
+	cursor: pointer;
+	position: absolute;
+	top: 16px;
+	left: calc(400px + calc(58% - 253px));
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 2px 2px 2px 2px;
+}	
+
+#aide {
+	display: block;
+	position: absolute;
+	top: calc(98.4% - 44px);
+	left: calc(100% - 44px);
+	/*
+	top:0;
+	right:0;
+	*/
+	height: 44px;
+	width: 44px;
+	background-image: url(../images/ic_help_24px.png); 
+	background-size: 20px;
+	z-index: 5000;
+	cursor: pointer;
+	/*border-radius: 4px 4px 4px 4px;*/
+		background-repeat: no-repeat;
+		background-position: center;
+		box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.25);
+		background-color: rgba(0, 0, 0, 0.5);
+}
+
+#fen_aide {
+	display: none;
+	position: absolute;
+	top: calc(100% - 140px);
+	left: calc(100% - 484px);
+	/*
+	right:0px;
+	top:0px;
+	*/
+	height: 130px;
+	width: 444px;
+	background-color: white; 
+	z-index: 6000;
+	line-height:20px;
+	border-radius: 0px;
+	box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.25);
+	font-family: 'Roboto', sans-serif;
+	font-size: 12px;
+	color: #616161;
+	cursor: pointer;
+	padding: 5px 20px 5px 20px; /* top right bottom left */
+}
+
+.odometer {
+    font-size: 80px;
+}
+/* Permet de gérer la vitesse de l'animation */	
+.odometer.odometer-animating-up .odometer-ribbon-inner, .odometer.odometer-animating-down.odometer-animating .odometer-ribbon-inner {
+    -webkit-transition-duration: 1s !important;
+    -moz-transition-duration: 1s !important;
+    -ms-transition-duration: 1s !important;
+    -o-transition-duration: 1s !important;
+    transition-duration: 1s !important
+}
+.odometer.odometer-auto-theme {
+margin-left:60px;	
+}
+/* Affichage de 3 chiffres sans virgule */
+/* on a ajouté 1000 à la profondeur : enlever le 1er chiffre et le signe des milliers */
+/* cette partie sera personnalisée dans chaque fichier .htm dans la partie style à la fin de <head>
+.odometer .odometer-inside .odometer-digit:first-child,
+.odometer .odometer-inside .odometer-formatting-mark:nth-child(2) {
+    display: none
+}
+/* arrondir le nouveau 1er chiffre à gauche 
+.odometer .odometer-inside .odometer-digit:nth-child(3) {
+  -moz-border-radius: 0.2em 0 0 0.2em;
+  -webkit-border-radius: 0.2em 0 0 0.2em;
+  -o-border-radius: 0.2em 0 0 0.2em;
+  -ms-border-radius: 0.2em 0 0 0.2em;
+  -khtml-border-radius: 0.2em 0 0 0.2em;
+  border-radius: 0.2em 0 0 0.2em;
+}
+*/
+/* ancien style2 */
+/* je remets zoom en haut à gauche, échelle en bas à gauche, overview en haut à droite, aide en bas à droite */
+      .ol-custom-overviewmap,
+      .ol-custom-overviewmap.ol-uncollapsible {
+		bottom: auto;
+        left: auto;
+        right: 0;
+        top: 0;
+		box-shadow: 2px 0px 6px rgba(0, 0, 0, .25);
+      }
+      .ol-custom-overviewmap:not(.ol-collapsed)  {
+        /*border: 1px solid black;*/
+      }
+	.ol-overviewmap:not(.ol-collapsed) {
+    	background: rgba(255,255,255);
+	}
+      .ol-custom-overviewmap .ol-overviewmap-map {
+        border: none;
+        width: 100px;
+		height: 100px;
+      }
+      .ol-custom-overviewmap .ol-overviewmap-box {
+        border: 2px solid dodgerblue;
+      }
+    .ol-control button {
+		color: #616161;
+		background-color: rgba(255, 255, 255, 0.9);
+	}
+.ol-overviewmap.ol-custom-overviewmap.ol-unselectable.ol-control button {
+    /*transform: rotate(90deg);	*/
+}
+.ol-control button:focus, .ol-control button:hover {
+    text-decoration: none;
+    /* background-color: rgba(0,60,136,.7); */
+	background-color: #FFFFFF;
+	outline: none;
+}
+      .ol-custom-overviewmap:not(.ol-collapsed) button{
+        bottom: auto;
+        left: auto;
+        right: 1px;
+        top: 1px;
+      }
+      .ol-rotate {
+        top: 170px;
+        right: 0;
+      }
+  
+	  /* boutons de zoom en haut à gauche comme par défaut */
+	  .ol-zoom .ol-zoom-in {
+		margin: 0px;
+		height: 36px;
+		width: 36px;
+		/* border-radius: 4px 4px 4px 4px; */
+      }
+	  .ol-zoom .ol-zoom-out {
+		margin: 0px;
+		border-top:1px solid #C4C4C4;
+		height: 36px;
+		width: 36px;
+		/* border-radius: 4px 4px 4px 4px; */
+      }
+	.ol-scale-line {
+		/*background: none;*/
+		bottom: 0px; /* 16 px */
+		left: 0px;
+	 }
+	.ol-scale-line-inner {
+		border: 1px solid #616161;
+		border-top: none;
+		color: #616161;
+	 }
+
+.ol-attribution:not(.ol-collapsed), .ol-control {
+	/*background : none;	*/
+}
+.ol-attribution.ol-uncollapsible {
+    bottom: 0px;
+    right: 50px;
+}
+
+.ol-popup {
+  position: absolute;
+  background-color: white;
+  /*--webkit-filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));*/
+  filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.2));
+  padding: 15px;
+  border-radius: 10px;
+  border: 1px solid #cccccc;
+  bottom: 12px;
+  left: -50px;
+  min-width: 180px;
+  font-size: 11px;
+  text-align: center;
+}
+
+.ol-popup:after,
+.ol-popup:before {
+  top: 100%;
+  border: solid transparent;
+  content: " ";
+  height: 0;
+  width: 0;
+  position: absolute;
+  pointer-events: none;
+}
+
+.ol-popup:after {
+  border-top-color: white;
+  border-width: 10px;
+  left: 48px;
+  margin-left: -10px;
+}
+
+.ol-popup:before {
+  border-top-color: #cccccc;
+  border-width: 11px;
+  left: 48px;
+  margin-left: -11px;
+}
+
+.ol-popup-closer {
+  text-decoration: none;
+  position: absolute;
+  top: 2px;
+  right: 8px;
+}
+
+.ol-popup-closer:after {
+  content: "";
+}
+
+.layer-switcher {
+  max-width: 300px;
+  top: 120px;
+}  
+
+#sel_maj  select {
+		-webkit-border-radius: 10px;
+		-moz-border-radius: 10px;
+		border-radius: 10px;
+		font-size : 18px;
+		color : #0000E0;
+		text-align: center;
+}
+#sel_min  select {
+		-webkit-border-radius: 10px;
+		-moz-border-radius: 10px;
+		border-radius: 10px;
+		font-size : 14px;
+		text-align: center;
+}
+
+#legende {
+	position: absolute;
+    bottom: calc(1.8%);
+    left: 650px;
+	background-color: rgba(255, 255, 255, 0.95);
+	font-size: 13px;
+	color: #616161;
+}
+
+#legende img { 
+	vertical-align:middle;
+}
+
+#legende input[type=text]{
+		background-color: rgba(240, 240, 255, 0.95);
+		-webkit-border-radius: 10px;
+		-moz-border-radius: 10px;
+		border-radius: 10px;
+		padding: 5px 5px 5px 5px; /* top right bottom left */
+		margin: 0px 0px 0px 0px; /* top right bottom left */
+		font-size : 13px;
+		color : #818181;
+		border:0px;
+		font-family: 'Roboto', sans-serif;
+}
+
+.imgleg {
+	cursor: pointer;
+}
+
+#limit {
+	display: none;
+	position: absolute;
+	top: 500px; /* pour qualriv avec une seule ligne station */
+	left: 355px;
+	font-size: 12px;
+}
+
+#etat {
+	position: absolute;
+	bottom: 30px;
+	left: calc(400px + calc(50% - 190px));
+	font-size : 13px;
+}
+

@@ -1,0 +1,300 @@
+@font-face {
+    font-family: 'tt_normsmedium';
+    src: url('../fonts/TT Norms/ttnorms-medium-webfont.woff2') format('woff2'),
+         url('../fonts/TT Norms/ttnorms-medium-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'tt_normsextralight';
+    src: url('../fonts/TT Norms Thin/ttnorms-extralight-webfont.woff2') format('woff2'),
+         url('../fonts/TT Norms Thinttnorms-extralight-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+	  html { 
+		overflow-y: hidden;
+		height: 100%
+      } 
+	  body {
+		font-family: 'Roboto', sans-serif;	
+		height: 100%;
+		background-color: #FFFFFF;
+		margin: 2px;
+		padding: 0px;
+  	    border: solid 0px;
+	  }
+	h3 {
+		font-family: tt_normsmedium;
+		font-size:18px;
+	}	
+	  input[type=text]{
+		-webkit-border-radius: 50px;
+		-moz-border-radius: 50px;
+		border-radius: 50px;
+		padding: 15px 20px 15px 25px;
+		margin: -10px -40px 0px 0px; /* top right bottom left */
+		font-size : 18px;
+		color : #818181;
+		border:0px;
+		font-family: 'Roboto', sans-serif;
+		}
+        input:focus {
+	outline: none;	
+	}
+	input.loupe {
+		background-image: url(../images/magnifying-glass.png); /* 16px x 16px */
+		background-color: transparent; /* make the button transparent */
+		background-repeat: no-repeat;  /* make the background image appear only once */
+		background-position: 0px 0px;  /* equivalent to 'top left' */
+		border: none;           /* assuming we don't want any borders */
+		cursor: pointer;        /* make the cursor like hovering over an <a> element */
+		height: 16px;           /* make this the size of your image */
+		padding-left: 16px;     /* make text start to the right of the image */
+		vertical-align: middle; /* align the text vertically centered */
+		outline: none;
+	}	/* séparateur de la loupe ? color #E0E0E0 */
+
+	.chiffres {
+		width : 240px;
+		height : 100px;
+		-webkit-border-radius: 8px;
+		-moz-border-radius: 8px;
+		border-radius: 8px 8px 8px 8px;
+		border: 1px solid #CDE8FA;
+		font-family: 'tt_normsmedium';
+		font-size : 80px;
+		color: #000000;
+	}	
+	.metres {
+		font-family: 'tt_normsextralight';
+		font-size: 54px;
+		color:#FFFFFF;
+		display: inline-block;
+    		vertical-align: bottom;
+    		padding-bottom: 10px;
+	}
+
+	  select {
+		-webkit-border-radius: 10px;
+		-moz-border-radius: 10px;
+		border-radius: 10px;
+		padding: 15px 20px 15px 25px;
+		margin: 0px -0px 0px 0px; /* top right bottom left */
+		font-size : 14px;
+		color : #818181;
+		border:0px;
+		font-family: 'Roboto', sans-serif;
+		}
+      select:focus {
+		outline: none;	
+	  }
+	
+#search_haut {
+	/*height: 640px;*/
+	background: #60bfd2; /* Old browsers */
+	background: -moz-linear-gradient(top,  #60bfd2 0%, #068fee 99%); /* FF3.6-15 */
+	background: -webkit-linear-gradient(top,  #60bfd2 0%,#068fee 99%); /* Chrome10-25,Safari5.1-6 */
+	background: linear-gradient(to bottom,  #60bfd2 0%,#068fee 99%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#60bfd2', endColorstr='#068fee',GradientType=0 ); /* IE6-9 */
+	color: #FFFFFF;
+	text-align: center;
+}	
+
+#search_bas {
+	/* margin: -30px 0px 0px 0px; /* top right bottom left */
+}
+
+#brgm {
+	/*float: right;*/
+	margin: -30px 0px 0px 0px; /* top right bottom left */
+	padding: 0px 0px 0px 0px;
+}	
+
+#plouf img {
+		display: block;
+		margin-left: auto;
+		margin-right: auto;
+		width: 20%;
+}	
+
+#detail {
+	width: 400px;
+	background-color: #FFFFFF;
+	margin: -50px 0px 0px 35px; /* top right bottom left */
+	padding: 15px;
+	-webkit-border-radius: 20px;
+	-moz-border-radius: 20px;
+	border-radius: 20px 20px 20px 20px;
+	border: 1px solid #EAEAEA;
+	font-size: 14px;
+	color: #616161;
+}	
+
+#titre_detail {
+	font-size: 16px;
+	color: #000000; 
+	text-align:center;
+	margin-top:10px;
+ }	
+
+#titre_detail img {
+  vertical-align:middle;
+}
+
+#down img {
+		position: absolute;
+		top: 415px; /*270px;*/
+		left: 220px;
+}	
+
+      #search {
+          float: left;
+		  width: 500px;
+          height: 100%;
+		  margin-right: 6px;
+          margin-top: -30px!important;
+		  border: solid 0px;
+		  /* position: relative;
+		  left: 0px;
+		  top: 0px; */
+		  box-shadow: 2px 0px 6px rgba(0, 0, 0, .25); 
+      }
+ 
+#contact {
+	text-align: center;
+	background-color: #CDE8FA;
+	border-radius: 8px 8px 8px 8px;
+	font-family: 'tt_normsmedium', sans-serif;
+	font-size: 16px;
+	color: #078CE4;
+	padding: 15px;
+	margin: 20px 35px;
+}	
+#contact a {
+		outline: none;
+		text-decoration: none;
+		color: #078CE4;
+		display:block; width:100%; height:100%; /* rend le div entièrement cliquable */
+}	
+
+      #basicMap {
+		  overflow: hidden;
+		  width: auto;
+          height: 98%;
+          margin-top: -48px!important;
+		  border: solid 0px;
+		  /* position: relative;
+		  left: 500px;
+		  top: -1000px; */
+      }
+
+#bton_fm {
+	text-align: center;
+	background-color: rgba(255, 255, 255, 0.95);
+	font-size: 13px;
+	color: #616161;
+	height: 16px;
+	padding: 10px 16px;
+	cursor: pointer;
+	position: absolute;
+	top: 16px;
+	left: calc(400px + calc(42% - 253px));
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 2px 2px 2px 2px;
+}	
+
+#bton_pp {
+	text-align: center;
+	background-color: rgba(255, 255, 255, 0.95);
+	font-size: 13px;
+	color: #616161;
+	height: 16px;
+	padding: 10px 16px;
+	cursor: pointer;
+	position: absolute;
+	top: 16px;
+	left: calc(400px + calc(58% - 253px));
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 2px 2px 2px 2px;
+}	
+
+#aide {
+	display: block;
+	position: absolute;
+	top: calc(100% - 44px);
+	left: calc(100% - 44px);
+	/*
+	top:0;
+	right:0;
+	*/
+	height: 44px;
+	width: 44px;
+	background-image: url(../images/ic_help_24px.png); 
+	background-size: 20px;
+	z-index: 5000;
+	cursor: pointer;
+	/*border-radius: 4px 4px 4px 4px;*/
+		background-repeat: no-repeat;
+		background-position: center;
+		box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.25);
+		background-color: rgba(0, 0, 0, 0.5);
+}
+
+#fen_aide {
+	display: none;
+	position: absolute;
+	top: calc(100% - 370px);
+	left: calc(100% - 484px);
+	/*
+	right:0px;
+	top:0px;
+	*/
+	height: 360px;
+	width: 444px;
+	background-color: white; 
+	z-index: 6000;
+	line-height:20px;
+	border-radius: 0px;
+	box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.25);
+	font-family: 'Roboto', sans-serif;
+	font-size: 12px;
+	color: #616161;
+	cursor: pointer;
+	padding: 5px 20px 5px 20px; /* top right bottom left */
+}
+
+
+.odometer {
+    font-size: 60px;
+}
+/* Permet de gérer la vitesse de l'animation */	
+.odometer.odometer-animating-up .odometer-ribbon-inner, .odometer.odometer-animating-down.odometer-animating .odometer-ribbon-inner {
+    -webkit-transition-duration: 1s !important;
+    -moz-transition-duration: 1s !important;
+    -ms-transition-duration: 1s !important;
+    -o-transition-duration: 1s !important;
+    transition-duration: 1s !important
+}
+.odometer.odometer-auto-theme {
+margin-left:60px;	
+}
+/* on a ajouté 100 à la profondeur : enlever le 1er chiffre et le signe des milliers */
+.odometer .odometer-inside .odometer-digit:first-child,
+.odometer .odometer-inside .odometer-formatting-mark:nth-child(2) {
+    display: none
+}
+/* arrondir le nouveau 1er chiffre à gauche */
+.odometer .odometer-inside .odometer-digit:nth-child(2) {
+  -moz-border-radius: 0.1em 0 0 0.1em;   /* 0.2em 0 0 0.2em; */
+  -webkit-border-radius: 0.1em 0 0 0.1em;
+  -o-border-radius: 0.1em 0 0 0.1em;
+  -ms-border-radius: 0.1em 0 0 0.1em;
+  -khtml-border-radius: 0.1em 0 0 0.1em;
+  border-radius: 0.1em 0 0 0.1em;
+}
