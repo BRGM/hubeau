@@ -1,0 +1,187 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr" >
+<head>
+<title>Démonstrateur Hub'Eau Hydrométrie Observations Elaborées</title>
+<meta name="author" content="BRGM" />
+<meta name="description" content="Débits moyens des cours d'eau" />
+<meta name="keywords" content="eau, eau superficielle, niveau, hauteur, débit, rivière, cours d'eau, crue, inondation, étiage, Hub'Eau, HubEau, France" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Language" content="fr" />
+<link rel="stylesheet" type="text/css" href="css/stylehtm.css" media="all" />
+<link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/odometer-theme-car-hydro.css" />
+<link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+<link rel="icon" href="images/favicon.ico" type="image/x-icon">
+<!-- Odometer (compteur avec chiffres tournants) -->
+<script type="text/javascript" src="js/odometer.js"></script>
+<!-- HighCharts / StockCharts -->
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script src="https://code.highcharts.com/stock/highstock.js"></script>
+<script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/stock/modules/export-data.js"></script>
+<script src="https://code.highcharts.com/stock/modules/data.js"></script>
+<!-- OpenLayers 5 -->
+	<script src="https://cdn.rawgit.com/openlayers/openlayers.github.io/master/en/v5.3.0/build/ol.js"></script>
+    <link rel="stylesheet" href="https://cdn.rawgit.com/openlayers/openlayers.github.io/master/en/v5.3.0/css/ol.css" type="text/css">
+<!-- Fonctions javascript communes à tous les démonstrateurs -->
+<script type="text/javascript" src="js/commun.js"></script>
+<!-- Scripts Javascript propres à démonstrateur hydro TR -->
+<script src="js/hydro_elab.js"></script>
+
+<!-- walkermatt/ol-layerswitcher https://github.com/walkermatt/ol-layerswitcher/tree/master/dist -->
+<link rel="stylesheet" href="js/layerswitcher/ol-layerswitcher.css" />
+<script src="js/layerswitcher/ol-layerswitcher.js"></script>
+
+<!-- styles spécifiques à ce démonstrateur
+<!-- font-family: tt_normsmedium !important; le chiffre 1 n'est pas centré avec cette police 
+on a ajouté 100000 à la profondeur : enlever le 1er chiffre et le signe des milliers 
+arrondir le nouveau 1er chiffre à gauche -->
+<link rel="stylesheet" type="text/css" href="css/stylebase.css" media="all" />
+<style>
+.odometer .odometer-inside .odometer-digit:first-child,
+.odometer .odometer-inside .odometer-formatting-mark:nth-child(2) {
+    display: none
+}
+.odometer .odometer-inside .odometer-digit:nth-child(2) {
+  -moz-border-radius: 0.2em 0 0 0.2em;
+  -webkit-border-radius: 0.2em 0 0 0.2em;
+  -o-border-radius: 0.2em 0 0 0.2em;
+  -ms-border-radius: 0.2em 0 0 0.2em;
+  -khtml-border-radius: 0.2em 0 0 0.2em;
+  border-radius: 0.2em 0 0 0.2em;
+}
+#titre_detail img {
+  width: 32px;
+  height: 42px;
+  margin-right: 10px;
+}
+#down img {
+	top: 324px;
+}
+#aide {
+	top: calc(98.4% - 74px);
+}
+#fen_aide {
+	top: calc(98.4% - 240px);
+	height: 200px;
+}
+#container {
+	width: 100%;
+	height: 90px;
+}
+.ol-popup {
+  min-width: 300px;
+  padding: 10px;
+}
+#legende img { 
+	vertical-align:middle;
+	height: 32px;
+}
+#etat {
+	bottom: 16px; /* affichage sur la même ligne que légende, en 1er */
+	left: 515px;
+}
+#basicMap {
+    height: calc(98% - 30px);
+}
+#legende {
+	left: 615px; 
+    bottom: 5px;
+}
+#legende input[type=text]{
+		-webkit-border-radius: 10px;
+		-moz-border-radius: 10px;
+		border-radius: 10px;
+		padding: 5px 10px 5px 15px;
+		margin: 0px 0px 0px 0px; /* top right bottom left */
+		font-size : 13px;
+		color : #818181;
+		border:0px;
+		font-family: 'Roboto', sans-serif;
+		}
+    input:focus {
+		outline: none;	
+}
+</style>
+
+</head>
+<body>
+  <div id="popup" class="ol-popup">
+    <a href="#" id="popupcloser" class="ol-popup-closer"></a>
+    <div id="popupcontent"></div>
+  </div>
+<script>
+</script> 
+<div id="search"> 
+  <div id="search_haut">
+    <p>&nbsp;</p>
+	<div id="brgm"><a href="https://www.brgm.fr" target="_blank"><img src="images/logo_brgm_web_fr_couleur.svg" height="40px"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://hubeau.eaufrance.fr" target="_blank"><img src="images/logo_hubeau_long_transp.png" height="40px"></a></div>
+	<br>
+	<form id='form1' onSubmit="get_adresse(); return false;" >
+	<input type="text" id="adresse" name="adresse" size="40" placeholder="Entrez une adresse pour vous localiser">
+	<input type="submit" value="" class="loupe">
+	</form>
+	<img src="images/goutesousrecherche.svg" height="30px">
+	
+    <h3><form name="form2" id="form2">
+	<select name="grandeur" id="grandeur" onchange="changeGrandeur();">
+	<option value="QmJ" selected="selected">Débit moyen journalier en m3/s</option>
+	<option value="QmM">Débit moyen mensuel en m3/s</option>
+	</select>
+	</form>	</h3>
+	
+	<div id="odometer" class="odometer" style="font-size: 50px;"><p>00000</p><p><img src="images/Vagues.svg"></p></div>
+	<span class="metres">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+    <div id="vagues"><img src="images/Vagues.svg"></div>
+  </div>
+  <div id="search_bas">
+	<script>
+		delayedAlert("0");
+	</script>
+
+	<div id="down"><img src="images/arrowdown.png"></div>
+	<div id="detail">
+	  <div id="titre_detail"></div>
+	<table width="100%">
+	<tr height="20px"><td style="text-align:center;"><class id="libpe"></class></td></tr>
+	<tr height="30px"><td style="text-align:center;"><class id="dat"></class></td></tr>
+	<tr><td style="text-align:center;">
+	<div id="container"></div>
+	</td></tr>
+	<tr height="30px"><td style="text-align:center;"><class id="station">(Pas de station de mesure sélectionnée)</class></td></tr>
+	</table>
+	</div>
+<script>
+	calcul_hauteur();
+</script>
+<!-- <div id="contact"><a href="https://www.brgm.fr/content/contact" target="_blank">Contact</a></div> -->
+  </div> <!-- de search_bas !-->
+</div>
+<p>&nbsp;</p>
+<div id="basicMap"></div>
+	<div id="bton_fm" title="Zoom sur France métropolitaine">Zoom sur France métro.</div>
+	<div id="bton_pp" title="Toute l'étendue">Toute l'étendue</div>
+<div id="aide" title="Aide"></div>
+<div id="fen_aide" title="Fenêtre d'aide">
+<p>Cliquer sur un point de mesure en rivière pour connaître le débit moyen (journalier ou mensuel) de l'eau à cet endroit.</p>
+<p>Ce service utilise les opérations Stations et Observations Elaborées de <a href="https://hubeau.eaufrance.fr/page/api-hydrometrie" target="_blank">l'API Hydrométrie</a> de <a href="https://hubeau.eaufrance.fr" target="_blank">Hub'Eau</a>.</p>
+<p>Le graphique d'évolution des débits moyens présente l'ensemble des mesures disponibles sur tout l'historique.</p>
+<p><a href="aide/hydro_elab_aide.htm" target="_blank">En savoir plus...</a></p>
+</div>
+<div id="etat" name="etat">
+</div>
+<div id="legende">&nbsp;&nbsp;<img class="imgleg" src="images/HydrometrieBleu_on.svg" title="LIMNI" onclick="icoapp(this)">&nbsp;&nbsp;Limnimètre&nbsp;&nbsp;&nbsp;&nbsp;<img class="imgleg" src="images/HydrometrieMauve_on.svg" title="DEB" 
+		onclick="icoapp(this)">&nbsp;&nbsp;Débitmètre&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		nbobsmin = <input type="text" id="val6" name="val6" size="6" title="Affichage uniquement des stations ayant au moins nbobsmin débits" placeholder="nbobsmin">&nbsp;&nbsp;
+		datedeb = <input type="text" id="val3" name="val3" size="8" title="Affichage uniquement des stations ayant des débits antérieurs à datedeb" placeholder="datedeb">&nbsp;&nbsp;
+		datefin = <input type="text" id="val4" name="val4" size="8" title="Affichage uniquement des stations ayant des débits postérieurs à datefin" placeholder="datefin">
+</div>
+<!--
+ne sert pas, juste pour avoir procédure commune avec qualriv et qualnap
+-->
+<div id="limit" name="limit">
+  <input type="checkbox" id="climit" name="climit">
+  <label for="climit">Valeur seuil</label>
+</div>
+</body>
+</html>

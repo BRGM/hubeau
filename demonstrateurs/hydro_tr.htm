@@ -1,0 +1,193 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr" >
+<head>
+<title>Démonstrateur Hydrométrie Temps Réel Hub'Eau</title>
+<!--
+2020-07-16 Version avec une seule courbe pour être plus lisible : débits
+2021-07-15 Graphique sur tout l'historique, infobulles sur stations
+2021-07-29 hauteurs également consultables, paramètres dans l'URL
+Constituer fichier JSON des stations ayant des données de débit avec script PHP, sur le modèle de piezo TR
+-->
+<meta name="author" content="BRGM" />
+<meta name="description" content="Quel est le niveau de la rivière à côté de chez moi ?" />
+<meta name="keywords" content="eau, eau superficielle, niveau, hauteur, débit, rivière, cours d'eau, crue, inondation, étiage, Hub'Eau, HubEau, France" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Language" content="fr" />
+<link rel="stylesheet" type="text/css" href="css/stylehtm.css" media="all" />
+<link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/odometer-theme-car-hydro.css" />
+<link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+<link rel="icon" href="images/favicon.ico" type="image/x-icon">
+<!-- Odometer (compteur avec chiffres tournants) -->
+<script type="text/javascript" src="js/odometer.js"></script>
+<!--
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-103689621-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- HighCharts / StockCharts -->
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script src="https://code.highcharts.com/stock/highstock.js"></script>
+<script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/stock/modules/export-data.js"></script>
+<script src="https://code.highcharts.com/stock/modules/data.js"></script>
+<!-- OpenLayers 5 -->
+	<script src="https://cdn.rawgit.com/openlayers/openlayers.github.io/master/en/v5.3.0/build/ol.js"></script>
+    <link rel="stylesheet" href="https://cdn.rawgit.com/openlayers/openlayers.github.io/master/en/v5.3.0/css/ol.css" type="text/css">
+<!-- Fonctions javascript communes à tous les démonstrateurs -->
+<script type="text/javascript" src="js/commun.js"></script>
+<!-- Scripts Javascript propres à démonstrateur hydro TR -->
+<script src="js/hydro_tr.js"></script>
+
+<!-- walkermatt/ol-layerswitcher https://github.com/walkermatt/ol-layerswitcher/tree/master/dist -->
+<link rel="stylesheet" href="js/layerswitcher/ol-layerswitcher.css" />
+<script src="js/layerswitcher/ol-layerswitcher.js"></script>
+
+<!-- styles spécifiques à ce démonstrateur
+<!-- font-family: tt_normsmedium !important; le chiffre 1 n'est pas centré avec cette police 
+on a ajouté 100000 à la profondeur : enlever le 1er chiffre et le signe des milliers 
+arrondir le nouveau 1er chiffre à gauche -->
+<link rel="stylesheet" type="text/css" href="css/stylebase.css" media="all" />
+<style>
+.odometer .odometer-inside .odometer-digit:first-child,
+.odometer .odometer-inside .odometer-formatting-mark:nth-child(2) {
+    display: none
+}
+.odometer .odometer-inside .odometer-digit:nth-child(2) {
+  -moz-border-radius: 0.2em 0 0 0.2em;
+  -webkit-border-radius: 0.2em 0 0 0.2em;
+  -o-border-radius: 0.2em 0 0 0.2em;
+  -ms-border-radius: 0.2em 0 0 0.2em;
+  -khtml-border-radius: 0.2em 0 0 0.2em;
+  border-radius: 0.2em 0 0 0.2em;
+}
+#titre_detail img {
+  width: 32px;
+  /* height: 42px; */
+  margin-right: 10px;
+}
+#down img {
+	top: 324px;
+}
+#aide {
+	top: calc(98.4% - 74px);
+}
+#fen_aide {
+	top: calc(98.4% - 340px);
+	height: 300px;
+}
+#container {
+	width: 100%;
+	height: 90px;
+}
+#legende img { 
+	vertical-align:middle;
+	height: 32px;
+}
+#etat {
+	bottom: 16px; /* affichage sur la même ligne que légende, en 1er */
+	left: 515px;
+}
+#basicMap {
+    height: calc(98% - 30px);
+}
+#legende {
+	left: 615px; 
+    bottom: 5px;
+}
+</style>
+
+</head>
+<body>
+  <div id="popup" class="ol-popup">
+    <a href="#" id="popupcloser" class="ol-popup-closer"></a>
+    <div id="popupcontent"></div>
+  </div>
+<div id="search"> 
+  <div id="search_haut">
+    <p>&nbsp;</p>
+	<div id="brgm"><a href="https://www.brgm.fr" target="_blank"><img src="images/logo_brgm_web_fr_couleur.svg" height="40px"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://hubeau.eaufrance.fr" target="_blank"><img src="images/logo_hubeau_long_transp.png" height="40px"></a></div>
+	<br>
+	<form id='form1' onSubmit="get_adresse(); return false;" >
+	<input type="text" id="adresse" name="adresse" size="40" placeholder="Entrez une adresse pour vous localiser">
+	<input type="submit" value="" class="loupe">
+	</form>
+	<img src="images/goutesousrecherche.svg" height="30px"> <!-- 48 -->
+	
+    <h3><form name="form2" id="form2">
+	<select name="grandeur" id="grandeur" onchange="changeGrandeur();">
+	<option value="Q" selected="selected">Débit en m3/s</option>
+	<option value="H">Hauteur en mm</option>
+	</select>
+	</form>	</h3>
+	
+	<!-- <h3><div id="titre_chiffres">Débit de l'eau en m3/s</div></h3> 
+	<div id="odometer" class="odometer" style="font-size: 50px; font-family: tt_normsmedium;><p>00000</p><p><img src="images/Vagues.svg"></p></div> -->
+	<div id="odometer" class="odometer" style="font-size: 50px;"><p>00000</p><p><img src="images/Vagues.svg"></p></div>
+	<span class="metres">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+    <div id="vagues"><img src="images/Vagues.svg"></div>
+  </div>
+  <div id="search_bas">
+	<script>
+		delayedAlert("0");
+	</script>
+
+	<div id="down"><img src="images/arrowdown.png"></div>
+	<div id="detail">
+	  <div id="titre_detail"></div>
+	<table width="100%">
+	<tr height="20px"><td style="text-align:center;"><class id="libpe"></class></td></tr>
+	<tr height="30px"><td style="text-align:center;"><class id="dat"></class></td></tr>
+	<tr><td style="text-align:center;">
+	<div id="container"></div>
+	</td></tr>
+	<tr height="30px"><td style="text-align:center;"><class id="station">(Pas de station de mesure sélectionnée)</class></td></tr>
+	</table>
+	</div>
+<script>
+	calcul_hauteur();
+</script>
+	<div id="contact"><a href="https://www.brgm.fr/content/contact" target="_blank">Contact</a></div>
+  </div> <!-- de search_bas !-->
+</div>
+<p>&nbsp;</p>
+<div id="basicMap"></div>
+	<div id="bton_fm" title="Zoom sur France métropolitaine">Zoom sur France métro.</div>
+	<div id="bton_pp" title="Toute l'étendue">Toute l'étendue</div>
+<div id="aide" title="Aide"></div>
+<div id="fen_aide" title="Fenêtre d'aide">
+<p>Cliquer sur un point de mesure en rivière pour connaître le débit ou la hauteur de l'eau à cet endroit.</p>
+<p>Ce service utilise les opérations Stations et Observations Temps Réel de <a href="https://hubeau.eaufrance.fr/page/api-hydrometrie" target="_blank">l'API Hydrométrie</a> de <a href="https://hubeau.eaufrance.fr" target="_blank">Hub'Eau</a>, qui récolte toutes les 2 minutes les données de plus de 2000 stations du réseau Vigicrues mis en place par le SCHAPI.</p>
+<p>La courbe d'évolution des débits ou des hauteurs présente les mesures disponibles sur les 30 derniers jours. La fréquence des mesures peut varier selon les points de mesure de 5 minutes à 1 heure.</p>
+<p>Les heures sont exprimées en Temps Universel Coordonné (UTC). En France métropolitaine, ajouter 1 heure à l'heure UTC en période d'heure d'hiver, et 2 heures en période d'heure d'été pour avoir l'heure légale.</p>
+<p><a href="aide/hydro_tr_aide.htm" target="_blank">En savoir plus...</a></p>
+</div>
+<div id="etat" name="etat">
+</div>
+<div id="legende">&nbsp;&nbsp;<img class="imgleg" src="images/HydrometrieBleu_on.svg" title="LIMNI" onclick="icoapp(this)">&nbsp;&nbsp;Limnimètre&nbsp;&nbsp;&nbsp;&nbsp;<img class="imgleg" src="images/HydrometrieMauve_on.svg" title="DEB" 
+		onclick="icoapp(this)">&nbsp;&nbsp;Débitmètre&nbsp;&nbsp;
+</div>
+
+ <!-- Piwik -->
+ <script type="text/javascript">
+ var _paq = _paq || [];
+ _paq.push(['trackPageView']);
+ _paq.push(['enableLinkTracking']);
+ (function() {
+ var u="https://wwwstats.brgm.fr/";
+ _paq.push(['setTrackerUrl', u+'piwik.php']);
+ _paq.push(['setSiteId', 121]);
+ var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+ g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+ })();
+ </script>
+ <noscript><p><img src="https://wwwstats.brgm.fr/piwik.php?idsite=121" style="border:0;" alt="" /></p></noscript>
+ <!-- End Piwik Code -->
+		
+</body>
+</html>
