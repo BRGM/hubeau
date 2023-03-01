@@ -1,0 +1,209 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr" >
+<head>
+<title>Démonstrateur Hub'Eau Prélèvements en eau</title>
+<meta name="author" content="BRGM" />
+<meta name="description" content="Prélèvements annuels dans la ressource en eau" />
+<meta name="keywords" content="eau, eau superficielle, eau souterraine, prélèvement, rivière, cours d'eau, nappe, Hub'Eau, HubEau, France" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Language" content="fr" />
+<!-- <link rel="stylesheet" type="text/css" href="css/stylehtm_piezo.css" media="all" /> -->
+<link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+<!-- <link rel="stylesheet" href="css/odometer-theme-car-piezo.css" /> -->
+<link rel="stylesheet" href="css/odometer-theme-car-hydro.css" />
+<link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+<link rel="icon" href="images/favicon.ico" type="image/x-icon">
+<!-- si on veut ajouter le "m" dans le conteneur du compteur
+.odometer .odometer-inside:after {
+    content: "m"
+} !-->
+<script type="text/javascript" src="js/odometer-prel.js"></script>
+<!--
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-103689621-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- HighCharts / StockCharts -->
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script src="https://code.highcharts.com/stock/highstock.js"></script>
+<script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/stock/modules/export-data.js"></script>
+<script src="https://code.highcharts.com/stock/modules/data.js"></script>
+<!-- OpenLayers 5 -->
+	<script src="https://cdn.rawgit.com/openlayers/openlayers.github.io/master/en/v5.3.0/build/ol.js"></script>
+    <link rel="stylesheet" href="https://cdn.rawgit.com/openlayers/openlayers.github.io/master/en/v5.3.0/css/ol.css" type="text/css">
+<!-- Fonctions javascript communes à tous les démonstrateurs -->
+<script type="text/javascript" src="js/commun.js"></script>
+<!-- Scripts Javascript propres à démonstrateur prel -->
+<script src="js/prel.js"></script>
+
+<!-- walkermatt/ol-layerswitcher https://github.com/walkermatt/ol-layerswitcher/tree/master/dist -->
+<link rel="stylesheet" href="js/layerswitcher/ol-layerswitcher.css" />
+<script src="js/layerswitcher/ol-layerswitcher.js"></script>
+
+<link rel="stylesheet" type="text/css" href="css/stylebase.css" media="all" />  
+<!-- styles spécifiques à ce démonstrateur -->
+<!-- font-family: tt_normsmedium !important; le chiffre 1 n'est pas centré avec cette police -->
+<script type="text/javascript">
+// https://github.hubspot.com/odometer/
+window.odometerOptions = {
+  format: '( ddd)' // Change how digit groups are formatted, and how many digits are shown after the decimal point
+};
+// ne fonctionne pas -> utilisation de odometer-prel.js
+</script>
+<style>
+.odometer.odometer-auto-theme, .odometer.odometer-theme-car {
+  padding: 0.10em;
+}
+.odometer .odometer-inside .odometer-digit:first-child {
+    display: none
+}
+.odometer .odometer-inside .odometer-digit:nth-child(2) {
+  -moz-border-radius: 0.2em 0 0 0.2em;
+  -webkit-border-radius: 0.2em 0 0 0.2em;
+  -o-border-radius: 0.2em 0 0 0.2em;
+  -ms-border-radius: 0.2em 0 0 0.2em;
+  -khtml-border-radius: 0.2em 0 0 0.2em;
+  border-radius: 0.2em 0 0 0.2em;
+}
+.odometer.odometer-auto-theme .odometer-digit:last-child, .odometer.odometer-theme-car .odometer-digit:last-child {
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #33CCFF), color-stop(40%, #33CCFF), color-stop(60%, #3399FF), color-stop(80%, #33CCFF), color-stop(100%, #33CCFF));
+  background-image: -moz-linear-gradient(top, #33CCFF 0%, #33CCFF 40%, #3399FF 60%, #33CCFF 80%, #33CCFF 100%);
+  background-image: -webkit-linear-gradient(top, #33CCFF 0%, #33CCFF 40%, #3399FF 60%, #33CCFF 80%, #33CCFF 100%);
+  background-image: linear-gradient(to bottom, #33CCFF 0%, #33CCFF 40%, #3399FF 60%, #33CCFF 80%, #33CCFF 100%);
+  color: #eee0d3;
+}
+#down img {
+	top: 268px;
+}	
+#container {
+	width: 100%;
+	height: 90px;
+}
+.ol-popup {
+  min-width: 340px; /* 250 avant d'ajouter les prélèvemnts */
+  padding: 10px;
+}
+.metres {
+	font-size: 24px;
+	vertical-align: middle;
+	padding-bottom: 0px;
+}
+#basicMap {
+    height: calc(98% - 30px);
+}
+#legende {
+	left: calc(400px + calc(50% - 550px));
+    bottom: 5px;
+}
+#aide {
+	top: calc(98.4% - 74px);
+}
+#fen_aide {
+	top: calc(98.4% - 221px);
+	height: 180px;
+}
+#contact {
+	display: none;
+}
+#detail {
+	margin: -65px 0px 0px 35px; /* top right bottom left - 2021-08-26 top passé de -60 à -65 pour voir tout le menu de HighChart jusqu'à download XLS sur écran notebook */
+}	
+#titre_detail {
+	margin-top:14px; /* 2022-07-28 top passé de 10 à 15 pour laisser plus d'espace
+}	
+</style>
+</head>
+
+<body>
+  <div id="popup" class="ol-popup">
+    <a href="#" id="popupcloser" class="ol-popup-closer"></a>
+    <div id="popupcontent"></div>
+  </div>
+<script>
+</script> 
+<div id="search"> 
+  <div id="search_haut">
+    <p>&nbsp;</p>
+	<div id="brgm"><a href="https://www.brgm.fr" target="_blank"><img src="images/logo_brgm_web_fr_couleur.svg" height="40px"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://hubeau.eaufrance.fr" target="_blank"><img src="images/logo_hubeau_long_transp.png" height="40px"></a></div>
+	<br>
+	<form id='form1' onSubmit="get_adresse(); return false;" >
+	<input type="text" id="adresse" name="adresse" size="40" placeholder="Entrez une adresse pour vous localiser">
+	<input type="submit" value="" class="loupe">
+	</form>
+	
+	<h3>Prélèvements annuels en eau</h3>
+	<!-- <div id="odometer" class="odometer" style="font-size: 80px; font-family: tt_normsmedium;><p>000</p><p><img src="images/Vagues.svg"></p></div> -->
+	<div id="odometer" class="odometer" style="font-size: 42px;" ><p>000</p><p><img src="images/Vagues.svg"></p></div>
+	<span class="metres">&nbsp;m3&nbsp;</span>
+    <div id="vagues"><img src="images/Vagues.svg"></div>
+	</div>
+	<div id="search_bas">
+	<script>
+		delayedAlert("0");
+	</script>
+
+	<div id="down"><img src="images/arrowdown.png"></div>
+	<div id="detail">
+	  <div id="titre_detail"><b>Ouvrage de prélèvement</b> <i><class id="code"></class></i></div>
+	<br><table width="100%">
+	<tr height="20px"><td style="text-align:center;"><class id="libpe"></class></td></tr>
+	<tr height="30px"><td style="text-align:center;"><class id="dat"></class></td></tr>
+	<tr><td style="text-align:center;">
+	<div id="container"></div>
+	</td></tr>
+	<tr height="30px"><td style="text-align:center;"><class id="station">(Pas d'ouvrage de prélèvement sélectionné)</class></td></tr>
+	</table>
+	</div>
+<script>
+	calcul_hauteur();
+</script>
+<div id="contact"><a href="https://www.brgm.fr/content/contact" target="_blank">Contact</a></div>
+</div> <!-- de search_bas !-->
+</div>
+<p>&nbsp;</p>
+<div id="basicMap"></div>
+	<div id="bton_fm" title="Zoom sur France métropolitaine">Zoom sur France métro.</div>
+	<div id="bton_pp" title="Toute l'étendue">Toute l'étendue</div>
+<div id="aide" title="Aide"></div>
+<div id="fen_aide" title="Fenêtre d'aide">
+<p>Cliquer sur un ouvrage pour connaître l'historique des prélèvements en eau de ce point de mesure. Le nombre qui apparaît dans le compteur correspond au dernier volume annuel prélevé connu.</p>
+<p>Ce service utilise les opérations ouvrages et chroniques de <a href="https://hubeau.eaufrance.fr/page/api-prelevements-eau" target="_blank">l'API Prélèvements en eau</a> de <a href="https://hubeau.eaufrance.fr" target="_blank">Hub'Eau</a>, qui diffuse les données de <a href="https://bnpe.eaufrance.fr/" target="_blank">la Banque Nationale des Prélèvements quantitatifs en Eau (BNPE)</a>.</p>
+<p><a href="aide/prel_aide.htm" target="_blank">En savoir plus...</a></p>
+</div>
+<div id="etat" name="etat">
+</div>
+<div id="legende">Milieu de prélèvement :&nbsp;&nbsp;<img class="imgleg" src="images/pointOr_on.png" title="SOUT" onclick="icomil(this)">&nbsp;&nbsp;Souterrain&nbsp;&nbsp;&nbsp;&nbsp;<img class="imgleg" src="images/pointBleu_on.png" title="CONT" 
+		onclick="icomil(this)">&nbsp;&nbsp;Continental&nbsp;&nbsp;&nbsp;&nbsp;<img class="imgleg" src="images/pointMauve_on.png" title="LIT" onclick="icomil(this)">&nbsp;&nbsp;Littoral&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		nbobsmin = <input type="text" id="val6" name="val6" size="6" title="Affichage uniquement des ouvrages ayant au moins nbobsmin mesures" placeholder="nbobsmin">&nbsp;&nbsp;
+		datedeb = <input type="text" id="val3" name="val3" size="8" title="Affichage uniquement des ouvrages ayant des mesures antérieures à datedeb" placeholder="datedeb">&nbsp;&nbsp;
+		datefin = <input type="text" id="val4" name="val4" size="8" title="Affichage uniquement des ouvrages ayant des mesures postérieures à datefin" placeholder="datefin">
+</div>
+<div id="limit" name="limit">
+  <input type="checkbox" id="climit" name="climit">
+  <label for="climit">Valeur seuil</label>
+</div>
+
+ <!-- Piwik -->
+ <script type="text/javascript">
+ var _paq = _paq || [];
+ _paq.push(['trackPageView']);
+ _paq.push(['enableLinkTracking']);
+ (function() {
+ var u="https://wwwstats.brgm.fr/";
+ _paq.push(['setTrackerUrl', u+'piwik.php']);
+ _paq.push(['setSiteId', 121]);
+ var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+ g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+ })();
+ </script>
+ <noscript><p><img src="https://wwwstats.brgm.fr/piwik.php?idsite=121" style="border:0;" alt="" /></p></noscript>
+ <!-- End Piwik Code -->
+
+</body>
+</html>

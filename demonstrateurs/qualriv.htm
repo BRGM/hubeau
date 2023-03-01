@@ -1,0 +1,225 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr" >
+<head>
+<title>Démonstrateur API Qualité des rivières Hub'Eau</title>
+<meta name="author" content="BRGM" />
+<meta name="description" content="Qualité des cours d'eau en France" />
+<meta name="keywords" content="eau, eau superficielle, qualité, nitrates, rivière, cours d'eau, crue, inondation, étiage, Hub'Eau, HubEau, France" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Language" content="fr" />
+<!-- <link rel="stylesheet" type="text/css" href="css/stylehtm_piezo.css" media="all" /> -->
+<link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+<!-- <link rel="stylesheet" href="css/odometer-theme-car-piezo.css" /> -->
+<link rel="stylesheet" href="css/odometer-theme-car-hydro.css" />
+<link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+<link rel="icon" href="images/favicon.ico" type="image/x-icon">
+<!-- si on veut ajouter le "m" dans le conteneur du compteur
+.odometer .odometer-inside:after {
+    content: "m"
+} !-->
+<script type="text/javascript" src="js/odometer.min.js"></script>
+<!--
+v1 2021-07-30 nitrates uniquement
+v2 2021-08-01 liste déroulante de paramètres
+v3 2021-08-18 distinction stations plans d'eau et cours d'eau
+v4 2021-08-20 liste déroulante supports, y compris hydrobiologie + température en continu
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-103689621-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- HighCharts / StockCharts -->
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script src="https://code.highcharts.com/stock/highstock.js"></script>
+<script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/stock/modules/export-data.js"></script>
+<script src="https://code.highcharts.com/stock/modules/data.js"></script>
+<!-- OpenLayers 5 -->
+	<script src="https://cdn.rawgit.com/openlayers/openlayers.github.io/master/en/v5.3.0/build/ol.js"></script>
+    <link rel="stylesheet" href="https://cdn.rawgit.com/openlayers/openlayers.github.io/master/en/v5.3.0/css/ol.css" type="text/css">
+<!-- Fonctions javascript communes à tous les démonstrateurs -->
+<script type="text/javascript" src="js/commun.js"></script>
+<!-- Scripts Javascript propres à démonstrateur qualriv -->
+<script src="js/qualriv.js"></script>
+
+<!-- walkermatt/ol-layerswitcher https://github.com/walkermatt/ol-layerswitcher/tree/master/dist -->
+<link rel="stylesheet" href="js/layerswitcher/ol-layerswitcher.css" />
+<script src="js/layerswitcher/ol-layerswitcher.js"></script>
+
+<link rel="stylesheet" type="text/css" href="css/stylebase.css" media="all" />  
+<!-- styles spécifiques à ce démonstrateur -->
+<!-- font-family: tt_normsmedium !important; le chiffre 1 n'est pas centré avec cette police -->
+<style>
+.odometer.odometer-auto-theme, .odometer.odometer-theme-car {
+  padding: 0.10em;
+}
+.odometer .odometer-inside .odometer-digit:first-child,
+.odometer .odometer-inside .odometer-formatting-mark:nth-child(3) {
+    display: none
+}
+.odometer .odometer-inside .odometer-digit:nth-child(2) {
+  -moz-border-radius: 0.2em 0 0 0.2em;
+  -webkit-border-radius: 0.2em 0 0 0.2em;
+  -o-border-radius: 0.2em 0 0 0.2em;
+  -ms-border-radius: 0.2em 0 0 0.2em;
+  -khtml-border-radius: 0.2em 0 0 0.2em;
+  border-radius: 0.2em 0 0 0.2em;
+}
+#down img {
+		top: 316px;
+}	
+#container {
+	width: 100%;
+	height: 90px;
+}
+.ol-popup {
+  min-width: 350px;
+  padding: 10px;
+}
+.metres {
+	font-size: 32px;
+	vertical-align: middle;
+	padding-bottom: 0px;
+}
+#detail {
+	margin: -78px 0px 0px 35px; /* top right bottom left - 2021-08-19 top passé de -60 à -78 pour pouvoir placer select type de qualité */
+}	
+#basicMap {
+    height: calc(98% - 30px);
+}
+#legende {
+	left: calc(400px + calc(50% - 500px));
+    bottom: 5px;
+}
+#aide {
+	top: calc(98.4% - 74px);
+}
+#fen_aide {
+	top: calc(98.4% - 181px);
+	height: 140px;
+}
+</style>
+</head>
+
+<body>
+  <div id="popup" class="ol-popup">
+    <a href="#" id="popupcloser" class="ol-popup-closer"></a>
+    <div id="popupcontent"></div>
+  </div>
+<script>
+// requête GEoJSON https://hubeau.eaufrance.fr/api/v1/qualite_rivieres/station_pc?code_parametre=1340&size=20000&exact_count=true&format=geojson&fields=code_station,libelle_station -> la geometry est null (bug)
+</script> 
+<div id="search"> 
+  <div id="search_haut">
+    <p>&nbsp;</p>
+	<div id="brgm"><a href="https://www.brgm.fr" target="_blank"><img src="images/logo_brgm_web_fr_couleur.svg" height="40px"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://hubeau.eaufrance.fr" target="_blank"><img src="images/logo_hubeau_long_transp.png" height="40px"></a></div>
+	<br>
+	<form id='form1' onSubmit="get_adresse(); return false;" >
+	<input type="text" id="adresse" name="adresse" size="40" placeholder="Entrez une adresse pour vous localiser">
+	<input type="submit" value="" class="loupe">
+	</form>
+	<!-- <img src="images/goutesousrecherche.svg" height="30px"> <!-- 48 -->
+
+	<div id="sel_maj"><form name="form3" id="form3"><h3><select name="code_support" id="code_support" onchange="changeSupport();" title="Choix du type de qualité">
+	<option value="3" selected="selected">Physico-chimie de l'eau</option>
+	<option value="6">Physico-chimie des sédiments</option>
+	<option value="10">Hydrobiologie - diatomées</option>
+	<option value="13">Hydrobiologie - macro-invertébrés</option>
+	<option value="27">Hydrobiologie - macrophytes</option>
+	<option value="4">Hydrobiologie - poissons</option>
+	<option value="99">Température de l'eau en continu</option>
+	</select></h3>
+	</form></div>
+	
+    <div id="sel_min"><form name="form2" id="form2"><h3><select name="grandeur" id="grandeur" onchange="changeGrandeur();" title="Choix du paramètre">
+	<option value="1340" selected="selected">Teneur en Nitrates (NO3) en mg/l</option>
+	<option value="1335">Teneur en Ammonium (NH4) en mg/l</option>
+	<option value="1339">Teneur en Nitrites (NO2) en mg/l</option>
+	<option value="1433">Teneur en Orthophosphates (PO4) en mg/l</option>
+	<option value="1350">Teneur en Phosphore total (Ptot) en mg/l</option>
+	<option value="1313">DBO5 en mg/l</option>
+	<option value="1312">Taux de saturation en oxygène (O2sat) en %</option>
+	<option value="1301">Température de l'eau en °C</option>
+	<option value="1302">Potentiel en Hydrogène (pH)</option>
+	<option value="1303,1304">Conductivité en µS/cm</option>
+	<option value="1305">Matières en suspension (MES) en mg/l</option>
+	</select></h3>
+	</form></div>
+	
+	<div id="odometer" class="odometer" style="font-size: 50px;" ><p>000</p><p><img src="images/Vagues.svg"></p></div>
+	<span class="metres">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+    <div id="vagues"><img src="images/Vagues.svg"></div>
+	</div>
+	<div id="search_bas">
+	<script>
+		delayedAlert("0");
+	</script>
+
+	<div id="down"><img src="images/arrowdown.png"></div>
+	<div id="detail">
+	  <div id="titre_detail"></div>
+	<br><table width="100%">
+	<tr height="20px"><td style="text-align:center;"><class id="libpe"></class></td></tr>
+	<tr height="30px"><td style="text-align:center;"><class id="dat"></class></td></tr>
+	<tr><td style="text-align:center;">
+	<div id="container"></div>
+	</td></tr>
+	<tr height="30px"><td style="text-align:center;"><class id="station">(Pas de station de mesure sélectionnée)</class></td></tr>
+	</table>
+	</div>
+<script>
+	calcul_hauteur();
+</script>
+<!-- <div id="contact"><a href="https://www.brgm.fr/content/contact" target="_blank">Contact</a></div> -->
+</div> <!-- de search_bas -->
+</div>
+<p>&nbsp;</p>
+<div id="basicMap"></div>
+	<div id="bton_fm" title="Zoom sur France métropolitaine">Zoom sur France métro.</div>
+	<div id="bton_pp" title="Toute l'étendue">Toute l'étendue</div>
+<div id="aide" title="Aide"></div>
+<div id="fen_aide" title="Fenêtre d'aide">
+<p>Cliquer sur une station de mesure pour connaître la teneur en nitrates (ainsi que d'autres éléments) de l'eau de la rivière à cet endroit.</p>
+<p>Ce service utilise les opérations station_pc et analyse_pc de <a href="https://hubeau.eaufrance.fr/page/api-qualite-cours-deau" target="_blank">l'API Qualité des rivières</a> de <a href="https://hubeau.eaufrance.fr" target="_blank">Hub'Eau</a>, qui diffuse les données de <a href="https://naiades.eaufrance.fr/">Naïades</a>.</p>
+</div>
+<div id="etat" name="etat">
+</div>
+<div id="legende">Type de station :&nbsp;&nbsp;<img class="imgleg" src="images/pointBleu_on.png" title="Plan d'eau" onclick="icotyp(this)">&nbsp;&nbsp;Plan d'eau&nbsp;&nbsp;&nbsp;&nbsp;<img class="imgleg" src="images/pointViolet_on.png" title="Cours d'eau" 
+		onclick="icotyp(this)">&nbsp;&nbsp;Cours d'eau&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		nbobsmin = <input type="text" id="val6" name="val6" size="6" title="Affichage uniquement des stations ayant au moins nbobsmin observations" placeholder="nbobsmin">&nbsp;&nbsp;
+		datedeb = <input type="text" id="val3" name="val3" size="8" title="Affichage uniquement des stations ayant des données antérieures à datedeb" placeholder="datedeb">&nbsp;&nbsp;
+		datefin = <input type="text" id="val4" name="val4" size="8" title="Affichage uniquement des stations ayant des données postérieures à datefin" placeholder="datefin">
+</div>
+
+<!--
+<tr title="Code SANDRE du paramètre physico-chimique ou hydrobiologique"><td width=50%>code_parametre =</td><td width=50%><input type="text" id="val0" name="val0" size="10" placeholder="Valeur"></td></tr>
+<tr title="Code de la station"><td width=50%>code_station =</td><td width=50%><input type="text" id="val1" name="val1" size="10" placeholder="Valeur"></td></tr>
+<tr title="Coordonnées du centre de la carte (longitude,latidude)"><td width=50%>coord =</td><td width=50%><input type="text" id="val2" name="val2" size="10" placeholder="Valeur"></td></tr>
+-->
+<div id="limit" name="limit">
+  <input type="checkbox" id="climit" name="climit">
+  <label for="climit">Valeur seuil</label>
+</div>
+
+ <!-- Piwik -->
+ <script type="text/javascript">
+ var _paq = _paq || [];
+ _paq.push(['trackPageView']);
+ _paq.push(['enableLinkTracking']);
+ (function() {
+ var u="https://wwwstats.brgm.fr/";
+ _paq.push(['setTrackerUrl', u+'piwik.php']);
+ _paq.push(['setSiteId', 121]);
+ var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+ g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+ })();
+ </script>
+ <noscript><p><img src="https://wwwstats.brgm.fr/piwik.php?idsite=121" style="border:0;" alt="" /></p></noscript>
+ <!-- End Piwik Code -->
+
+</body>
+</html>

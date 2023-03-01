@@ -1,0 +1,181 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr" >
+<head>
+<title>Démonstrateur Contaminants chimiques Hub'Eau</title>
+<!--
+2021-04-23 v0.1
+-->
+<meta name="author" content="BRGM" />
+<meta name="description" content="Quel est le niveau de contamination chimique du milieu marin ?" />
+<meta name="keywords" content="eau, mer, océan, milieu marin, littoral, contamination, pollution, chimique, surveillance, Hub'Eau, HubEau, France" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Language" content="fr" />
+<link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/odometer-theme-car-hydro.css" />
+<link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+<link rel="icon" href="images/favicon.ico" type="image/x-icon">
+<!-- Odometer commun avec hydrobio. seule différence avec odometer.js utilisé par hydro_tr :  DIGIT_FORMAT = '(ddd).d' au lieu de '(dddd).dd' -->
+<!-- <script type="text/javascript" src="js/odometer-hydrobio.js"></script> -->
+<script type="text/javascript" src="js/odometer.min.js"></script>
+<!-- HighCharts / StockCharts -->
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script src="https://code.highcharts.com/stock/highstock.js"></script>
+<script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/stock/modules/export-data.js"></script>
+<script src="https://code.highcharts.com/stock/modules/data.js"></script>
+<!-- OpenLayers 5 -->
+	<script src="https://cdn.rawgit.com/openlayers/openlayers.github.io/master/en/v5.3.0/build/ol.js"></script>
+    <link rel="stylesheet" href="https://cdn.rawgit.com/openlayers/openlayers.github.io/master/en/v5.3.0/css/ol.css" type="text/css">
+<!-- Fonctions javascript communes à tous les démonstrateurs -->
+<script type="text/javascript" src="js/commun.js"></script>
+<!-- Scripts Javascript propres à démonstrateur contaminants chimiques -->
+<script src="js/cc.js"></script>
+
+<!-- walkermatt/ol-layerswitcher https://github.com/walkermatt/ol-layerswitcher/tree/master/dist -->
+<link rel="stylesheet" href="js/layerswitcher/ol-layerswitcher.css" />
+<script src="js/layerswitcher/ol-layerswitcher.js"></script>
+
+<link rel="stylesheet" type="text/css" href="css/stylebase.css" media="all" />  
+<!-- styles spécifiques à ce démonstrateur -->
+<!-- font-family: tt_normsmedium !important; le chiffre 1 n'est pas centré avec cette police -->
+<style>
+	.metres {
+		font-size: 38px;
+   		vertical-align: middle;
+   		padding-bottom: 0px;
+	}
+.odometer .odometer-inside .odometer-digit:first-child,
+.odometer .odometer-inside .odometer-formatting-mark:nth-child(4) {
+    display: none
+}
+.odometer .odometer-inside .odometer-digit:nth-child(2) {
+  -moz-border-radius: 0.2em 0 0 0.2em;
+  -webkit-border-radius: 0.2em 0 0 0.2em;
+  -o-border-radius: 0.2em 0 0 0.2em;
+  -ms-border-radius: 0.2em 0 0 0.2em;
+  -khtml-border-radius: 0.2em 0 0 0.2em;
+  border-radius: 0.2em 0 0 0.2em;
+}
+#down img {
+		top: 382px;
+}	
+#fen_aide {
+	top: calc(100% - 301px);
+	height: 290px;
+}
+#container {
+	width: 100%;
+	height: 10px;
+}
+#contact {
+	display: none;
+}	
+#etat {
+	bottom: 0px;
+}
+.ol-popup {
+  min-width: 450px;
+  padding: 10px;
+}
+</style>
+
+</head>
+<body>
+  <div id="popup" class="ol-popup">
+    <a href="#" id="popupcloser" class="ol-popup-closer"></a>
+    <div id="popupcontent"></div>
+  </div>
+<div id="search"> 
+  <div id="search_haut">
+	<p>&nbsp;</p>
+	<div id="brgm"><a href="https://www.brgm.fr" target="_blank"><img src="images/logo_brgm_web_fr_couleur.svg" height="40px"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://hubeau.eaufrance.fr" target="_blank"><img src="images/logo_hubeau_long_transp.png" height="40px"></a></div>
+	<!-- <br><br> -->
+	<form name="form3" id="form3"><h3>Contaminants chimiques dans <select name="code_support" id="code_support" onchange="changeSupport();">
+	<option value="21" selected="selected">les bivalves</option>
+	<option value="6">les sédiments</option>
+	<option value="3">l'eau</option>
+	<option value="4">les poissons</option>
+	</select>
+	</form>	</h3><br>
+	<form id='form1' onSubmit="get_adresse(); return false;" >
+	<input type="text" id="adresse" name="adresse" size="40" placeholder="Entrez une adresse pour vous localiser">
+	<!-- <input type="button" value="" class="loupe" onclick="get_adresse();"> -->
+	<input type="submit" value="" class="loupe">
+	</form>
+	<img src="images/goutesousrecherche.svg" height="30px">
+	
+    <h3><form name="form2" id="form2">
+	<select name="grandeur" id="grandeur" onchange="changeGrandeur();">
+	<!--<select name="code_param" id="code_param" onchange="changeParam();">
+	<option value="-1" hidden>Sélectionnez un paramètre</option> -->
+	<option value="1382" selected="selected">Plomb</option>
+	<option value="1383">Zinc</option>
+	<option value="1387">Mercure</option>
+	<option value="1388">Cadmium</option>
+	<option value="1392">Cuivre</option>
+	<option value="1200">Hexachlorocyclohexane alpha</option>
+	<option value="1203">Hexachlorocyclohexane gamma</option>
+	<option value="7153">Matière sèche (MS)</option>
+	</select>
+	</form>	</h3>
+	
+	<div id="odometer" class="odometer" style="font-size: 50px;"><p>000</p><p><img src="images/Vagues.svg"></p></div>
+	<span class="metres">&nbsp;mg/kg</span>
+    <div id="vagues"><img src="images/Vagues.svg"></div>
+	</div>
+	<div id="search_bas">
+	<script>
+		delayedAlert("0");
+	</script>
+
+	<div id="down"><img src="images/arrowdown.png"></div>
+	<div id="detail">
+	  <div id="titre_detail"><class id="ico"></class><b>&nbsp;&nbsp;Détail du lieu de surveillance</b> <i><class id="code"></class></i></div>
+	<table width="100%">
+	<tr height="20px"><td style="text-align:center;"><class id="libpe"></class></td></tr>
+	<tr height="30px"><td style="text-align:center;"><class id="dat"></class></td></tr>
+	<tr><td style="text-align:center;">
+	<div id="container"></div>
+	</td></tr>
+	<tr height="30px"><td style="text-align:center;"><class id="station">(Pas de lieu de surveillance sélectionné)</class></td></tr>
+	</table>
+	</div>
+<script>
+	calcul_hauteur();
+</script>
+<div id="contact"><a href="https://www.brgm.fr/content/contact" target="_blank">Contact</a></div>
+</div> <!-- de search_bas !-->
+</div>
+<p>&nbsp;</p>
+<div id="basicMap"></div>
+	<div id="bton_fm" title="Zoom sur France métropolitaine">Zoom sur France métro.</div>
+	<div id="bton_pp" title="Toute l'étendue">Toute l'étendue</div>
+<div id="aide" title="Aide"></div>
+<div id="fen_aide" title="Fenêtre d'aide">
+<h3>Contaminants chimiques présents dans les bivalves, les sédiments, l'eau de mer ou les poissons</h3>
+<p>Si besoin, localisez votre territoire en saisissant l'adresse ou la ville dans la zone de recherche.<p>
+<p>Ensuite, choisissez le support qui vous intéresse (bivalves, sédiments, eau, poissons) puis un élément chimique (Plomb par défaut).</p>
+<p>Cliquer sur un point de prélèvement pour connaître la dernière teneur connue de l'élément choisi et sa courbe d'évolution à cet endroit.</p>
+<p>Ce service utilise <a href="https://hubeau.eaufrance.fr/page/api-surveillance-littoral" target="_blank">l'API Surveillance du littoral</a> de <a href="https://hubeau.eaufrance.fr" target="_blank">Hub'Eau</a>, qui diffuse les données du système d'information <a href="http://quadrige.eaufrance.fr" target="_blank">Quadrige</a> de <a href="https://wwz.ifremer.fr">l'IFREMER</a>.</p>
+</div>
+<div id="etat" name="etat">
+</div>
+
+ <!-- Piwik -->
+ <script type="text/javascript">
+ var _paq = _paq || [];
+ _paq.push(['trackPageView']);
+ _paq.push(['enableLinkTracking']);
+ (function() {
+ var u="https://wwwstats.brgm.fr/";
+ _paq.push(['setTrackerUrl', u+'piwik.php']);
+ _paq.push(['setSiteId', 121]);
+ var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+ g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+ })();
+ </script>
+ <noscript><p><img src="https://wwwstats.brgm.fr/piwik.php?idsite=121" style="border:0;" alt="" /></p></noscript>
+ <!-- End Piwik Code -->
+
+</body>
+</html>

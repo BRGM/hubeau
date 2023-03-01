@@ -1,0 +1,206 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr" >
+<head>
+<title>Démonstrateur Hub'Eau services - Prix de l'eau au m3 par commune</title>
+<meta name="author" content="BRGM" />
+<meta name="description" content="Démonstrateur Hub'Eau services - Prix de l'eau au m3 par commune" />
+<meta name="keywords" content="eau, eau superficielle, eau souterraine, eau distribuée, prix, coût, service, AEP, Hub'Eau, HubEau, France" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Language" content="fr" />
+<link rel="stylesheet" type="text/css" href="css/stylehtm.css" media="all" />
+<link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/odometer-theme-car-prix.css" />
+<link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+<link rel="icon" href="images/favicon.ico" type="image/x-icon">
+<script type="text/javascript" src="js/odometer-prix.js"></script>
+<script> /*
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-103689621-1', 'auto');
+  ga('send', 'pageview');
+*/ </script>
+<!-- HighCharts / StockCharts -->
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script src="https://code.highcharts.com/stock/highstock.js"></script>
+<script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/stock/modules/export-data.js"></script>
+<script src="https://code.highcharts.com/stock/modules/data.js"></script>
+<!-- OpenLayers 5 -->
+	<script src="https://cdn.rawgit.com/openlayers/openlayers.github.io/master/en/v5.3.0/build/ol.js"></script>
+    <link rel="stylesheet" href="https://cdn.rawgit.com/openlayers/openlayers.github.io/master/en/v5.3.0/css/ol.css" type="text/css">
+<script>
+function delayedAlert(p) {
+	timeoutID = window.setTimeout(slowAlert(p), 100);
+}
+function slowAlert(p) {
+  //document.getElementById('odometer').innerHTML = p+1000; // pour PLOUF
+  document.getElementById('odometer').innerHTML = p+1000;
+}
+</script>
+<!-- Scripts Javascript propres à démonstrateur hydro TR -->
+<script src="js/prix_eau_wms.js"></script>
+
+<!-- Styles non pris en compte si placés dans le fichier CSS associé
+je remet zoom en haut à gauche, échelle en bas à gauche, overview en haut à droite, aide en bas à droite
+si on veut ajouter le "m" dans le conteneur du compteur
+.odometer .odometer-inside:after {
+    content: "m3/s"
+} 
+ -->
+<style>
+      .ol-custom-overviewmap,
+      .ol-custom-overviewmap.ol-uncollapsible {
+		bottom: auto;
+        left: auto;
+        right: 0;
+        top: 0;
+		box-shadow: 2px 0px 6px rgba(0, 0, 0, .25);
+      }
+      .ol-custom-overviewmap:not(.ol-collapsed)  {
+        /*border: 1px solid black;*/
+      }
+	.ol-overviewmap:not(.ol-collapsed) {
+    	background: rgba(255,255,255);
+	}
+      .ol-custom-overviewmap .ol-overviewmap-map {
+        border: none;
+        width: 100px;
+		height: 100px;
+      }
+      .ol-custom-overviewmap .ol-overviewmap-box {
+        border: 2px solid dodgerblue;
+      }
+    .ol-control button {
+    color: #616161;
+    background-color: rgba(255, 255, 255, 0.9);
+}
+.ol-overviewmap.ol-custom-overviewmap.ol-unselectable.ol-control button {
+    /*transform: rotate(90deg);	*/
+}
+.ol-control button:focus, .ol-control button:hover {
+    text-decoration: none;
+    /* background-color: rgba(0,60,136,.7); */
+	background-color: #FFFFFF;
+	outline: none;
+}
+      .ol-custom-overviewmap:not(.ol-collapsed) button{
+        bottom: auto;
+        left: auto;
+        right: 1px;
+        top: 1px;
+      }
+      .ol-rotate {
+        top: 170px;
+        right: 0;
+      }
+  
+	  /* boutons de zoom en haut à gauche comme par défaut */
+	  .ol-zoom .ol-zoom-in {
+		margin: 0px;
+		height: 36px;
+		width: 36px;
+		/* border-radius: 4px 4px 4px 4px; */
+      }
+	  .ol-zoom .ol-zoom-out {
+		margin: 0px;
+		border-top:1px solid #C4C4C4;
+		height: 36px;
+		width: 36px;
+		/* border-radius: 4px 4px 4px 4px; */
+      }
+	.ol-scale-line {
+		/*background: none;*/
+		bottom: 16px;
+		left: 0px;
+	 }
+	.ol-scale-line-inner {
+		border: 1px solid #616161;
+		border-top: none;
+		color: #616161;
+	 }
+
+.ol-attribution:not(.ol-collapsed), .ol-control {
+	/*background : none;	*/
+}
+.ol-attribution.ol-uncollapsible {
+    bottom: 0px;
+    right: 50px;
+}
+</style>
+
+</head>
+<body>
+<script>
+/*
+var requestURL = 'https://hubeau.eaufrance.fr/sites/default/files/api/demo/data/communes_D102.json';
+var request = new XMLHttpRequest();
+request.open('GET', requestURL);
+request.responseType = 'json';
+request.send();
+
+request.onload = function() {
+  rep = request.response;
+  //console.table(rep); 
+  carte();
+  data = rep;
+}
+*/
+</script> 
+<div id="search"> 
+  <div id="search_haut">
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+	<div id="brgm"><img src="images/logo_brgm_web_fr_couleur.svg" height="40px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="images/logo_hubeau_long_transp.png" height="40px"></div>
+	<br><br>
+	<form id='form1' onSubmit="get_adresse(); return false;" >
+	<input type="text" id="adresse" name="adresse" size="40" placeholder="Entrez une adresse pour vous localiser">
+	<!-- <input type="button" value="" class="loupe" onclick="get_adresse();"> -->
+	<input type="submit" value="" class="loupe">
+	</form>
+	<img src="images/goutesousrecherche.svg" height="48px">
+	
+	<h3>Prix de l'eau au robinet</h3>
+	<div id="odometer" class="odometer" style="font-size: 50px; font-family: tt_normsmedium;><p>00000</p><p><img src="images/Vagues.svg"></p></div>
+	<span class="metres">&nbsp;€/m3</span>
+    <div id="vagues"><img src="images/Vagues.svg"></div>
+	</div>
+	<div id="search_bas">
+	<script>
+		delayedAlert("0");
+	</script>
+
+	<div id="down"><img src="images/arrowdown.png"></div>
+	<div id="detail">
+	  <div id="titre_detail"></div>
+	<table width="100%">
+	<tr height="20px"><td style="text-align:center;"><class id="libpe"></class></td></tr>
+	<tr height="30px"><td style="text-align:center;"><class id="dat"></class></td></tr>
+	<tr height="200px"><td style="text-align:center;">
+	<div id="container" style="width:100%; height:200px;"></div>
+	</td></tr>
+	<tr height="15px"><td style="text-align:center;"><class id="bss"><img src="images/robinet_bleu.svg" height="15px">&nbsp;<1,50 €&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="images/robinet_vert.svg" height="15px">&nbsp;entre 1,50 et 1,90 €&nbsp;</td></tr>
+	<tr height="15px"><td style="text-align:center;"><class id="bss"><img src="images/robinet_orange.svg" height="15px">&nbsp;entre 1,90 et 2,30 €&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="images/robinet_rouge.svg" height="15px">&nbsp;>2,30 €/m3&nbsp;</class></td></tr>
+	</table>
+	</div>
+<div id="contact"><a href="https://www.brgm.fr/content/contact" target="_blank">Contact</a></div>
+</div> <!-- de search_bas !-->
+</div>
+<p>&nbsp;</p>
+<div id="basicMap"></div>
+	<div id="bton_fm" title="Zoom sur France métropolitaine">Zoom sur France métro.</div>
+	<div id="bton_pp" title="Toute l'étendue">Toute l'étendue</div>
+<div id="aide" title="Aide"></div>
+<div id="fen_aide" title="Fenêtre d'aide">
+<p>Cliquer sur une icône Robinet pour connaître l'évolution du prix de l'eau potable dans la commune.</p>
+<p>Ce service utilise l'opération Communes de <a href="https://hubeau.eaufrance.fr/page/api-indicateurs-services" target="_blank">l'API Indicateurs des services</a> de <a href="https://hubeau.eaufrance.fr" target="_blank">Hub'Eau</a>.</p>
+<p>Les données couvrent la période 2014-2019. Certaines années peuvent être absentes selon les communes.<br/>Seules les données concernant les services mono-communaux sont consultables pour le moment (5800communes). Les données des structures intercommunales seront intégrées plus tard.</p>
+<p>Les icônes Robinet sont colorées selon la valeur du dernier prix de l'eau connu : bleu - vert - orange - rouge du moins cher au plus cher.</p>
+</div>
+<script>
+  carte();
+</script>
+</body>
+</html>
