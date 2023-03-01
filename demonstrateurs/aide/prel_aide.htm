@@ -1,0 +1,86 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr" >
+<head>
+<title>Aide pour le démonstrateur Prélèvements en eau de Hub'Eau</title>
+<meta name="author" content="BRGM" />
+<meta name="description" content="Prélèvements dans la ressource en eau en France" />
+<meta name="keywords" content="eau, eau souterraine, eau superficielle, eau littorale, prélèvement, volume, évolution, nappe, aquifère, cours d'eau, rivière, Hub'Eau, HubEau, France" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Language" content="fr" />
+<link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+<link rel="icon" href="images/favicon.ico" type="image/x-icon">
+<style>
+#aide img { 
+vertical-align:middle; }
+</style>
+</head>
+<body>
+<div id="aide">
+<h2>Guide d'utilisation du visualiseur des prélèvements en eau de Hub'Eau</h2>
+<p>&nbsp;</p>
+<p>Dans la zone d'adresse <img src="images/input_adresse.png" align=middle height="48">, entrez une adresse complète ou simplement un nom de commune puis appuyez sur la touche Entrée du clavier
+ ou cliquez sur la petite loupe <img src="../images/magnifying-glass.png" align=middle> à droite. Ou déplacez-vous simplement sur la carte et zoomez/dézoomez
+ à l'aide des boutons <img src="images/bouton_plus.png" align=middle> et <img src="images/bouton_moins.png" align=middle> ou de la molette de la souris.
+ Il est possible également de déplacer le rectangle bleu sur la mini-carte <img src="images/mini_carte.png" align=middle> en haut à droite.</p>
+<p>Le fonds de carte peut être changé en passant la souris sur l'icône <img src="images/logo_openlayers70.png" height="32" align=middle></p>
+<p>Un click sur le bouton <img src="images/bouton_france_metro.png" height="32" align=middle> permet de recentrer la carte sur la France métropolitaine.
+ Un click sur le bouton <img src="images/bouton_toute_etendue.png" height="32" align=middle> centre la carte sur l'ensemble des ouvrages de prélèvement disponibles.</p>
+<p>Les ouvrages sont représentés par des icônes de couleur différente selon le milieu dans lequel ils prélèvent : <img src="../images/pointOr_on.png" align=middle> pour le milieu souterrain,
+ <img src="../images/pointBleu_on.png" align=middle> pour le milieu continental, <img src="../images/pointMauve_on.png" align=middle> pour le milieu littoral. L'API Prélèvements en eau de Hub'Eau référence plus de 130 000 ouvrages de prélèvement ; seuls les ouvrages ayant atteint un volume annuel prélevé d'au moins 100 000 m3 sont représentés dans ce visualiseur (environ 28 000 ouvrages).</p>
+<p>Cliquez sur un ouvrage pour afficher la dernière valeur de volume annuel prélevé connu et sa courbe d'évolution. Si le dernier volume annuel prélevé est supérieur à 999 999 999 m3, le compteur sera bloqué à cette valeur.</p>
+<p>En passant la souris sur un ouvrage, une infobulle indique le code, le nom, le nombre de mesures disponibles, la période de mesures et le volume annuel maximal prélevé sur cet ouvrage.</p>
+<p>Les données sont issues des opérations Stations et Chroniques de <a href="https://hubeau.eaufrance.fr/page/api-prelevements-eau" target="_blank">l'API Prélèvements en eau</a> de <a href="https://hubeau.eaufrance.fr" target="_blank">Hub'Eau</a>, 
+qui diffuse les données de <a href="bnpe.eaufrance.fr/" target="_blank">la Banque Nationale des Prélèvements quantitatifs en Eau (BNPE)</a>.</p>
+<p>L'histogramme d'évolution des volumes prélevés s'affiche si la résolution de l'écran est suffisante. Il présente l'ensemble des mesures disponibles pour le point d'eau considéré.</p>
+<p>Dans la fenêtre du graphique, le bouton <img src="images/bouton_tout.png" align=middle> en haut à gauche permet de changer la période d'affichage.
+ Le bouton <img src="images/bouton_options_graphique.png" align=middle> en haut à droite de la fenêtre permet de voir le graphique en plein écran, d'imprimer le graphique, de télécharger le graphique sous forme d'image et enfin de télécharger ou visualiser les données.</p>
+<p>Passez la souris sur l'histogramme des volumes pour afficher une infobulle avec l'année et le volume prélevé.</p>
+<p>S'il y a assez de place à l'écran, un sélecteur <img src="images/graphique_selecteur.png" align=middle> présent en bas de la fenêtre permet de changer l'échelle de l'axe des temps.<p> 
+<p>Visualisez la fiche SANDRE de l'ouvrage de prélèvement sélectionné en cliquant sur <img src="images/lien_plus_infos_ouvrage.png" align=middle>.</p>
+<p>&nbsp;</p>
+<p>Un click sur le bouton <img src="images/bouton_aide.png" height="32" align=middle> en bas à droite affiche une fenêtre d'aide.</p>
+<p>&nbsp;</p>
+<p>En dessous de la carte, une ligne de légende indique le nombre d'ouvrages disponibles et permet de choisir les milieux de prélèvement à afficher.<br><br>
+<img src="images/legende_prel.png" align=middle><br><br>
+Un clic sur chaque icone bascule entre l'affichage et le masquage des ouvrages prélevant dans le milieu correspondant.
+ Une icone évidée signifie que les ouvrages prélevant dans le milieu correspondant sont affichés, une icone pleine signifie que ces ouvrages sont masqués. Exemple : <br>
+<img src="images/milieu_sout_on.png" align=middle> : les ouvrages prélevant dans le milieu souterrain sont affichés<br>
+<img src="images/milieu_sout_off.png" align=middle> : les ouvrages prélevant dans le milieu souterrain sont masqués</p>
+<p>La ligne de légende permet également de filtrer l'affichage des ouvrages selon 3 autres critères :
+<ul>
+<li>nbobsmin - nombre minimal de mesures : affichage uniquement des ouvrages ayant au moins nbobsmin mesures</li>
+<li>datedeb - date de début des analyses (format AAAA-MM-JJ ou AAAA-MM ou AAAA) : affichage uniquement des points d'eau ayant des mesures antérieures à datedeb</li>
+<li>datefin - date de fin des analyses (format AAAA-MM-JJ ou AAAA-MM ou AAAA) : affichage uniquement des points d'eau ayant des mesures postérieures à datefin</li>
+</ul>
+Le nombre d'ouvrages affiché reflète en permanence le nombre d'ouvrages répondant aux critères choisis par l'utilisateur.</p>	
+<p>&nbsp;</p>
+<p>Des paramètres peuvent être passés directement dans l'URL : code_station (code de l'ouvrage), coord (longitude, latitude), adresse, fdp (fond de plan), size, milieu (souterrain, continental ou littoral), nbobsmin, datedeb, datefin, seuil.<br>
+<ul>
+<li><i>code_station</i> permet de zoomer la carte sur l'ouvrage en question et de le sélectionner pour affichage de la courbe d'évolution des volumes prélevés.</li>
+<li><i>coord</i>=long,lat permet de zoomer la carte aux coordonnées (long,lat)</li>
+<li><i>adresse</i> permet de zoomer la carte à l'adresse indiquée (comme quand l'utilisateur saisit une adresse dans l'interface). Pour le zoom, code station est prioritaire sur coord qui est prioritaire sur adresse.</li>
+<li>Les fonds de plan disponibles sont fdp=1 : OSM standard ; fdp=2 : JAWG terrain ; fdp=3 : ESRI topo ; fdp = 4 : Stadia Bright ; fdp = 5 : IGN plan v2 ; fdp=6 : IGN BD Ortho ; fdp = 7 : BRGM géologie.
+ Les fonds de plan 2, 3 et 4 ont été choisis car mettent bien en évidence les cours d'eau. Le fond de plan Stadia Bright peut être temporairement indisponible. En cas d'absence du paramètre fdp,le fond de plan par défaut est ESRI topo.</li>
+<li><i>size</i> permet de réduire le nombre de mesures récupérées dans Hub'Eau et affichées sur l'histogramme d'évolution (20000 par défaut, valeur maximale).</li>
+<li><i>milieu</i> permet de n'afficher que les ouvrages prélevant dans le milieu souterrain (milieu=SOUT), continental (milieu=CONT) ou littoral (milieu=LIT). Des combinaisons de type milieu=CONT,LIT sont possibles. Par défaut, les ouvrages de tous milieux sont affichés.</li>
+<li><i>nbobsmin</i> permet d'afficher uniquement les ouvrages ayant au moins nbobsmin mesures</li>
+<li><i>datedeb</i> (format AAAA-MM-JJ ou AAAA-MM ou AAAA) : permet d'afficher uniquement les ouvrages ayant des mesures antérieures à datedeb</li>
+<li><i>datefin</i> (format AAAA-MM-JJ ou AAAA-MM ou AAAA) : permet d'afficher uniquement les ouvrages ayant des mesures postérieures à datefin</li>
+<li><i>seuil</i> permet de n'afficher que les ouvrages dont au moins un des volumes annuels est supérieur à seuil (en m3). NB. par défaut, seuil=100000 ; ce visualiseur ne permet pas de descendre en dessous.</li>
+</ul>
+Par exemple :
+<ul>
+<li><a href="https://hubeau.eaufrance.fr/sites/default/files/api/demo/prel.htm?code_station=OPR0000008667&milieu=cont,lit&fdp=5" target="_blank">https://hubeau.eaufrance.fr/sites/default/files/api/demo/prel.htm?code_station=OPR0000008667&milieu=cont,lit&fdp=5</a> affiche les ouvrages prélevant dans les milieux continental ou littoral sur l'ouvrage de code BSS OPR0000008667 avec le fond de plan IGN plan v2.</li>
+<li><a href="https://hubeau.eaufrance.fr/sites/default/files/api/demo/prel.htm?coord=5,49&fdp=1" target="_blank">https://hubeau.eaufrance.fr/sites/default/files/api/demo/prel.htm?coord=5,49&fdp=1</a> zoome la carte sur le point de 5° de longitude et 49° de latitude avec le fond de plan OSM standard.</li>
+<li><a href="https://hubeau.eaufrance.fr/sites/default/files/api/demo/prel.htm?adresse=36 rue henri poincaré nancy" target="_blank">https://hubeau.eaufrance.fr/sites/default/files/api/demo/prel.htm?adresse=36 rue henri poincaré nancy</a> zoome la carte sur l'adresse mentionnée.</li>
+<li><a href="https://hubeau.eaufrance.fr/sites/default/files/api/demo/prel.htm?milieu=sout" target="_blank">https://hubeau.eaufrance.fr/sites/default/files/api/demo/prel.htm?milieu=sout</a> n'affiche que les ouvrages prélevant dans le milieu souterrain.</li>
+<li><a href="https://hubeau.eaufrance.fr/sites/default/files/api/demo/prel.htm?nbobsmin=12" target="_blank">https://hubeau.eaufrance.fr/sites/default/files/api/demo/prel.htm?nbobsmin=12</a> affiche les ouvrages disposant d'au moins 12 mesures de volume annuel.</li>
+<li><a href="https://hubeau.eaufrance.fr/sites/default/files/api/demo/prel.htm?datedeb=2010" target="_blank">https://hubeau.eaufrance.fr/sites/default/files/api/demo/prel.htm?datedeb=2010</a> affiche les ouvrages disposant de mesures avant le 1er janvier 2010 (donc pour les années 2009 et antérieures).</li>
+<li><a href="https://hubeau.eaufrance.fr/sites/default/files/api/demo/prel.htm?datefin=2020" target="_blank">https://hubeau.eaufrance.fr/sites/default/files/api/demo/prel.htm?datefin=2020</a> affiche les ouvrages disposant de mesures après le 1er janvier 2020 (donc pour les années 2020 et postérieures).</li>
+<li><a href="https://hubeau.eaufrance.fr/sites/default/files/api/demo/prel.htm?nbobsmin=12&datedeb=2010&datefin=2020" target="_blank">https://hubeau.eaufrance.fr/sites/default/files/api/demo/prel.htm?nbobsmin=12&datedeb=2010&datefin=2020</a> affiche les ouvrages disposant d'au moins 12 mesures de volume annuel, dont des mesures avant l'an 2010 et à partir de 2020.</li>
+<li><a href="https://hubeau.eaufrance.fr/sites/default/files/api/demo/prel.htm?seuil=100000000" target="_blank">https://hubeau.eaufrance.fr/sites/default/files/api/demo/prel.htm?seuil=100000000</a> affiche les ouvrages ayant dépassé un volume annuel prélevé de 100 millions de m3 au moins une fois au cours de l'historique.</li>
+<li><a href="https://hubeau.eaufrance.fr/sites/default/files/api/demo/prel.htm?size=4" target="_blank">https://hubeau.eaufrance.fr/sites/default/files/api/demo/prel.htm?size=4</a> n'affiche que les 4 dernières valeurs sur l'histogramme d'évolution des volumes.</li>
+</ul>
+</p>
+</div>
+</body>
+</html>

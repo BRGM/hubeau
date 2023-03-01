@@ -1,0 +1,171 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr" >
+<head>
+<title>Aide pour le démonstrateur Qualité des nappes Hub'Eau</title>
+<meta name="author" content="BRGM" />
+<meta name="description" content="Qualité des nappes d'eau en France" />
+<meta name="keywords" content="eau, eau souterraine, qualité, nitrates, pesticides, polluants, contaminants, nappe, aquifère, Hub'Eau, HubEau, France" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Language" content="fr" />
+<link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+<link rel="icon" href="images/favicon.ico" type="image/x-icon">
+<style>
+#aide img { 
+vertical-align:middle; }
+</style>
+</head>
+<body>
+<div id="aide">
+<h2>Guide d'utilisation du visualiseur Qualité des nappes de Hub'Eau</h2>
+<p>&nbsp;</p>
+<p>Dans la zone d'adresse <img src="images/input_adresse.png" align=middle height="48">, entrez une adresse complète ou simplement un nom de commune puis appuyez sur la touche Entrée du clavier
+ ou cliquez sur la petite loupe <img src="../images/magnifying-glass.png" align=middle> à droite. Ou déplacez-vous simplement sur la carte et zoomez/dézoomez
+ à l'aide des boutons <img src="images/bouton_plus.png" align=middle> et <img src="images/bouton_moins.png" align=middle> ou de la molette de la souris.
+ Il est possible également de déplacer le rectangle bleu sur la mini-carte <img src="images/mini_carte.png" align=middle> en haut à droite.</p>
+<p>Le fonds de carte peut être changé en passant la souris sur l'icône <img src="images/logo_openlayers70.png" height="32" align=middle></p>
+<p>Un click sur le bouton <img src="images/bouton_france_metro.png" height="32" align=middle> permet de recentrer la carte sur la France métropolitaine.
+ Un click sur le bouton <img src="images/bouton_toute_etendue.png" height="32" align=middle> centre la carte sur l'ensemble des points d'eau disponibles.</p>
+<p>Les points d'eau souterraine sont représentés par des icônes de couleur différente selon leur nature : <img src="../images/pointOr_on.png" align=middle> pour les forages,
+ <img src="../images/pointBleu_on.png" align=middle> pour les sources, <img src="../images/pointMauve_on.png" align=middle> pour les puits. Seuls les points d'eau disposant d'au moins 2 prélèvements sont représentés.</p>
+<p>Choisissez le paramètre physico-chimique dans la liste déroulante <img src="images/select_param.png" align=middle height="40">.</p>
+<p>Cliquez sur un point d'eau pour afficher la dernière valeur et la courbe d'évolution du paramètre sélectionné. En passant la souris sur un point d'eau, une infobulle indique le code BSS et le nom ce point ainsi que le nombre total d'analyses disponibles sur ce point et les dates de premier et dernier prélèvement.</p>
+<p>Les données sont issues des opérations Stations et Analyses de <a href="https://hubeau.eaufrance.fr/page/api-qualite-nappes" target="_blank">l'API Qualité des nappes</a> de <a href="https://hubeau.eaufrance.fr" target="_blank">Hub'Eau</a>, 
+qui diffuse les données de <a href="ades.eaufrance.fr/">la banque ADES</a>.</p>
+<p>La courbe d'évolution des teneurs s'affiche si la résolution de l'écran est suffisante. Elle présente l'ensemble des résultats d'analyse du paramètre sélectionné pour le point d'eau considéré.</p>
+<p>Dans la fenêtre du graphique, le bouton <img src="images/bouton_tout.png" align=middle> en haut à gauche permet de changer la période d'affichage.
+ Le bouton <img src="images/bouton_options_graphique.png" align=middle> en haut à droite de la fenêtre permet de voir le graphique en plein écran, d'imprimer le graphique, de télécharger le graphique sous forme d'image et enfin de télécharger ou visualiser les données.</p>
+<p>Passez la souris sur la courbe des teneurs pour afficher une infobulle avec la date et le résultat de l'analyse.</p>
+<p>S'il y a assez de place à l'écran, un sélecteur <img src="images/graphique_selecteur.png" align=middle> présent en bas de la fenêtre permet de changer l'échelle de l'axe des temps.<p> 
+<p>Visualisez la fiche ADES du point d'eau sélectionné en cliquant sur <img src="images/lien_plus_infos_point_eau.png" align=middle>.</p>
+<p>&nbsp;</p>
+<p>Un click sur le bouton <img src="images/bouton_aide.png" height="32" align=middle> en bas à droite affiche une fenêtre d'aide.</p>
+<p>&nbsp;</p>
+<p>En dessous de la carte, une ligne de légende indique le nombre de points d'eau disponibles et permet de choisir les natures de point d'eau à afficher.<br><br>
+<img src="images/legende_qualnap.png" align=middle><br><br>
+Un clic sur chaque icone bascule entre l'affichage et le masquage des points d'eau de nature correspondante.
+ Une icone évidée signifie que les points d'eau de nature correspondante sont affichés, une icone pleine signifie que ces points d'eau sont masqués. Exemple : <br>
+<img src="images/nature_forage_on.png" align=middle> : les forages sont affichés<br>
+<img src="images/nature_forage_off.png" align=middle> : les forages sont masqués</p>
+<p>La ligne de légende permet également de filtrer l'affichage des points d'eau selon 3 autres critères :
+<ul>
+<li>nbobsmin - nombre minimal d'analyses : affichage uniquement des points d'eau ayant au moins nbobsmin analyses</li>
+<li>datedeb - date de début des analyses (format AAAA-MM-JJ ou AAAA-MM ou AAAA) : affichage uniquement des points d'eau ayant des analyses antérieures à datedeb</li>
+<li>datefin - date de fin des analyses (format AAAA-MM-JJ ou AAAA-MM ou AAAA) : affichage uniquement des points d'eau ayant des analyses postérieures à datefin</li>
+</ul>
+Le nombre de points d'eau affiché reflète en permanence le nombre de points d'eau répondant aux critères choisis par l'utilisateur.</p>	
+<p>&nbsp;</p>
+<p>S'il existe une limite de qualité ou une valeur seuil pour le paramètre sélectionné, une case à cocher <img src="images/checkbox_limit.png" align=middle> permet d'afficher ou de masquer le tracé de cette valeur seuil. Les limites ou valeurs seuil des paramètres sont issues : 
+<ul>
+<li>des annexes I et II de <a href="https://www.legifrance.gouv.fr/loda/id/LEGIARTI000032789885/2016-06-27/" target="_blank">l'Arrêté du 17 décembre 2008 établissant les critères d'évaluation et les modalités de détermination de l'état des eaux souterraines et des tendances significatives et durables de dégradation de l'état chimique des eaux souterraines</a></li>
+<li>de l'annexe II de <a href="https://www.legifrance.gouv.fr/loda/id/JORFTEXT000000465574/" target="_blank">l'Arrêté du 11 janvier 2007 relatif aux limites et références de qualité des eaux brutes et des eaux destinées à la consommation humaine</a> définissant les limites de qualité des <b>eaux brutes</b> de toute origine utilisées pour la production d'eau destinée à la consommation humaine.</li>
+</ul>
+En cas de présence dans les deux textes, c'est l'arrêté du 17 décembre 2008 qui prime.
+</p>
+<p>&nbsp;</p>
+<p>Des paramètres peuvent être passés directement dans l'URL : code_parametre, code_station, coord (longitude, latitude), adresse, fdp (fond de plan), size, nature (forage, puits ou source), limit (seuil de qualité), nbobsmin, datedeb, datefin.<br>
+<ul>
+<li><i>code_parametre</i> (ou <i>grandeur</i> pour être compatible avec les autres visualisateurs) permet de sélectionner directement un paramètre grâce à son code SANDRE (code_parametre=1337 par exemple pour aller directement aux Chlorures) et d'accéder à des paramètres qui ne sont pas proposés dans la liste déroulante (par exemple code_parametre=1382 pour afficher les teneurs en Plomb), à condition que le code paramètre soit reconnu par le visualiseur (voir en fin de document la liste complète des codes reconnus). Dans ce cas, ce paramètre apparaîtra en fin de liste déroulnte, sous "Paramètre utilisateur"</li>
+<li><i>code_station</i> permet de zoomer la carte sur le point d'eau en question et de le sélectionner pour affichage des courbes d'évolution des différents paramètres.</li>
+<li><i>coord</i>=long,lat permet de zoomer la carte aux coordonnées (long,lat)</li>
+<li><i>adresse</i> permet de zoomer la carte à l'adresse indiquée (comme quand l'utilisateur saisit une adresse dans l'interface). Pour le zoom, code station est prioritaire sur coord qui est prioritaire sur adresse.</li>
+<li>Les fonds de plan disponibles sont fdp=1 : OSM standard ; fdp=2 : JAWG terrain ; fdp=3 : ESRI topo ; fdp = 4 : Stadia Bright ; fdp = 5 : IGN plan v2 ; fdp=6 : IGN BD Ortho ; fdp = 7 : BRGM géologie.
+ Les fonds de plan 2, 3 et 4 ont été choisis car mettent bien en évidence les cours d'eau. Le fond de plan Stadia Bright peut être temporairement indisponible. En cas d'absence du paramètre fdp,le fond de plan par défaut est ESRI topo.</li>
+<li><i>size</i> permet de réduire le nombre de d'analyses récupérées dans Hub'Eau et affichées sur la courbe d'évolution (20000 par défaut, valeur maximale).</li>
+<li><i>nature</i> permet de n'afficher que les points d'eau de nature forage (nature=forage), source (nature=source) ou puits (nature=puits). Des combinaisons de type nature=forage,puits sont possibles. Par défaut, les points d'eau de toute nature sont affichés.</li>
+<li><i>limit</i>=1, true, oui, o ou yes permet de tracer l'éventuelle limite ou référence de qualité ou valeur seuil du paramètre considéré sur le graphique d'évolution. Toute autre valeur désactive le tracé. Par défaut, limit=non</li>
+<li><i>nbobsmin</i> permet d'afficher uniquement les points d'eau ayant au moins nbobsmin analyses</li>
+<li><i>datedeb</i> (format AAAA-MM-JJ ou AAAA-MM ou AAAA) : permet d'afficher uniquement les points d'eau ayant des analyses antérieures à datedeb</li>
+<li><i>datefin</i> (format AAAA-MM-JJ ou AAAA-MM ou AAAA) : permet d'afficher uniquement les points d'eau ayant des analyses postérieures à datefin</li>
+</ul>
+Par exemple :
+<ul>
+<li><a href="https://hubeau.eaufrance.fr/sites/default/files/api/demo/qualnap.htm?code_station=01957X0037/F&code_parametre=1369&limit=oui&nature=forage,puits&fdp=5" target="_blank">https://hubeau.eaufrance.fr/sites/default/files/api/demo/qualnap.htm?code_station=01957X0037/F&code_parametre=1369&limit=oui&nature=forage,puits&fdp=5</a> affiche les points d'eau de nature forage ou puits sur la carte en zoomant sur le point d'eau de code BSS 01957X0037/F avec le fond de plan IGN plan v2 et trace la courbe d'évolution de l'Arsenic pour ce point d'eau en traçant également la valeur seuil.</li>
+<li><a href="https://hubeau.eaufrance.fr/sites/default/files/api/demo/qualnap.htm?code_parametre=1392" target="_blank">https://hubeau.eaufrance.fr/sites/default/files/api/demo/qualnap.htm?code_parametre=1392</a> sélectionne le paramètre Cuivre, qui n'est pas présent dans la liste déroulante de base.</li>
+<li><a href="https://hubeau.eaufrance.fr/sites/default/files/api/demo/qualnap.htm?coord=5,49&fdp=1" target="_blank">https://hubeau.eaufrance.fr/sites/default/files/api/demo/qualnap.htm?coord=5,49&fdp=1</a> zoome la carte sur le point de 5° de longitude et 49° de latitude avec le fond de plan OSM standard.</li>
+<li><a href="https://hubeau.eaufrance.fr/sites/default/files/api/demo/qualnap.htm?adresse=36 rue henri poincaré nancy" target="_blank">https://hubeau.eaufrance.fr/sites/default/files/api/demo/qualnap.htm?adresse=36 rue henri poincaré nancy</a> zoome la carte sur l'adresse mentionnée.</li>
+<li><a href="https://hubeau.eaufrance.fr/sites/default/files/api/demo/qualnap.htm?nature=puits" target="_blank">https://hubeau.eaufrance.fr/sites/default/files/api/demo/qualnap.htm?nature=puits</a> n'affiche que les puits.</li>
+<li><a href="https://hubeau.eaufrance.fr/sites/default/files/api/demo/qualnap.htm?nbobsmin=1000&datedeb=2000&datefin=2020" target="_blank">https://hubeau.eaufrance.fr/sites/default/files/api/demo/qualnap.htm?nbobsmin=1000&datedeb=2000&datefin=2020</a> affiche les points d'eau disposant de plus de 1000 analyses, dont des analyses avant le 1er janvier 2000 et après le 1er janvier 2020.</li>
+<li><a href="https://hubeau.eaufrance.fr/sites/default/files/api/demo/qualnap.htm?datefin=2021" target="_blank">https://hubeau.eaufrance.fr/sites/default/files/api/demo/qualnap.htm?datefin=2021</a> affiche les points d'eau disposant d'analyses cette année.</li>
+</ul>
+</p>
+<p>&nbsp;</p>
+<h3>Annexe : liste des codes paramètres SANDRE utilisables</h3>
+<table border="1" cellpadding="2">
+<tr><th>code_parametre</th><th>Nom du paramètre</th></tr>
+<tr><td>1103</td><td>Aldrine</td></tr>
+<tr><td>1107</td><td>Atrazine</td></tr>
+<tr><td>1108</td><td>Atrazine déséthyl</td></tr>
+<tr><td>1109</td><td>Atrazine déisopropyl</td></tr>
+<tr><td>1114</td><td>Benzène</td></tr>
+<tr><td>1115</td><td>Benzo(a)pyrène</td></tr>
+<tr><td>1116</td><td>Benzo(b)fluoranthène</td></tr>
+<tr><td>1117</td><td>Benzo(k)fluoranthène</td></tr>
+<tr><td>1118</td><td>Benzo(g,h,i)pérylène</td></tr>
+<tr><td>1122</td><td>Bromoforme</td></tr>
+<tr><td>1173</td><td>Dieldrine</td></tr>
+<tr><td>1177</td><td>Diuron</td></tr>
+<tr><td>1191</td><td>Fluoranthène</td></tr>
+<tr><td>1197</td><td>Heptachlore</td></tr>
+<tr><td>1204</td><td>Indéno(1,2,3-cd)pyrène</td></tr>
+<tr><td>1208</td><td>Isoproturon</td></tr>
+<tr><td>1209</td><td>Linuron</td></tr>
+<tr><td>1263</td><td>Simazine</td></tr>
+<tr><td>1272</td><td>Tetrachloroéthylène</td></tr>
+<tr><td>1278</td><td>Toluène</td></tr>
+<tr><td>1286</td><td>Trichloréthylène</td></tr>
+<tr><td>1295</td><td>Turbidité</td></tr>
+<tr><td>1301</td><td>Température de l'eau</td></tr>
+<tr><td>1302</td><td>Potentiel en Hydrogène (pH)</td></tr>
+<tr><td>1303</td><td>Conductivité à 25°C</td></tr>
+<tr><td>1305</td><td>Matières en suspension</td></tr>
+<tr><td>1312</td><td>Taux de saturation en oxygène</td></tr>
+<tr><td>1313</td><td>Demande Biochimique en oxygène en 5 jours</td></tr>
+<tr><td>1319</td><td>Azote Kjeldahl</td></tr>
+<tr><td>1335</td><td>Ammonium</td></tr>
+<tr><td>1377</td><td>Chlorures</td></tr>
+<tr><td>1338</td><td>Sulfates</td></tr>
+<tr><td>1339</td><td>Nitrites</td></tr>
+<tr><td>1340</td><td>Nitrates</td></tr>
+<tr><td>1345</td><td>Dureté totale</td></tr>
+<tr><td>1350</td><td>Phosphore total</td></tr>
+<tr><td>1362</td><td>Bore</td></tr>
+<tr><td>1367</td><td>Potassium</td></tr>
+<tr><td>1368</td><td>Argent</td></tr>
+<tr><td>1369</td><td>Arsenic</td></tr>
+<tr><td>1370</td><td>Aluminium</td></tr>
+<tr><td>1371</td><td>Chrome hexavalent</td></tr>
+<tr><td>1372</td><td>Magnésium</td></tr>
+<tr><td>1373</td><td>Titane</td></tr>
+<tr><td>1374</td><td>Calcium</td></tr>
+<tr><td>1375</td><td>Sodium</td></tr>
+<tr><td>1376</td><td>Antimoine</td></tr>
+<tr><td>1377</td><td>Béryllium</td></tr>
+<tr><td>1378</td><td>Brome</td></tr>
+<tr><td>1379</td><td>Cobalt</td></tr>
+<tr><td>1380</td><td>Etain</td></tr>
+<tr><td>1382</td><td>Plomb</td></tr>
+<tr><td>1383</td><td>Zinc</td></tr>
+<tr><td>1384</td><td>Vanadium</td></tr>
+<tr><td>1385</td><td>Sélénium</td></tr>
+<tr><td>1386</td><td>Nickel</td></tr>
+<tr><td>1387</td><td>Mercure</td></tr>
+<tr><td>1388</td><td>Cadmium</td></tr>
+<tr><td>1389</td><td>Chrome</td></tr>
+<tr><td>1390</td><td>Cyanures totaux</td></tr>
+<tr><td>1392</td><td>Cuivre</td></tr>
+<tr><td>1393</td><td>Fer</td></tr>
+<tr><td>1394</td><td>Manganèse</td></tr>
+<tr><td>1395</td><td>Molybdène</td></tr>
+<tr><td>1396</td><td>Baryum</td></tr>
+<tr><td>1433</td><td>Orthophosphates</td></tr>
+<tr><td>1506</td><td>Glyphosate</td></tr>
+<tr><td>1652</td><td>Hexachlorobutadiène</td></tr>
+<tr><td>1748</td><td>Heptachlore époxyde exo cis</td></tr>
+<tr><td>1749</td><td>Heptachlore époxyde endo trans</td></tr>
+<tr><td>1780</td><td>Xylène</td></tr>
+<tr><td>1907</td><td>AMPA</td></tr>
+<tr><td>6276</td><td>Somme des Pesticides Totaux</td></tr>
+<tr><td>7073 ou 1391</td><td>Fluorure anion</td></tr>
+</table>
+</div>
+</body>
+</html>

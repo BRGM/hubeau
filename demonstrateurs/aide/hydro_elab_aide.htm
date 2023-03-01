@@ -1,0 +1,89 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr" >
+<head>
+<title>Aide pour le démonstrateur Hydrométrie Observations Elaborées de Hub'Eau</title>
+<meta name="author" content="BRGM" />
+<meta name="description" content="Débits moyens des cours d'eau" />
+<meta name="keywords" content="eau, eau superficielle, niveau, hauteur, débit, rivière, cours d'eau, crue, inondation, étiage, Hub'Eau, HubEau, France" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Language" content="fr" />
+<link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+<link rel="icon" href="images/favicon.ico" type="image/x-icon">
+<style>
+#aide img { 
+vertical-align:middle; }
+</style>
+</head>
+<body>
+<div id="aide">
+<h2>Guide d'utilisation du visualiseur Hydrométrie Observations Elaborées de Hub'Eau</h2>
+<p>&nbsp;</p>
+<p>Dans la zone d'adresse <img src="images/input_adresse.png" height="48" align=middle>, entrez une adresse complète ou simplement un nom de commune puis appuyez sur la touche Entrée du clavier
+ ou cliquez sur la petite loupe <img src="../images/magnifying-glass.png" align=middle> à droite. Ou déplacez-vous simplement sur la carte et zoomez/dézoomez
+ à l'aide des boutons <img src="images/bouton_plus.png" align=middle> et <img src="images/bouton_moins.png" align=middle> ou de la molette de la souris.
+ Il est possible également de déplacer le rectangle bleu sur la mini-carte <img src="images/mini_carte.png" align=middle> en haut à droite.</p>
+<p>Le fonds de carte peut être changé en passant la souris sur l'icône <img src="images/logo_openlayers70.png" height="32" align=middle></p>
+<p>Un click sur le bouton <img src="images/bouton_france_metro.png" height="32" align=middle> permet de recentrer la carte sur la France métropolitaine.
+ Un click sur le bouton <img src="images/bouton_toute_etendue.png" height="32" align=middle> centre la carte sur l'ensemble des points de mesure disponibles.</p>
+<p>Les points de mesure en rivière (ou stations hydrométriques) sont représentés par l'icône <img src="../images/HydrometrieBleu_on.svg" height="40" align=middle> quand ils sont de type Limnimètre et par l'icône <img src="../images/HydrometrieMauve_on.svg" height="40" align=middle> quand ils sont de type Débitmètre.</p>
+<p>Choisissez dans la liste déroulante si vous souhaitez afficher les débits moyens journaliers ou mensuels <img src="images/select_grandeur_elab.png" height="40" align=middle>.</p>
+<p>Cliquez sur un point de mesure en rivière pour afficher la dernière valeur et le graphique d'évolution du débit moyen journalier ou mensuel de l'eau à cet endroit. En passant la souris sur un point de mesure, une infobulle indique le code de ce point ainsi que son nom.</p>
+<p>Les données sont issues des opérations Stations et Observations Elaborées de <a href="https://hubeau.brgm-rec.fr/page/api-hydrometrie" target="_blank">l'API Hydrométrie en test sur l'environnement de recette du BRGM</a> de <a href="https://hubeau.eaufrance.fr" target="_blank">Hub'Eau</a>.
+<p>Un graphique d'évolution des débits moyens journaliers ou mensuels s'affiche (courbe ou histogramme) si la résolution de l'écran est suffisante. Le graphique présente les débits moyens sur tout l'historique disponible.</p>
+<p>Dans la fenêtre du graphique, le bouton <img src="images/bouton_tout.png" align=middle> en haut à gauche permet de changer la période d'affichage.
+ Le bouton <img src="images/bouton_options_graphique.png" align=middle> en haut à droite de la fenêtre permet de voir le graphique en plein écran, d'imprimer le graphique, de télécharger le graphique sous forme d'image et enfin de télécharger ou visualiser les données.</p>
+<p>Passez la souris sur le graphique des débits moyens pour afficher une infobulle avec la date et le débit <img src="images/graphique_tooltip.png" align=middle>.</p>
+<p>S'il y a assez de place à l'écran, un sélecteur <img src="images/graphique_selecteur.png" align=middle> présent en bas de la fenêtre permet de changer l'échelle de l'axe des temps.<p> 
+<p>&nbsp;</p>
+<p>Visualisez la fiche Vigicrues du point de mesure sélectionné en cliquant sur <img src="images/lien_plus_infos.png" align=middle>.</p>
+<p>Un click sur le bouton <img src="images/bouton_aide.png" height="32" align=middle> en bas à droite affiche une fenêtre d'aide.</p>
+<p>&nbsp;</p>
+<p>En dessous de la carte, une ligne de légende indique le nombre de stations disponibles et permet choisir le type de station à afficher. Un clic sur l'icone Limnimètre bascule entre l'affichage et le masquage des stations de type Limnimètre. Il en est de même pour les stations de type Débitmètre.<br>
+<img src="images/etat_tout.png" align=middle> : affichage des stations de type Limnimètre et Débitmètre<br>
+<img src="images/etat_LIMNI.png" align=middle> : affichage des stations de type Limnimètre uniquement<br>
+<img src="images/etat_DEB.png" align=middle> : affichage des stations de type Débitmètre uniquement</p>
+<p>La ligne de légende permet également de filtrer l'affichage des stations hydrométriques selon 3 autres critères :
+<ul>
+<li>nbobsmin - nombre minimal de débits : affichage uniquement des stations ayant au moins nbobsmin débits</li>
+<li>datedeb - date de début des débits (format AAAA-MM-JJ ou AAAA-MM ou AAAA) : affichage uniquement des stations ayant des débits antérieurs à datedeb</li>
+<li>datefin - date de fin des débits (format AAAA-MM-JJ ou AAAA-MM ou AAAA) : affichage uniquement des stations ayant des débits postérieurs à datefin</li>
+</ul>
+<img src="images/filtres_legende_0.png" align=middle><br>
+Par exemple : <br>
+<img src="images/filtres_legende_1.png" align=middle>&nbsp;&nbsp;n'affiche que les stations ayant au moins 10000 mesures de débit (journaliers si vous avez choisi d'afficher les débits moyens journaliers, mensuels sinon)<br>
+<img src="images/filtres_legende_2.png" align=middle>&nbsp;&nbsp;n'affiche que les stations ayant des débits disponibles avant le 1er janvier 1960<br>
+<img src="images/filtres_legende_3.png" align=middle>&nbsp;&nbsp;n'affiche que les stations ayant des débits disponibles après le 1er décembre 2021<br>
+<img src="images/filtres_legende_4.png" align=middle>&nbsp;&nbsp;n'affiche que les stations combinant les 3 critères précédents<br>
+Le nombre de stations affiché reflète en permanence le nombre de stations répondant aux critères choisis par l'utilisateur.</p>	
+<p>&nbsp;</p>
+<p>Des paramètres peuvent être passés directement dans l'URL : code_station, grandeur (QmJ ou QmM), coord (longitude, latitude), adresse, fdp (fond de plan), nature (type de station hydrométrique), nbobsmin, datedeb, datefin, seuil, resdeb.<br>
+<ul>
+<li><i>grandeur</i>=QmJ (par défaut) permet d'afficher les débits moyens journaliers, grandeur=QmM permet d'afficher les débits moyens mensuels</li>
+<li><i>code_station</i> permet de zoomer la carte sur la station et affiche les débits moyens journaliers ou mensuels de la station en question</li>
+<li><i>coord</i>=long,lat permet de zoomer la carte aux coordonnées (long,lat)</li>
+<li><i>adresse</i> permet de zoomer la carte à l'adresse indiquée (comme quand l'utilisateur saisit une adresse dans l'interface). Pour le zoom, code station est prioritaire sur coord qui est prioritaire sur adresse.</li>
+<li>Les fonds de plan disponibles sont fdp=1 : OSM standard ; fdp=2 : JAWG terrain ; fdp=3 : ESRI topo ; fdp = 4 : Stadia Bright ; fdp = 5 : IGN plan v2 ; fdp=6 : IGN BD Ortho ; fdp = 7 : BRGM géologie.
+ Les fonds de plan 2, 3 et 4 ont été choisis car mettent bien en évidence les cours d'eau. Le fond de plan Stadia Bright peut être temporairement indisponible.</li>
+<li><i>nature</i> permet de n'afficher que les stations de type limnimètre (nature=limni) ou débitmètre (nature=deb). Par défaut, les 2 types de stations sont affichés.</li>
+<li><i>nbobsmin</i> permet d'afficher uniquement les stations ayant au moins nbobsmin débits</li>
+<li><i>datedeb</i> (format AAAA-MM-JJ ou AAAA-MM ou AAAA) : permet d'afficher uniquement les stations ayant des débits antérieurs à datedeb</li>
+<li><i>datefin</i> (format AAAA-MM-JJ ou AAAA-MM ou AAAA) : permet d'afficher uniquement les stations ayant des débits postérieurs à datefin</li>
+<li><i>seuil</i> permet de n'afficher que les stations ayant eu un débit supérieur à seuil (en m3/s).</li>
+<!--<li><i>size</i> permet de réduire le nombre de données de débit à récupérer dans Hub'Eau et à afficher sur le graphique d'évolution (20000 par défaut, valeur maximale).</li>-->
+<li><i>resdeb</i> (format AAAA-MM-JJ impérativement) : date de début des graphiques - ne tracer la courbe d'évolution que depuis cette date pour toutes les stations.</li>
+</ul>
+Par exemple :
+<ul>
+<li><a href="https://hubeau.eaufrance.fr/sites/default/files/api/demo/hydro_elab.htm?code_station=U132401001&grandeur=QmJ&fdp=3" target="_blank">https://hubeau.eaufrance.fr/sites/default/files/api/demo/hydro_elab.htm?code_station=U132401001&grandeur=QmJ&fdp=3</a> zoome la carte sur la station de code U132401001 avec le fond de plan ESRI topo et affiche la courbe des débits moyens journaliers à la station.</li>
+<li><a href="https://hubeau.eaufrance.fr/sites/default/files/api/demo/hydro_elab.htm?coord=5,49&fdp=1" target="_blank">https://hubeau.eaufrance.fr/sites/default/files/api/demo/hydro_elab.htm?coord=5,49&fdp=1</a> zoome la carte sur le point de 5° de longitude et 49° de latitude avec le fond de plan OSM standard.</li>
+<li><a href="https://hubeau.eaufrance.fr/sites/default/files/api/demo/hydro_elab.htm?adresse=36 rue henri poincaré nancy" target="_blank">https://hubeau.eaufrance.fr/sites/default/files/api/demo/hydro_elab.htm?adresse=36 rue henri poincaré nancy</a> zoome la carte sur l'adresse mentionnée.</li>
+<li><a href="https://hubeau.eaufrance.fr/sites/default/files/api/demo/hydro_elab.htm?nature=deb" target="_blank">https://hubeau.eaufrance.fr/sites/default/files/api/demo/hydro_elab.htm?nature=deb</a> n'affiche que les stations de type débitmètre.</li>
+<li><a href="https://hubeau.eaufrance.fr/sites/default/files/api/demo/hydro_elab.htm?grandeur=qmm" target="_blank">https://hubeau.eaufrance.fr/sites/default/files/api/demo/hydro_elab.htm?grandeur=qmm</a> affiche toutes les stations ayant des mesures de débits moyens mensuels.</li>
+<li><a href="https://hubeau.eaufrance.fr/sites/default/files/api/demo/hydro_elab.htm?grandeur=qmj&nbobsmin=20000" target="_blank">https://hubeau.eaufrance.fr/sites/default/files/api/demo/hydro_elab.htm?grandeur=qmj&nbobsmin=20000</a> n'affiche que les stations ayant au moins 20000 débits moyens journaliers.</li>
+<li><a href="https://hubeau.eaufrance.fr/sites/default/files/api/demo/hydro_elab.htm?grandeur=qmm&nbobsmin=1000&datedeb=1950&datefin=2021" target="_blank">https://hubeau.eaufrance.fr/sites/default/files/api/demo/hydro_elab.htm?grandeur=qmm&nbobsmin=1000&datedeb=1950&datefin=2021</a> n'affiche que les stations ayant au moins 1000 débits moyens mensuels, avec des données avant 1950 et après le 1er janvier 2021.</li>
+<li><a href="https://hubeau.eaufrance.fr/sites/default/files/api/demo/hydro_elab.htm?grandeur=qmj&seuil=1000" target="_blank">https://hubeau.eaufrance.fr/sites/default/files/api/demo/hydro_elab.htm?grandeur=qmj&seuil=1000</a> affiche les stations ayant eu un débit moyen journalier supérieur à 1000 m3/s.</li>
+<li><a href="https://hubeau.eaufrance.fr/sites/default/files/api/demo/hydro_elab.htm?grandeur=qmj&datefin=2022&resdeb=2022-01-01" target="_blank">https://hubeau.eaufrance.fr/sites/default/files/api/demo/hydro_elab.htm?grandeur=qmj&datefin=2022&resdeb=2022-01-01</a> n'affiche que les stations ayant des mesures de débit moyen journalier postérieures au 1er janvier 2022 et trace leur courbe d'évolution à partir de cette date.</li>
+</ul>
+</p>
+</div>
+</body>
+</html>
