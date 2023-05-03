@@ -1,4 +1,12 @@
-# Ré-utilisations des APIs Hub'Eau, disponibles sur GitHub ou divers blogs  
+# Ré-utilisations des APIs Hub'Eau, disponibles sur GitHub ou divers blogs
+
+## [Package R hubeau du Cran](https://cran.r-project.org/package=hubeau)
+Le package R proposé par le [Comprehensive R Archive Network](https://cran.r-project.org) met à disposition des fonctions permettant d'effectuer facilement des requêtes sur les APIs hubeau. La totalité des opérations de 10 des 12 APIs disponibles actuellement sont implémentées (“Ecoulement des cours d’eau”, “Hydrométrie”, “Indicateurs des services”, “Piézométrie”, “Poisson”, “Prélèvements en eau”, “Qualité de l’eau potable”, “Qualité des nappes d’eau souterraines”, “Température des cours d’eau”).  
+Les fonctions de requêtes ont la syntaxe générale suivante `get_[API]_[Operation](champ1 = valeur1, champ2 = valeur2...)`.  
+Chaque fonction est documentée avec au moins un exemple d'utilisation.
+
+L'OFB DR Normandie utilise le package pour réaliser un rapport de situation mensuelle de l'écoulement des cours d'eau des bassins versants bretons :  [Cartographie régionale du suivi des étiages (ONDE)](https://pascalirz.github.io/ONDE_bretagne_carto_mensuelle/)
+
 ## [GD4H : cas d’usage qualité de l'eau du robinet](https://github.com/blenzi/GD4H_eau)  
 Le Green Data for Health (GD4H) est un projet inscrit dans le 4ème Plan National Santé Environnement qui a pour objectif de faciliter la mobilisation et la valorisation, par les chercheurs et les experts, des données environnementales au service de la santé-environnement.  
 Un des cas d'usage identifiés est l'étude des impacts de la qualité de l'eau potable. 
