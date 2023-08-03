@@ -3,7 +3,7 @@ flair==0.8.0.post1
 gdown
 ip2geotools==0.1.5
 ipinfo==4.2.1
-nltk==3.6.2
+nltk==3.6.6
 numpy==1.22.0
 pandas~=1.3.0
 requests~=2.26.0
