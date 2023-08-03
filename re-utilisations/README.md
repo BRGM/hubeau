@@ -53,3 +53,6 @@ Récupération de données de pêche électrique avec un peu de programmation en
 ## [Leaflet & Hub'Eau, par Sofiyan Ifren](https://www.linkedin.com/pulse/leaflet-hubeau-sofiyan-ifren/?trk=related_artice_Leaflet%20%26amp%3Bamp%3Bamp%3B%20Hub%26amp%3Bamp%3B%2339%3BEau%20_article-card_title)  
 Cartographie des données de pêche électrique avec Leaflet
 
+## [Package R pour interroger les API Hub'Eau par David Dorchies et Pascal Irz](https://CRAN.R-project.org/package=hubeau)
+Ce package publié sur le dépôt officiel CRAN facilite l'interrogation des API "Ecoulement des cours d’eau", "Hydrométrie", "Indicateurs des services", "Piézométrie", "Poisson", "Prélèvements en eau". Voir la documentation sur https://inrae.github.io/hubeau/
+
