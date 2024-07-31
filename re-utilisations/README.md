@@ -7,6 +7,10 @@ Chaque fonction est documentée avec au moins un exemple d'utilisation.
 
 L'OFB DR Normandie utilise le package pour réaliser un rapport de situation mensuelle de l'écoulement des cours d'eau des bassins versants bretons :  [Cartographie régionale du suivi des étiages (ONDE)](https://pascalirz.github.io/ONDE_bretagne_carto_mensuelle/)
 
+## [Package python cl-hubeau]([https://cran.r-project.org/package=hubeau](https://pypi.org/project/cl-hubeau/)
+Le package python proposé par la DREAL Hauts-de-France vise à mettre à disposition des fonctions permettant d'effectuer facilement des requêtes sur les APIs hubeau.
+Sont actuellement implémentées les fonctions des API "Hydrométrie" et "Piézométrie". A terme, tous les appels API d'hubeau seront implémentées.
+
 ## [GD4H : cas d’usage qualité de l'eau du robinet](https://github.com/blenzi/GD4H_eau)  
 Le Green Data for Health (GD4H) est un projet inscrit dans le 4ème Plan National Santé Environnement qui a pour objectif de faciliter la mobilisation et la valorisation, par les chercheurs et les experts, des données environnementales au service de la santé-environnement.  
 Un des cas d'usage identifiés est l'étude des impacts de la qualité de l'eau potable. 
