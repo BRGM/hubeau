@@ -19,7 +19,8 @@ Hub’Eau offre plusieurs interfaces (API) facilitant la réutilisation de donn�
 * [Prélèvements en eau](https://hubeau.eaufrance.fr/page/api-prelevements-eau) ;
 * [Hydrobiologie des cours d'eau et des plans d'eau](https://hubeau.eaufrance.fr/page/api-hydrobiologie) ;
 * [Surveillance des eaux littorales](https://hubeau.eaufrance.fr/page/api-surveillance-littoral) ;
-* [Ecoulement des cours d'eau](https://hubeau.eaufrance.fr/page/api-ecoulement).
+* [Ecoulement des cours d'eau](https://hubeau.eaufrance.fr/page/api-ecoulement) ;
+* [ Vente et achat de produits phytopharmaceutiques](https://hubeau.eaufrance.fr/page/api-vente-et-achat-de-produits-phytopharmaceutiques).
 
 Ce projet Github est dédiée à l'utilisation des API Hub'Eau.
 
