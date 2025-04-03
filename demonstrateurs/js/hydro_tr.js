@@ -9,6 +9,7 @@
 // v4.1.0 2021-08-18 : paramètre nature + affichage différencié stations DEB et LIMNI
 // Le graphique est trop petit pour afficher 2 courbes : c'est donc hauteur OU débit.
 // 2021-11-25 plutot que LIMNI ou DEB, faire apparaitre stations avec HQ, Q ou H ? Pb ça peut être changeant... Il faut faire tourner script stations souvent
+// 2025-04-03 : modif liens infos station + passage à API v2
 
 // *** variables globales ***
 	slong = 'longitude_station';
@@ -57,7 +58,7 @@ function donnees_piezo(bss) {
 
 		jsondata = new Array();
 		processed_json = new Array();   
-		urlobs = "https://hubeau.eaufrance.fr/api/v1/hydrometrie/observations_tr?code_entite=" + bss + "&grandeur_hydro=" + grandeur + "&size=" + size + "&sort=desc&fields=date_obs,resultat_obs"; // changement 2021-07-09
+		urlobs = "https://hubeau.eaufrance.fr/api/v2/hydrometrie/observations_tr?code_entite=" + bss + "&grandeur_hydro=" + grandeur + "&size=" + size + "&sort=desc&fields=date_obs,resultat_obs"; // changement 2021-07-09
 
 		asyncReq(function(result) { // 2021-08-06 appel asynchrone qui permet d'afficher le sablier comme curseur de souris
 			// Code that depends on 'result' https://qastack.fr/programming/14220321/how-do-i-return-the-response-from-an-asynchronous-call
@@ -270,7 +271,7 @@ function traitement_station() {
 				document.getElementById('titre_detail').innerHTML = '<img src="images/Hydrometrie' + scou + '_on.svg" title="' + rep[feat.get('ipt')][snat] + '"><b>Détail de la station de mesure</b> <i><class id="code"></class></i>'; 
 			}	
 			//classdist.innerHTML = bss;
-			classbss.innerHTML = '<a href="https://www.vigicrues.gouv.fr/niv3-station.php?CdStationHydro=' + bss + '&GrdSerie=H&ZoomInitial=3" target="_blank">Plus d\'informations sur la station de mesure</a>';
+			classbss.innerHTML = '<a href="https://hydro.eaufrance.fr/stationhydro/' + bss + '/fiche" target="_blank">Plus d\'informations sur la station de mesure</a>';
 			document.getElementById("code").innerHTML = bss;
 			if (feat.get(slib)) {
 				classlibpe.innerHTML = "<b>" + feat.get(slib);
