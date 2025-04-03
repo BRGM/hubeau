@@ -6,6 +6,7 @@
 // *** hydro_elab.js v2.1.0 2022-08-02 *** branchement seuil et resdeb. 
 // passer les URL en asynchrone, on doit pouvoir car pas de limite de 20000 avec cursor ? suivre les liens dans next
 // + implémenter size (pas prioritaire)
+// 2025-04-03 : modif liens infos station + passage à API v2
 
 // *** variables globales ***
 	slong = 'longitude_station';
@@ -61,7 +62,7 @@ function donnees_piezo(bss) {
 		var ireq = 0;
 		// size=20000 imposée car on veut tout l'historique et faire éventuellement plusieurs requêtes
 		// sort=desc ne fonctionne pas dans obs_elab : pas de possibilité simple de mettre en oeuvre le paramètre size
-		var urlq = "https://hubeau.eaufrance.fr/api/v1/hydrometrie/obs_elab?code_entite=" + bss + "&grandeur_hydro_elab=" + grandeur + "&size=20000&fields=date_obs_elab,resultat_obs_elab"; 
+		var urlq = "https://hubeau.eaufrance.fr/api/v2/hydrometrie/obs_elab?code_entite=" + bss + "&grandeur_hydro_elab=" + grandeur + "&size=20000&fields=date_obs_elab,resultat_obs_elab"; 
 		if (typeof(resdeb) !== 'undefined') { // 2022-08-02 prise en compte date de début des résultats
 			urlq += '&date_debut_obs_elab=' + resdeb;
 		}
@@ -91,7 +92,7 @@ function donnees_piezo(bss) {
 			console.log("bcont="+bcont);
 			if (bcont) {
 				lastdate = qdata[19999]['date_obs_elab'];
-				urlq = 	"https://hubeau.eaufrance.fr/api/v1/hydrometrie/obs_elab?code_entite=" + bss + "&grandeur_hydro_elab=" + grandeur + "&size=20000&fields=date_obs_elab,resultat_obs_elab&date_debut_obs_elab=" + lastdate; 
+				urlq = 	"https://hubeau.eaufrance.fr/api/v2/hydrometrie/obs_elab?code_entite=" + bss + "&grandeur_hydro_elab=" + grandeur + "&size=20000&fields=date_obs_elab,resultat_obs_elab&date_debut_obs_elab=" + lastdate; 
 				console.log("urlq="+urlq);
 			}	
 		}
@@ -183,7 +184,7 @@ function traitement_station() {
 				document.getElementById('titre_detail').innerHTML = '<img src="images/Hydrometrie' + scou + '_on.svg" title="' + rep[feat.get('ipt')][snat] + '"><b>Détail de la station de mesure</b> <i><class id="code"></class></i>'; 
 			}	
 			//classdist.innerHTML = bss;
-			classbss.innerHTML = '<a href="https://www.vigicrues.gouv.fr/niv3-station.php?CdStationHydro=' + bss + '&GrdSerie=Q&ZoomInitial=3" target="_blank">Plus d\'informations sur la station de mesure</a>';
+			classbss.innerHTML = '<a href="https://hydro.eaufrance.fr/stationhydro/' + bss + '/fiche" target="_blank">Plus d\'informations sur la station de mesure</a>';
 			document.getElementById("code").innerHTML = bss;
 			if (feat.get(slib)) {
 				classlibpe.innerHTML = "<b>" + feat.get(slib);
