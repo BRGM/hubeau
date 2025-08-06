@@ -1,5 +1,15 @@
 # Ré-utilisations des APIs Hub'Eau, disponibles sur GitHub ou divers blogs
 
+## [Bibliothèque javascript Débi'Clic](https://github.com/smmareptb11/debiclic)
+Débi’Clic est une nouvelle bibliothèque JavaScript qui simplifie l’accès aux données hydrologiques en temps réel. Initialement développée par le [SMMAR](https://www.smmar.fr/) pour les besoins de l’observatoire [SIGN’EAU](https://www.signeau.fr/), cette bibliothèque est désormais accessible à tous.
+Cet outil est conçu pour le grand public et les collectivités.  
+Il suffit d’intégrer une simple ligne de code JavaScript pour afficher :
+- Une carte interactive localisant les stations de mesure.
+- Une liste des stations avec les dernières données de hauteur ou débit disponibles.
+- Un graphique détaillé des hauteurs ou débits pour chaque station, facilement exportable en PNG.
+
+[Code et documentation complète](https://github.com/smmareptb11/debiclic)
+
 ## [Package R hubeau du Cran](https://cran.r-project.org/package=hubeau)
 Le package R proposé par le [Comprehensive R Archive Network](https://cran.r-project.org) met à disposition des fonctions permettant d'effectuer facilement des requêtes sur les APIs hubeau. La totalité des opérations de 10 des 12 APIs disponibles actuellement sont implémentées (“Ecoulement des cours d’eau”, “Hydrométrie”, “Indicateurs des services”, “Piézométrie”, “Poisson”, “Prélèvements en eau”, “Qualité de l’eau potable”, “Qualité des nappes d’eau souterraines”, “Température des cours d’eau”).  
 Les fonctions de requêtes ont la syntaxe générale suivante `get_[API]_[Operation](champ1 = valeur1, champ2 = valeur2...)`.  
