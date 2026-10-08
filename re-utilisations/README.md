@@ -70,3 +70,9 @@ Cartographie des données de pêche électrique avec Leaflet
 ## [Package R pour interroger les API Hub'Eau par David Dorchies et Pascal Irz](https://CRAN.R-project.org/package=hubeau)
 Ce package publié sur le dépôt officiel CRAN facilite l'interrogation des API "Ecoulement des cours d’eau", "Hydrométrie", "Indicateurs des services", "Piézométrie", "Poisson", "Prélèvements en eau". Voir la documentation sur https://inrae.github.io/hubeau/
 
+## [Dureté de l'eau du robinet par commune, appliquée au soin capillaire](https://pariscurls.com/pages/calcaire-eau-cheveux-boucles)
+Outil grand public qui affiche la dureté de l'eau distribuée dans une commune française à partir d'un code postal, et explique ce que cette dureté change au lavage des cheveux.
+* Requête effectuée en direct côté navigateur sur l'API [Qualité de l'eau potable](https://hubeau.eaufrance.fr/page/api-qualite-eau-potable), opération `resultats_dis`, paramètre `TH` (titre hydrotimétrique), unité harmonisée en °f.
+* Résolution du code postal vers le code INSEE de la commune via [geo.api.gouv.fr](https://geo.api.gouv.fr).
+* Un tableau statique des 50 plus grandes villes complète l'outil pour les consultations sans saisie. Le jeu de données dérivé est publié sur [data.gouv.fr](https://www.data.gouv.fr/datasets/durete-de-leau-du-robinet-dans-les-50-plus-grandes-villes-francaises-th-en-degf) sous Licence Ouverte 2.0.
+* Réutilisation également référencée sur [data.gouv.fr](https://www.data.gouv.fr/reuses/durete-de-leau-du-robinet-par-commune-appliquee-au-soin-capillaire).
