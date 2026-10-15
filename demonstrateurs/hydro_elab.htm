@@ -77,16 +77,18 @@ arrondir le nouveau 1er chiffre à gauche -->
 	vertical-align:middle;
 	height: 32px;
 }
+/* on garde le standard de stylebase.css
 #etat {
 	bottom: 16px; /* affichage sur la même ligne que légende, en 1er */
-	left: 515px;
+/*	left: 515px;
 }
+*/
 #basicMap {
     height: calc(98% - 30px);
 }
 #legende {
-	left: 615px; 
-    bottom: 5px;
+	left: calc(400px + calc(50% - 500px)); /* 615px; */
+    bottom: 0px; /* 5px; */
 }
 #legende input[type=text]{
 		-webkit-border-radius: 10px;
@@ -170,12 +172,14 @@ arrondir le nouveau 1er chiffre à gauche -->
 </div>
 <div id="etat" name="etat">
 </div>
-<div id="legende">&nbsp;&nbsp;<img class="imgleg" src="images/HydrometrieBleu_on.svg" title="LIMNI" onclick="icoapp(this)">&nbsp;&nbsp;Limnimètre&nbsp;&nbsp;&nbsp;&nbsp;<img class="imgleg" src="images/HydrometrieMauve_on.svg" title="DEB" 
-		onclick="icoapp(this)">&nbsp;&nbsp;Débitmètre&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-		nbobsmin = <input type="text" id="val6" name="val6" size="6" title="Affichage uniquement des stations ayant au moins nbobsmin débits" placeholder="nbobsmin">&nbsp;&nbsp;
-		datedeb = <input type="text" id="val3" name="val3" size="8" title="Affichage uniquement des stations ayant des débits antérieurs à datedeb" placeholder="datedeb">&nbsp;&nbsp;
-		datefin = <input type="text" id="val4" name="val4" size="8" title="Affichage uniquement des stations ayant des débits postérieurs à datefin" placeholder="datefin">
+<div id="legende">&nbsp;&nbsp;<img class="imgleg" src="images/HydrometrieBleu_on.svg" title="STD" onclick="icoapp(this)">&nbsp;&nbsp;Standard&nbsp;&nbsp;&nbsp;&nbsp;<img class="imgleg" src="images/HydrometrieMauve_on.svg" 
+	title="DEB" onclick="icoapp(this)">&nbsp;&nbsp;Débitmètre&nbsp;&nbsp;&nbsp;&nbsp;<img class="imgleg" src="images/HydrometrieVert_on.svg" 
+	title="H" onclick="icoapp(this)">&nbsp;&nbsp;Hauteur seule&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	nbobsmin = <input type="text" id="val6" name="val6" size="6" title="Affichage uniquement des stations ayant au moins nbobsmin débits" placeholder="nbobsmin">&nbsp;&nbsp;
+	datedeb = <input type="text" id="val3" name="val3" size="8" title="Affichage uniquement des stations ayant des débits antérieurs à datedeb" placeholder="datedeb">&nbsp;&nbsp;
+	datefin = <input type="text" id="val4" name="val4" size="8" title="Affichage uniquement des stations ayant des débits postérieurs à datefin" placeholder="datefin">
 </div>
+<div id="legende">&nbsp;&nbsp;<img class="imgleg" src="images/HydrometrieBleu_on.svg" title="STD" onclick="icoapp(this)">&nbsp;&nbsp;Standard&nbsp;&nbsp;&nbsp;&nbsp;<img class="imgleg" src="images/HydrometrieMauve_on.svg" title="DEB" onclick="icoapp(this)">&nbsp;&nbsp;Débitmètre&nbsp;&nbsp;&nbsp;&nbsp;<img class="imgleg" src="images/HydrometrieVert_on.svg" title="H" onclick="icoapp(this)">&nbsp;&nbsp;Hauteur seule&nbsp;&nbsp;
 <!--
 ne sert pas, juste pour avoir procédure commune avec qualriv et qualnap
 -->
