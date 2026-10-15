@@ -70,6 +70,10 @@ Cartographie des données de pêche électrique avec Leaflet
 ## [Package R pour interroger les API Hub'Eau par David Dorchies et Pascal Irz](https://CRAN.R-project.org/package=hubeau)
 Ce package publié sur le dépôt officiel CRAN facilite l'interrogation des API "Ecoulement des cours d’eau", "Hydrométrie", "Indicateurs des services", "Piézométrie", "Poisson", "Prélèvements en eau". Voir la documentation sur https://inrae.github.io/hubeau/
 
+## [Logiciel pour récupérer les données hydrométriques en vue de concevoir des bulletins BSH](https://github.com/Agryos/recup-etiage)
+Ce programme permet de **récupérer, analyser et visualiser** des données sur l'eau en se basant sur l'API Ecoulement des cours d'eau et l'API Hydrométrie de Hub'eau mais aussi certains donnée de MétéoFrance. Il est conçu pour les professionnels de l'hydrologie, les gestionnaires de bassin versant ou toute personne ayant besoin d'analyser des données environnementales.
+
+Il est initialement conçu pour récupérer les données en vue de concevoir des bulletins BSH. Il permet de concevoir des visualisation rapide de n'importe quel territoire Français sur n'importe quelle échelle temporelle souhaitée.
 ## [Dureté de l'eau du robinet par commune, appliquée au soin capillaire](https://pariscurls.com/pages/calcaire-eau-cheveux-boucles)
 Outil grand public qui affiche la dureté de l'eau distribuée dans une commune française à partir d'un code postal, et explique ce que cette dureté change au lavage des cheveux.
 * Requête effectuée en direct côté navigateur sur l'API [Qualité de l'eau potable](https://hubeau.eaufrance.fr/page/api-qualite-eau-potable), opération `resultats_dis`, paramètre `TH` (titre hydrotimétrique), unité harmonisée en °f.
