@@ -6,7 +6,9 @@
 // *** hydro_elab.js v2.1.0 2022-08-02 *** branchement seuil et resdeb. 
 // passer les URL en asynchrone, on doit pouvoir car pas de limite de 20000 avec cursor ? suivre les liens dans next
 // + implémenter size (pas prioritaire)
-// 2025-04-03 : modif liens infos station + passage à API v2
+// v3.0.0 2025-04-03 : modif liens infos station + passage à API v2
+// v3.0.1 2025-05-06 : changement QmJ en QmnJ pour pouvoir afficher débits moyens journaliers
+// v3.1.0 2025-05-06 : la v2 entraîne un changement des types de stations (https://www.sandre.eaufrance.fr/?urn=urn:sandre:donnees:531::::::referentiel:3.1:html) - 3 types (STD, DEB, H) au lieu de 2 (LIMNI, DEB). NB il y a une station de type HC, non traitée
 
 // *** variables globales ***
 	slong = 'longitude_station';
@@ -62,7 +64,11 @@ function donnees_piezo(bss) {
 		var ireq = 0;
 		// size=20000 imposée car on veut tout l'historique et faire éventuellement plusieurs requêtes
 		// sort=desc ne fonctionne pas dans obs_elab : pas de possibilité simple de mettre en oeuvre le paramètre size
-		var urlq = "https://hubeau.eaufrance.fr/api/v2/hydrometrie/obs_elab?code_entite=" + bss + "&grandeur_hydro_elab=" + grandeur + "&size=20000&fields=date_obs_elab,resultat_obs_elab"; 
+		var grandeurv2 = grandeur; // ajout 2025-05-06 pour tenir compte que QmJ devient QmnJ dans la v2 de l'API
+		if (grandeur.toLowerCase() == 'qmj') {
+			grandeurv2 = 'QmnJ';
+		}	
+		var urlq = "https://hubeau.eaufrance.fr/api/v2/hydrometrie/obs_elab?code_entite=" + bss + "&grandeur_hydro_elab=" + grandeurv2 + "&size=20000&fields=date_obs_elab,resultat_obs_elab"; 
 		if (typeof(resdeb) !== 'undefined') { // 2022-08-02 prise en compte date de début des résultats
 			urlq += '&date_debut_obs_elab=' + resdeb;
 		}
@@ -92,7 +98,7 @@ function donnees_piezo(bss) {
 			console.log("bcont="+bcont);
 			if (bcont) {
 				lastdate = qdata[19999]['date_obs_elab'];
-				urlq = 	"https://hubeau.eaufrance.fr/api/v2/hydrometrie/obs_elab?code_entite=" + bss + "&grandeur_hydro_elab=" + grandeur + "&size=20000&fields=date_obs_elab,resultat_obs_elab&date_debut_obs_elab=" + lastdate; 
+				urlq = 	"https://hubeau.eaufrance.fr/api/v2/hydrometrie/obs_elab?code_entite=" + bss + "&grandeur_hydro_elab=" + grandeurv2 + "&size=20000&fields=date_obs_elab,resultat_obs_elab&date_debut_obs_elab=" + lastdate; 
 				console.log("urlq="+urlq);
 			}	
 		}
@@ -160,16 +166,26 @@ function init_nat() { // partie spécifique au démonstrateur pour le traitement
 		  anchor: [0.5, icony],		  anchorXUnits: 'fraction',		  anchorYUnits: 'pixels',		  opacity: 1.0,		  src: 'images/HydrometrieMauve_on.svg'
 		}))
     });
+	iconPiezoNat[2] = new ol.style.Style({
+		image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
+		  anchor: [0.5, icony],		  anchorXUnits: 'fraction',		  anchorYUnits: 'pixels',		  opacity: 1.0,		  src: 'images/HydrometrieVert_on.svg'
+		}))
+    });
 
 	// Limnimètre - cas courant(échelle limnimétrique avec ou sans courbe de tarage)
 	// Debitmètre - pour une station délivrant directement une information de débit. Des données de hauteur peuvent exister sur ce type de station mais il n’y a pas de courbe de tarage
-	tabnat = [true,true]; // affichage des natures ('LIMNI' pour limnimètre, 'DEB' pour débitmetre) 
-	sim = ['on','on'];
+	// 2025-05-07, les types de station sont maintenant les suivants avec la v2 de l'API :
+	//	STD (Standard) Station, en général une échelle limnimétrique, mesurant des hauteurs et disposant d’une courbe de tarage permettant de calculer des débits
+	//	DEB (Débitmètre) Station sans courbe de tarage pouvant mesurer directement des hauteurs, des débits et des vitesses.
+	//  H (Hauteur seule) Station, en général une échelle limnimétrique, mesurant des hauteurs mais ne disposant pas de débits
+	tabnat = [true,true,true]; // affichage des natures ('LIMNI' pour limnimètre, 'DEB' pour débitmetre) 
+	sim = ['on','on','on'];
 	nature = '';
 	if (typeof(f['nature']) !== 'undefined') { 
 		nature = f['nature'].toLowerCase();
-		if (nature.indexOf('limni') == -1) { tabnat[0] = false; sim[0] = 'off'; } 
+		if (nature.indexOf('std') == -1) { tabnat[0] = false; sim[0] = 'off'; } 
 		if (nature.indexOf('deb') == -1) { tabnat[1] = false; sim[1] = 'off'; } 
+		if (nature.indexOf('h') == -1) { tabnat[2] = false; sim[2] = 'off'; } 
 		affiche_legende();
 	}
 }
@@ -178,8 +194,9 @@ function traitement_station() {
 			dm.style.cursor = "wait";
 			if (feat.get('ipt')) { // affichage de la bonne couleur du symbole dans le titre de la station
 				switch (rep[feat.get('ipt')][snat].toLowerCase()) {
-					case 'limni': scou = 'Bleu'; break;
+					case 'std': scou = 'Bleu'; break;
 					case 'deb': scou = 'Mauve'; break;
+					case 'h': scou = 'Vert'; break;
 				}	
 				document.getElementById('titre_detail').innerHTML = '<img src="images/Hydrometrie' + scou + '_on.svg" title="' + rep[feat.get('ipt')][snat] + '"><b>Détail de la station de mesure</b> <i><class id="code"></class></i>'; 
 			}	
@@ -211,7 +228,7 @@ function carte() {
 			grandeur = 'QmM';
 			elmt.selectedIndex = 1;
 			break;
-		  case 'qmj':
+		  case 'qmj' :
 			grandeur = 'QmJ';
 			elmt.selectedIndex = 0;
 			break;
@@ -232,11 +249,13 @@ function carte() {
 }
 
 function affiche_legende() {
-		document.getElementById("legende").innerHTML = '<img class="imgleg" src="images/HydrometrieBleu_' + sim[0] + '.svg" title="LIMNI" onclick="icoapp(this)">&nbsp;&nbsp;Limnimètre&nbsp;&nbsp;&nbsp;&nbsp;<img class="imgleg" src="images/HydrometrieMauve_' + 
-			sim[1] + '.svg" title="DEB" onclick="icoapp(this)">&nbsp;&nbsp;Débitmètre&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + 
-		'nbobsmin = <input type="text" id="val6" name="val6" size="6" title="Affichage uniquement des stations ayant au moins nbobsmin débits" placeholder="nbobsmin" value="' + nbanamin + '">&nbsp;&nbsp;' + 
-		'datedeb = <input type="text" id="val3" name="val3" size="8" title="Affichage uniquement des stations ayant des débits antérieure à datedeb" placeholder="datedeb" value="' + datedeb + '">&nbsp;&nbsp;' +
-		'datefin = <input type="text" id="val4" name="val4" size="8" title="Affichage uniquement des stations ayant des débits postérieurs à datefin" placeholder="datefin" value="' + datefin + '">';
+		document.getElementById("legende").innerHTML = '<img class="imgleg" src="images/HydrometrieBleu_' + 
+			sim[0] + '.svg" title="STD" onclick="icoapp(this)">&nbsp;&nbsp;Standard&nbsp;&nbsp;&nbsp;&nbsp;<img class="imgleg" src="images/HydrometrieMauve_' + 
+			sim[1] + '.svg" title="DEB" onclick="icoapp(this)">&nbsp;&nbsp;Débitmètre&nbsp;&nbsp;&nbsp;&nbsp;<img class="imgleg" src="images/HydrometrieVert_' + 
+			sim[2] + '.svg" title="H" onclick="icoapp(this)">&nbsp;&nbsp;Hauteur seule&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + 
+			'nbobsmin = <input type="text" id="val6" name="val6" size="6" title="Affichage uniquement des stations ayant au moins nbobsmin débits" placeholder="nbobsmin" value="' + nbanamin + '">&nbsp;&nbsp;' + 
+			'datedeb = <input type="text" id="val3" name="val3" size="8" title="Affichage uniquement des stations ayant des débits antérieure à datedeb" placeholder="datedeb" value="' + datedeb + '">&nbsp;&nbsp;' +
+			'datefin = <input type="text" id="val4" name="val4" size="8" title="Affichage uniquement des stations ayant des débits postérieurs à datefin" placeholder="datefin" value="' + datefin + '">';
 }
 
 function infobulle(feat, j) { // contenu de l'infobulle, spécifique à chaque démonstrateur

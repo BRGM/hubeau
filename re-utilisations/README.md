@@ -74,3 +74,9 @@ Ce package publié sur le dépôt officiel CRAN facilite l'interrogation des API
 Ce programme permet de **récupérer, analyser et visualiser** des données sur l'eau en se basant sur l'API Ecoulement des cours d'eau et l'API Hydrométrie de Hub'eau mais aussi certains donnée de MétéoFrance. Il est conçu pour les professionnels de l'hydrologie, les gestionnaires de bassin versant ou toute personne ayant besoin d'analyser des données environnementales.
 
 Il est initialement conçu pour récupérer les données en vue de concevoir des bulletins BSH. Il permet de concevoir des visualisation rapide de n'importe quel territoire Français sur n'importe quelle échelle temporelle souhaitée.
+## [Dureté de l'eau du robinet par commune, appliquée au soin capillaire](https://pariscurls.com/pages/calcaire-eau-cheveux-boucles)
+Outil grand public qui affiche la dureté de l'eau distribuée dans une commune française à partir d'un code postal, et explique ce que cette dureté change au lavage des cheveux.
+* Requête effectuée en direct côté navigateur sur l'API [Qualité de l'eau potable](https://hubeau.eaufrance.fr/page/api-qualite-eau-potable), opération `resultats_dis`, paramètre `TH` (titre hydrotimétrique), unité harmonisée en °f.
+* Résolution du code postal vers le code INSEE de la commune via [geo.api.gouv.fr](https://geo.api.gouv.fr).
+* Un tableau statique des 50 plus grandes villes complète l'outil pour les consultations sans saisie. Le jeu de données dérivé est publié sur [data.gouv.fr](https://www.data.gouv.fr/datasets/durete-de-leau-du-robinet-dans-les-50-plus-grandes-villes-francaises-th-en-degf) sous Licence Ouverte 2.0.
+* Réutilisation également référencée sur [data.gouv.fr](https://www.data.gouv.fr/reuses/durete-de-leau-du-robinet-par-commune-appliquee-au-soin-capillaire).

@@ -1,0 +1,164 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr" >
+<head>
+<title>Démonstrateur Hub'Eau Qualité de l'eau potable</title>
+<meta name="author" content="BRGM" />
+<meta name="description" content="Qualité de l'eau potable" />
+<meta name="keywords" content="eau, eau distribuée, eau potable, qualité, potabilité, contaminant, analyse, prélèvement, Hub'Eau, HubEau, France" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Language" content="fr" />
+<link rel="stylesheet" type="text/css" href="css/stylehtm.css" media="all" />
+<link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/odometer-theme-car-hydro.css" />
+<link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+<link rel="icon" href="images/favicon.ico" type="image/x-icon">
+<!-- Odometer (compteur avec chiffres tournants) -->
+<!--<script type="text/javascript" src="js/odometer.js"></script>
+<!-- HighCharts / StockCharts -->
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-csv/1.0.21/jquery.csv.min.js"></script>
+<script src="https://code.highcharts.com/stock/highstock.js"></script>
+<script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/stock/modules/export-data.js"></script>
+<script src="https://code.highcharts.com/stock/modules/data.js"></script>
+<!-- OpenLayers 5 -->
+	<script src="https://cdn.rawgit.com/openlayers/openlayers.github.io/master/en/v5.3.0/build/ol.js"></script>
+    <link rel="stylesheet" href="https://cdn.rawgit.com/openlayers/openlayers.github.io/master/en/v5.3.0/css/ol.css" type="text/css">
+<!-- Fonctions javascript communes à tous les démonstrateurs -->
+<script type="text/javascript" src="js/commun.js"></script>
+<!-- Scripts Javascript propres à démonstrateur hydro TR -->
+<script src="js/qualaep.js"></script>
+
+<!-- walkermatt/ol-layerswitcher https://github.com/walkermatt/ol-layerswitcher/tree/master/dist -->
+<link rel="stylesheet" href="js/layerswitcher/ol-layerswitcher.css" />
+<script src="js/layerswitcher/ol-layerswitcher.js"></script>
+
+<!-- styles spécifiques à ce démonstrateur
+<!-- font-family: tt_normsmedium !important; le chiffre 1 n'est pas centré avec cette police 
+on a ajouté 100000 à la profondeur : enlever le 1er chiffre et le signe des milliers 
+arrondir le nouveau 1er chiffre à gauche -->
+<link rel="stylesheet" type="text/css" href="css/stylebase.css" media="all" />
+<style>
+#titre_detail img {
+  width: 16px;
+  height: 16px;
+  margin-right: 10px;
+}
+#down img {
+	top: 300px;
+}
+#aide {
+	top: calc(98.4% - 74px);
+}
+#fen_aide {
+	top: calc(98.4% - 280px);
+	height: 240px;
+}
+#container {
+	width: 100%;
+	height: 90px;
+}
+.ol-popup {
+  min-width: 300px;
+  padding: 10px;
+}
+#legende img { 
+	vertical-align:middle;
+	height: 32px;
+}
+#etat {
+	bottom: 16px; /* affichage sur la même ligne que légende, en 1er */
+	left: 515px;
+}
+#basicMap {
+    height: calc(98% - 30px);
+}
+#legende {
+	left: 615px; 
+    bottom: 5px;
+}
+#legende input[type=text]{
+		-webkit-border-radius: 10px;
+		-moz-border-radius: 10px;
+		border-radius: 10px;
+		padding: 5px 10px 5px 15px;
+		margin: 0px 0px 0px 0px; /* top right bottom left */
+		font-size : 13px;
+		color : #818181;
+		border:0px;
+		font-family: 'Roboto', sans-serif;
+		}
+    input:focus {
+		outline: none;	
+}
+</style>
+
+</head>
+<body>
+  <div id="popup" class="ol-popup">
+    <a href="#" id="popupcloser" class="ol-popup-closer"></a>
+    <div id="popupcontent"></div>
+  </div>
+<script>
+</script> 
+<div id="search"> 
+  <div id="search_haut">
+    <p>&nbsp;</p>
+	<div id="brgm"><a href="https://www.brgm.fr" target="_blank"><img src="images/logo_brgm_web_fr_couleur.svg" height="40px"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://hubeau.eaufrance.fr" target="_blank"><img src="images/logo_hubeau_long_transp.png" height="40px"></a></div>
+	<br>
+	<form id='form1' onSubmit="get_adresse(); return false;" >
+	<input type="text" id="adresse" name="adresse" size="40" placeholder="Entrez une adresse pour vous localiser">
+	<input type="submit" value="" class="loupe">
+	</form>
+	<img src="images/goutesousrecherche.svg" height="30px">
+	
+	<div id="odometer" class="odometer" style="font-size: 19px;"><p>&nbsp;<br>&nbsp;<br>&nbsp;</p></div>
+	<span class="metres"></span>
+    <div id="vagues"><img src="images/Vagues.svg"></div>
+	<div id="down"><img src="images/arrowdown.png"></div>
+  </div>
+  <div id="search_bas">
+
+	<div id="detail">
+		<div id="titre_detail"><img src="images/pointOr_on.png"><b>&nbsp;Détail de la commune de code INSEE</b> <i><class id="code"></class></i></div>
+	<table width="100%">
+	<tr height="20px"><td style="text-align:center;"><class id="libpe"></class></td></tr>
+	<tr height="30px"><td style="text-align:center;"><class id="dat"></class></td></tr>
+	<tr><td style="text-align:center;">
+	<div id="container"></div>
+	</td></tr>
+	<tr height="30px"><td style="text-align:center;"><class id="station">(Pas de commune sélectionnée)</class></td></tr>
+	</table>
+	</div>
+<script>
+	calcul_hauteur();
+</script>
+<!-- <div id="contact"><a href="https://www.brgm.fr/content/contact" target="_blank">Contact</a></div> -->
+  </div> <!-- de search_bas !-->
+</div>
+<p>&nbsp;</p>
+<div id="basicMap"></div>
+	<div id="bton_fm" title="Zoom sur France métropolitaine">Zoom sur France métro.</div>
+	<div id="bton_pp" title="Toute l'étendue">Toute l'étendue</div>
+<div id="aide" title="Aide"></div>
+<div id="fen_aide" title="Fenêtre d'aide">
+<p>Cliquer sur un point de mesure en rivière pour connaître les résultats des campagnes d'observation des étiages en ce point.</p>
+<p>Le niveau d'écoulement des cours d'eau est apprécié visuellement par un opérateur, selon différentes modalités de perturbations d'écoulement décrites sur <a href=" https://onde.eaufrance.fr/content/les-observations-sur-le-terrain" target="_blank">le site de l'observatoire national des étiages (ONDE)</a>. Le graphique d'évolution des modalités d'observations présente l'ensemble des observations disponibles sur tout l'historique.</p>
+<p>Ce service utilise les opérations Stations et Observations de <a href="https://hubeau.eaufrance.fr/page/api-ecoulement" target="_blank">l'API Ecoulement des cours d'eau</a> de <a href="https://hubeau.eaufrance.fr" target="_blank">Hub'Eau</a> qui diffuse les données de <a href=" https://onde.eaufrance.fr/" target="_blank">l'observatoire national des étiages</a>.</p>
+<!-- <p><a href="aide/hydro_elab_aide.htm" target="_blank">En savoir plus...</a></p> -->
+</div>
+<div id="etat" name="etat">
+</div>
+<div id="legende">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;nbobsmin = <input type="text" id="val6" name="val6" size="6" title="Affichage uniquement des stations ayant au moins nbobsmin observations" placeholder="nbobsmin">&nbsp;&nbsp;
+		datedeb = <input type="text" id="val3" name="val3" size="8" title="Affichage uniquement des stations ayant des débits antérieurs à datedeb" placeholder="datedeb">&nbsp;&nbsp;
+		datefin = <input type="text" id="val4" name="val4" size="8" title="Affichage uniquement des stations ayant des débits postérieurs à datefin" placeholder="datefin">
+</div>
+<!--
+ne sert pas, juste pour avoir procédure commune avec qualriv et qualnap
+-->
+<div id="limit" name="limit">
+  <input type="checkbox" id="climit" name="climit">
+  <label for="climit">Valeur seuil</label>
+</div>
+</body>
+</html>

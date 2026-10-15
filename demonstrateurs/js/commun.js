@@ -10,6 +10,7 @@
 // pouvoir définir une plage de dates sur lesquelles s'exercent ce max et ce moy? Là on ne peut plus traiter avec un fichier de stations statique
 // avoir déjà un paramètre qui permet d'afficher les stations ayant des données pour ce paramètre (pour l'instant l'affichage n'est géré qu'au niveau supérieur du support). Nécessite un fichier de stations du type cc
 // mettre fond bleu dégradé sous légende ? non, moche
+// 2025-05-06 ajustement de icoapp() pour accepter 3e type de station + changement URL fonds de plan IGN géoplateforme
 
 chemin = 'https://hubeau.eaufrance.fr/sites/default/files/api/demo/';
 
@@ -473,16 +474,19 @@ function icotyp(balise) { // pour les démonstrateurs eau superficielle continen
 }
 
 function icoapp(balise) { // pour les démonstrateurs eau superficielle continentale acceptant un paramètre nature (type station = type appareillage)
-	// en paramètre get, entrer nature=limni pour les limnimètres, nature=deb pour les débitmètres
+	// 2025-05-06 changement pour la v2 de l'API avec désormais 3 types de station au lieu de 2
+	// en paramètre get, entrer nature=std pour les stations standard, nature=deb pour les débitmètres, nature=h pour les stations avec  hauteur seule, nature=tout pour tout
 	var snatclic = balise.title.toLowerCase();
 	switch (snatclic) {
-		case "limni": inat=0; break
+		case "std": inat=0; break
 		case "deb": inat=1; break
+		case "h": inat=2; break
 	};	
 	if (tabnat[inat]) { tabnat[inat] = false; } else { tabnat[inat] = true; }
 	nature = 'tout';
-	if (tabnat[0]) { nature += 'limni'; }
+	if (tabnat[0]) { nature += 'std'; }
 	if (tabnat[1]) { nature += 'deb'; }
+	if (tabnat[2]) { nature += 'h'; }
 	
 	if (balise.src.indexOf('_on') != -1) {
 		balise.src = balise.src.replace('on', 'off');
@@ -657,7 +661,7 @@ function create_layer_station() {
 						nat = rep[isty][snat];
 						var k=0;
 						if ((nat == 'Source') || (nat == '2') || (nat == 'DEB') || (nat == 'CONT')) { k = 1; };
-						if ((nat == 'Puits') || (nat == 'LIT')) { k = 2; }
+						if ((nat == 'Puits') || (nat == 'H') || (nat == 'LIT')) { k = 2; }
 						if (nat == 'Inconnue') { k = 3; }
 						iconStyle = iconPiezoNat[k];
 					} else {		
@@ -935,7 +939,7 @@ map.on('click', (e) => {
 	}	
 	if (fp6) {
 		orthoWMSsource = new ol.source.ImageWMS({
-			url: 'https://wxs.ign.fr/choisirgeoportail/geoportail/r/wms?',
+			url: 'https://data.geopf.fr/wms-r?',
 			params: {'LAYERS': 'ORTHOIMAGERY.ORTHOPHOTOS.BDORTHO', srs: 'EPSG:4326', format: 'png'},
 			ratio: 1,
 			serverType: 'mapserver',
@@ -953,7 +957,7 @@ map.on('click', (e) => {
 	}	
 	if (fp5) {
 		planWMSsource = new ol.source.ImageWMS({
-			url: 'https://wxs.ign.fr/choisirgeoportail/geoportail/r/wms?',
+			url: 'https://data.geopf.fr/wms-r?',
 			params: {'LAYERS': 'GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2', srs: 'EPSG:4326', format: 'png'},
 			ratio: 1,
 			serverType: 'mapserver',
