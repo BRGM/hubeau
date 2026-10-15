@@ -9,7 +9,11 @@
 // v4.1.0 2021-08-18 : paramètre nature + affichage différencié stations DEB et LIMNI
 // Le graphique est trop petit pour afficher 2 courbes : c'est donc hauteur OU débit.
 // 2021-11-25 plutot que LIMNI ou DEB, faire apparaitre stations avec HQ, Q ou H ? Pb ça peut être changeant... Il faut faire tourner script stations souvent
-// 2025-04-03 : modif liens infos station + passage à API v2
+// v5.0.0 2025-04-03 : modif liens infos station + passage à API v2
+// v5.1.0 2025-05-06 : la v2 entraîne un changement des types de stations (https://www.sandre.eaufrance.fr/?urn=urn:sandre:donnees:531::::::referentiel:3.1:html) - 3 types (STD, DEB, H) au lieu de 2 (LIMNI, DEB)
+//	STD (Standard) Station, en général une échelle limnimétrique, mesurant des hauteurs et disposant d’une courbe de tarage permettant de calculer des débits
+//	DEB (Débitmètre) Station sans courbe de tarage pouvant mesurer directement des hauteurs, des débits et des vitesses.
+//  H (Hauteur seule) Station, en général une échelle limnimétrique, mesurant des hauteurs mais ne disposant pas de débits
 
 // *** variables globales ***
 	slong = 'longitude_station';
@@ -246,18 +250,30 @@ function init_nat() { // partie spécifique au démonstrateur pour le traitement
 		  anchor: [0.5, icony],		  anchorXUnits: 'fraction',		  anchorYUnits: 'pixels',		  opacity: 1.0,		  src: 'images/HydrometrieMauve_on.svg'
 		}))
     });
+	iconPiezoNat[2] = new ol.style.Style({
+		image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
+		  anchor: [0.5, icony],		  anchorXUnits: 'fraction',		  anchorYUnits: 'pixels',		  opacity: 1.0,		  src: 'images/HydrometrieVert_on.svg'
+		}))
+    });
 
 	// Limnimètre - cas courant(échelle limnimétrique avec ou sans courbe de tarage)
 	// Debitmètre - pour une station délivrant directement une information de débit. Des données de hauteur peuvent exister sur ce type de station mais il n’y a pas de courbe de tarage
-	tabnat = [true,true]; // affichage des natures ('LIMNI' pour limnimètre, 'DEB' pour débitmetre) 
-	sim = ['on','on'];
+	// 2025-05-06, les types de station sont maintenant les suivants avec la v2 de l'API :
+	//	STD (Standard) Station, en général une échelle limnimétrique, mesurant des hauteurs et disposant d’une courbe de tarage permettant de calculer des débits
+	//	DEB (Débitmètre) Station sans courbe de tarage pouvant mesurer directement des hauteurs, des débits et des vitesses.
+	//  H (Hauteur seule) Station, en général une échelle limnimétrique, mesurant des hauteurs mais ne disposant pas de débits
+
+	tabnat = [true,true,true]; // affichage des natures - 2025-05-06 passage à 3 natures au lieu de 2
+	sim = ['on','on','on'];
 	nature = '';
 	if (typeof(f['nature']) !== 'undefined') { 
 		nature = f['nature'].toLowerCase();
-		if (nature.indexOf('limni') == -1) { tabnat[0] = false; sim[0] = 'off'; } 
+		if (nature.indexOf('std') == -1) { tabnat[0] = false; sim[0] = 'off'; } 
 		if (nature.indexOf('deb') == -1) { tabnat[1] = false; sim[1] = 'off'; } 
-		document.getElementById("legende").innerHTML = '<img class="imgleg" src="images/HydrometrieBleu_' + sim[0] + '.svg" title="LIMNI" onclick="icoapp(this)">&nbsp;&nbsp;Limnimètre&nbsp;&nbsp;&nbsp;&nbsp;<img class="imgleg" src="images/HydrometrieMauve_' + 
-			sim[1] + '.svg" title="DEB" onclick="icoapp(this)">&nbsp;&nbsp;Débitmètre';
+		if (nature.indexOf('h') == -1) { tabnat[2] = false; sim[2] = 'off'; } 
+		document.getElementById("legende").innerHTML = '<img class="imgleg" src="images/HydrometrieBleu_' + sim[0] + '.svg" title="STD" onclick="icoapp(this)">&nbsp;&nbsp;Standard&nbsp;&nbsp;&nbsp;&nbsp;' 
+													 + '<img class="imgleg" src="images/HydrometrieMauve_' + sim[1] + '.svg" title="DEB" onclick="icoapp(this)">&nbsp;&nbsp;Débitmètre&nbsp;&nbsp;&nbsp;&nbsp;'
+													 + '<img class="imgleg" src="images/HydrometrieVert_' + sim[2] + '.svg" title="H" onclick="icoapp(this)">&nbsp;&nbsp;Hauteur seule';
 	}
 }
 
@@ -265,8 +281,9 @@ function traitement_station() {
 			dm.style.cursor = "wait";
 			if (feat.get('ipt')) { // affichage de la bonne couleur du symbole dans le titre de la station
 				switch (rep[feat.get('ipt')][snat].toLowerCase()) {
-					case 'limni': scou = 'Bleu'; break;
+					case 'std': scou = 'Bleu'; break;
 					case 'deb': scou = 'Mauve'; break;
+					case 'h': scou = 'Vert'; break;
 				}	
 				document.getElementById('titre_detail').innerHTML = '<img src="images/Hydrometrie' + scou + '_on.svg" title="' + rep[feat.get('ipt')][snat] + '"><b>Détail de la station de mesure</b> <i><class id="code"></class></i>'; 
 			}	
